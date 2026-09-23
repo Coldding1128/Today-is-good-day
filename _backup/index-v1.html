@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>今天是个好日子啊</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        mc: {
+                            green: '#5D9C41',
+                            dark: '#2D2D2D',
+                            light: '#F5F5F5',
+                            grass: '#7CBD6E'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style type="text/tailwindcss">
+        @layer utilities {
+            .text-shadow { text-shadow: 2px 2px 4px rgba(0,0,0,0.5); }
+            .mc-btn { @apply bg-mc-green hover:bg-mc-grass text-white font-bold py-3 px-6 rounded transition-all duration-200 transform hover:scale-105; }
+        }
+    </style>
+</head>
+<body class="bg-mc-dark text-mc-light">
+    <!-- 导航栏 -->
+    <nav class="bg-black/30 backdrop-blur-sm sticky top-0 z-50">
+        <div class="max-w-6xl mx-auto px-4 py-4 flex justify-between items-center">
+            <div class="text-xl font-bold text-mc-green">广东海洋大学</div>
+            <div class="space-x-6 hidden md:flex">
+                <a href="#info" class="hover:text-mc-green transition-colors">服务器信息</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 顶部大横幅 -->
+    <section class="relative py-24 md:py-32 bg-gradient-to-b from-mc-green/20 to-mc-dark">
+        <div class="max-w-6xl mx-auto px-4 text-center">
+            <h1 class="text-[clamp(2rem,5vw,4rem)] font-bold mb-4 text-shadow">
+            <span class="text-mc-pick">今天是个好日子啊</span>
+            </h1>
+            <p class="text-lg md:text-xl mb-8 text-gray-300">私人小服务器 </p>
+            
+            <div class="bg-black/40 rounded-lg p-6 max-w-xl mx-auto mb-8">
+                <p class="text-gray-400 mb-2">服务器Q群</p>
+                <div class="flex flex-col sm:flex-row gap-3 justify-center items-center">
+                    <code id="ip" class="text-xl font-mono bg-black/50 px-4 py-2 rounded">938289365</code>
+                    <button onclick="copyIP()" class="mc-btn text-sm">复制群号</button>
+                </div>
+            </div>
+
+            <div class="flex flex-wrap gap-4 justify-center">
+                <span class="bg-mc-green/20 text-mc-green px-4 py-2 rounded-full">Java版</span>
+                <span class="bg-yellow-500/20 text-yellow-400 px-4 py-2 rounded-full">丰富整合包</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- 服务器信息卡片 -->
+    <section id="info" class="py-20">
+        <div class="max-w-6xl mx-auto px-4">
+            <h2 class="text-3xl font-bold text-center mb-12">服务器信息</h2>
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
+                <div class="bg-black/30 rounded-lg p-6 text-center">
+                    <div class="text-3xl mb-2">🌍</div>
+                    <h3 class="font-bold mb-1">游戏版本</h3>
+                    <p class="text-gray-400">视整合包版本而定</p>
+                </div>
+                <div class="bg-black/30 rounded-lg p-6 text-center">
+                    <div class="text-3xl mb-2">👥</div>
+                    <h3 class="font-bold mb-1">最大人数</h3>
+                    <p class="text-gray-400">114514</p>
+                </div>
+                <div class="bg-black/30 rounded-lg p-6 text-center">
+                    <div class="text-3xl mb-2">⚔️</div>
+                    <h3 class="font-bold mb-1">游戏模式</h3>
+                    <p class="text-gray-400">超多整合包随心开</p>
+                </div>
+                <div class="bg-black/30 rounded-lg p-6 text-center">
+                    <div class="text-3xl mb-2">⏰</div>
+                    <h3 class="font-bold mb-1">开服时间</h3>
+                    <p class="text-gray-400">全天24小时</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 底部 -->
+    <footer class="bg-black/40 py-8">
+        <div class="max-w-6xl mx-auto px-4 text-center text-gray-500">
+            <p>© 2025- 今天是个好日子啊 | 本网站非Mojang官方出品</p>
+            <p class="mt-2 text-sm">玩家QQ群：938289365 | 管理员联系：3383507390</p>
+        </div>
+    </footer>
+
+    <script>
+        // 一键复制IP功能
+        function copyIP() {
+            const ipText = document.getElementById('ip').innerText;
+            navigator.clipboard.writeText(ipText).then(() => {
+                const btn = event.target;
+                const original = btn.innerText;
+                btn.innerText = '已复制!';
+                setTimeout(() => btn.innerText = original, 1500);
+            });
+        }
+    </script>
+</body>
+</html>
