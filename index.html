@@ -1,400 +1,1222 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>今天是个好日子啊</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        mc: {
-                            blue: '#005BAC',
-                            sky: '#438EDB',
-                            wave: '#8EC5F0',
-                            yellow: '#FDD000',
-                            dark: '#0B2238',
-                            deep: '#07182A',
-                            light: '#F2F7FC'
-                        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>今天是个好日子啊 · 私人 Minecraft 服务器</title>
+<meta name="description" content="今天是个好日子啊 —— 一个私人 Minecraft 服务器，丰富整合包随心切换，全天 24 小时开放。">
+<meta name="theme-color" content="#F7F8F5">
+<link rel="canonical" href="https://today-is-good-day.pages.dev/">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 48'%3E%3Crect width='48' height='48' rx='10' fill='%230E1311'/%3E%3Cpath d='M24 9L38 17 24 25 10 17Z' fill='%2363D98C'/%3E%3Cpath d='M10 17L24 25v14L10 31Z' fill='%231E8E4E'/%3E%3Cpath d='M38 17L24 25v14l14-8Z' fill='%23114529'/%3E%3C/svg%3E">
+
+<!-- ============ 分享预览卡：QQ / 微信 / B站 / 微博 抓取 ============ -->
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="今天是个好日子啊">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:url" content="https://today-is-good-day.pages.dev/">
+<meta property="og:title" content="今天是个好日子啊 · 私人 Minecraft 服务器">
+<meta property="og:description" content="私人 Minecraft 服务器，超多整合包随心切换，随时开服，随时组队。宝可梦 / 机械 / 生存，单人与多人联机，全天 24 小时开放。">
+<meta property="og:image" content="https://today-is-good-day.pages.dev/assets/og-cover.jpg">
+<meta property="og:image:secure_url" content="https://today-is-good-day.pages.dev/assets/og-cover.jpg">
+<meta property="og:image:type" content="image/jpeg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="今天是个好日子啊 —— 私人 Minecraft 服务器，玩家 Q 群 938289365">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="今天是个好日子啊 · 私人 Minecraft 服务器">
+<meta name="twitter:description" content="超多整合包随心切换，随时开服，随时组队。全天 24 小时开放。">
+<meta name="twitter:image" content="https://today-is-good-day.pages.dev/assets/og-cover.jpg">
+<!-- 部分较早的抓取器只认下面这两种 -->
+<link rel="image_src" href="https://today-is-good-day.pages.dev/assets/og-cover.jpg">
+<meta itemprop="image" content="https://today-is-good-day.pages.dev/assets/og-cover.jpg">
+<meta name="keywords" content="Minecraft服务器,我的世界服务器,私人服务器,整合包,宝可梦服务器,Cobblemon,多人联机,今天是个好日子啊">
+<meta name="author" content="今天是个好日子啊">
+<script>document.documentElement.classList.add('js');</script>
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+    tailwind.config = {
+        theme: {
+            extend: {
+                colors: {
+                    ink: {
+                        900: '#0E1311',
+                        800: '#1B2320',
+                        700: '#2C3631',
+                        600: '#47504B',
+                        500: '#616B65',
+                        400: '#7A847E',
+                        300: '#9AA39D',
+                        200: '#C3CAC4',
+                        100: '#E1E5DE',
+                        50:  '#F1F3EF'
+                    },
+                    brand: {
+                        50:  '#EAF6EF',
+                        100: '#D2EBDB',
+                        200: '#A6D7B8',
+                        300: '#63D98C',
+                        400: '#35B96A',
+                        500: '#1E8E4E',
+                        600: '#17703E',
+                        700: '#114529',
+                        900: '#0A2A19'
+                    },
+                    amber: {
+                        50:  '#FDF5E6',
+                        100: '#FAE9C8',
+                        300: '#F5C463',
+                        500: '#E0900C',
+                        600: '#B87208'
                     }
-                }
+                },
+                fontFamily: {
+                    sans: ['"PingFang SC"', '"HarmonyOS Sans SC"', '"Microsoft YaHei"', '"Noto Sans SC"', 'system-ui', '-apple-system', '"Segoe UI"', 'sans-serif'],
+                    mono: ['ui-monospace', 'SFMono-Regular', '"JetBrains Mono"', 'Consolas', '"Liberation Mono"', 'monospace']
+                },
+                maxWidth: { content: '1120px' }
             }
         }
-    </script>
-    <style type="text/tailwindcss">
-        @layer utilities {
-            .text-shadow { text-shadow: 2px 2px 4px rgba(0,0,0,0.5); }
-            .mc-btn { @apply bg-mc-blue hover:bg-mc-wave text-white font-bold py-3 px-6 rounded transition-all duration-200 transform hover:scale-105; }
+    }
+</script>
+<style>
+    * { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
+    html { scroll-behavior: smooth; scroll-padding-top: 96px; }
+    body {
+        background-color: #F7F8F5;
+        background-image: url('assets/textures/moss.svg');
+        background-size: 48px 48px;
+        overflow-x: hidden;
+    }
+    ::selection { background: #1E8E4E; color: #fff; }
+
+    /* ---------- 像素地形分隔带（草皮在上、泥土在下，横向平铺） ---------- */
+    .terrain {
+        height: 32px; width: 100%;
+        background-image: url('assets/textures/strip-grass.svg');
+        background-repeat: repeat-x;
+        background-size: auto 32px;
+        image-rendering: pixelated;
+    }
+    .terrain-dark { background-image: url('assets/textures/strip-slate.svg'); }
+    /* 深色面板：铺一层像素岩面，让纯色块有材质 */
+    .rocked { position: relative; }
+    .rocked::before {
+        content: ''; position: absolute; inset: 0; pointer-events: none;
+        background-image: url('assets/textures/slate.svg');
+        background-size: 64px 64px;
+        image-rendering: pixelated;
+        opacity: .16;
+    }
+
+    /* ---------- 画布纹理 ---------- */
+    .canvas-grid {
+        position: absolute; inset: 0; pointer-events: none;
+        background-image:
+            linear-gradient(#0E1311 1px, transparent 1px),
+            linear-gradient(90deg, #0E1311 1px, transparent 1px);
+        background-size: 44px 44px;
+        opacity: .028;
+        -webkit-mask-image: linear-gradient(180deg, #000 0%, transparent 88%);
+        mask-image: linear-gradient(180deg, #000 0%, transparent 88%);
+    }
+
+    /* ---------- 卡片 ---------- */
+    .card {
+        background: #fff;
+        border: 1px solid #E4E8E1;
+        border-radius: 18px;
+        box-shadow: 0 1px 2px rgba(14,19,17,.035), 0 12px 30px -20px rgba(14,19,17,.18);
+        transition: transform .32s cubic-bezier(.2,.75,.3,1), box-shadow .32s ease, border-color .32s ease;
+    }
+    .card:hover {
+        transform: translateY(-3px);
+        border-color: #CFE6D6;
+        box-shadow: 0 2px 4px rgba(14,19,17,.04), 0 24px 48px -24px rgba(14,19,17,.24);
+    }
+    .panel {
+        background: #fff;
+        border: 1px solid #E4E8E1;
+        border-radius: 20px;
+        box-shadow: 0 1px 2px rgba(14,19,17,.035), 0 18px 40px -26px rgba(14,19,17,.2);
+    }
+
+    /* ---------- 章节标题 ---------- */
+    .sec-head { display: flex; align-items: flex-start; gap: 18px; margin-bottom: 44px; }
+    .sec-idx {
+        flex: none; display: inline-flex; align-items: center; justify-content: center;
+        min-width: 34px; height: 26px; margin-top: 6px; padding: 0 8px;
+        font-family: ui-monospace, Consolas, monospace; font-size: 12px; font-weight: 700;
+        color: #17703E; background: #EAF6EF; border: 1px solid #D2EBDB; border-radius: 8px;
+    }
+    .sec-title { font-size: clamp(1.55rem, 3.1vw, 2.15rem); font-weight: 900; letter-spacing: -.025em; line-height: 1.15; color: #0E1311; }
+    .sec-sub { margin-top: 7px; font-size: 14.5px; color: #7A847E; }
+    .sec-rule { flex: 1; height: 1px; margin-top: 19px; background: #E1E5DE; }
+
+    /* ---------- 元素 ---------- */
+    /* ---------- 按钮：物品栏槽位的斜角，控件统一走这套几何 ---------- */
+    .btn {
+        display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+        font-weight: 800; border-radius: 7px; white-space: nowrap;
+        border: 2px solid transparent;
+        transition: transform .22s cubic-bezier(.2,.75,.3,1), box-shadow .22s ease, background .22s ease, border-color .22s ease, color .22s ease;
+    }
+    .btn-dark {
+        background: #0E1311; color: #fff; border-color: #050806;
+        box-shadow: inset -2px -2px 0 rgba(0,0,0,.45), inset 2px 2px 0 rgba(255,255,255,.16),
+                    0 10px 22px -12px rgba(14,19,17,.6);
+    }
+    .btn-dark:hover {
+        background: #1E8E4E; border-color: #0A2A19; transform: translateY(-2px);
+        box-shadow: inset -2px -2px 0 rgba(0,0,0,.38), inset 2px 2px 0 rgba(255,255,255,.28),
+                    0 16px 30px -14px rgba(30,142,78,.7);
+    }
+    .btn-green {
+        background: #1E8E4E; color: #fff; border-color: #0A2A19;
+        box-shadow: inset -2px -2px 0 rgba(0,0,0,.32), inset 2px 2px 0 rgba(255,255,255,.30),
+                    0 12px 26px -14px rgba(30,142,78,.75);
+    }
+    .btn-green:hover {
+        background: #17703E; transform: translateY(-2px);
+        box-shadow: inset -2px -2px 0 rgba(0,0,0,.32), inset 2px 2px 0 rgba(255,255,255,.34),
+                    0 18px 34px -14px rgba(30,142,78,.85);
+    }
+    .btn-ghost {
+        border-color: #39433D; color: #2C3631; background-color: #EDEFE9;
+        box-shadow: inset -2px -2px 0 rgba(14,19,17,.18), inset 2px 2px 0 rgba(255,255,255,.85);
+    }
+    .btn-ghost:hover { border-color: #1E8E4E; color: #17703E; background-color: #EAF6EF; }
+
+    .tag {
+        display: inline-flex; align-items: center; gap: 6px;
+        padding: 5px 12px; border-radius: 999px;
+        font-size: 12.5px; font-weight: 600;
+        background: #F1F3EF; color: #47504B; border: 1px solid #E4E8E1;
+    }
+    .tag-green { background: #EAF6EF; color: #17703E; border-color: #D2EBDB; }
+    .tag-amber { background: #FDF5E6; color: #B87208; border-color: #FAE9C8; }
+
+    .icon-tile {
+        display: grid; place-items: center;
+        width: 46px; height: 46px; border-radius: 13px;
+        background: linear-gradient(160deg, #EAF6EF, #DCEEE3);
+        border: 1px solid #D2EBDB; color: #1E8E4E;
+    }
+
+    /* ---------- 首屏方块插画 ---------- */
+    .voxel { filter: drop-shadow(0 26px 30px rgba(17,69,41,.16)); }
+    .voxel .c { animation: bob 6.5s ease-in-out infinite; transform-origin: 250px 210px; }
+    .voxel .c2 { animation-delay: .9s; transform-origin: 395px 120px; }
+    .voxel .c3 { animation-delay: 1.7s; transform-origin: 105px 115px; }
+    .voxel .c4 { animation-delay: 2.4s; transform-origin: 300px 55px; }
+    @keyframes bob { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-9px); } }
+    @keyframes blink { 0%,100% { opacity: 1; transform: scale(1); } 50% { opacity: .35; transform: scale(.8); } }
+    .blink { animation: blink 1.9s ease-in-out infinite; }
+
+    /* ---------- 进场 ---------- */
+    .reveal { transition: opacity .75s cubic-bezier(.2,.75,.3,1), transform .75s cubic-bezier(.2,.75,.3,1); }
+    html.js .reveal { opacity: 0; transform: translateY(18px); }
+    html.js .reveal.in { opacity: 1; transform: none; }
+
+    @media (prefers-reduced-motion: reduce) {
+        html { scroll-behavior: auto; }
+        .reveal { opacity: 1 !important; transform: none !important; }
+        .voxel .c, .blink { animation: none !important; }
+    }
+</style>
+
+<!-- ============ 结构化数据 ============ -->
+<script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@graph": [
+        {
+            "@type": "WebSite",
+            "@id": "https://today-is-good-day.pages.dev/#website",
+            "url": "https://today-is-good-day.pages.dev/",
+            "name": "今天是个好日子啊",
+            "description": "私人 Minecraft 服务器，超多整合包随心切换，全天 24 小时开放。",
+            "inLanguage": "zh-CN",
+            "publisher": { "@id": "https://today-is-good-day.pages.dev/#org" }
+        },
+        {
+            "@type": "Organization",
+            "@id": "https://today-is-good-day.pages.dev/#org",
+            "name": "今天是个好日子啊",
+            "url": "https://today-is-good-day.pages.dev/",
+            "logo": "https://today-is-good-day.pages.dev/assets/og-cover.jpg"
+        },
+        {
+            "@type": "VideoGame",
+            "name": "今天是个好日子啊",
+            "url": "https://today-is-good-day.pages.dev/",
+            "gamePlatform": "Minecraft Java 版",
+            "genre": ["沙盒", "生存", "角色扮演"],
+            "playMode": ["单人", "多人联机"],
+            "inLanguage": "zh-CN"
         }
-        /* 亚克力模糊背景 */
-        .acrylic-bg {
-            position: fixed;
-            inset: 0;
-            z-index: -1;
-            background: linear-gradient(160deg, #07182A 0%, #0B2238 40%, #0A1F33 100%);
-            overflow: hidden;
-        }
-        .acrylic-bg::before {
-            content: '';
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            width: 120vmin;
-            height: 120vmin;
-            transform: translate(-50%, -50%);
-            background: url('assets/gdou-logo.png') center/contain no-repeat;
-            filter: blur(18px) saturate(1.3);
-            opacity: 0.30;
-        }
-        .acrylic-bg::after {
-            content: '';
-            position: absolute;
-            top: -10%;
-            right: -5%;
-            width: 60vmin;
-            height: 60vmin;
-            background: url('assets/gdou-logo.png') center/contain no-repeat;
-            filter: blur(12px) saturate(1.2);
-            opacity: 0.18;
-            transform: rotate(15deg);
-        }
-        .acrylic-noise {
-            position: fixed;
-            inset: 0;
-            z-index: -1;
-            opacity: 0.04;
-            pointer-events: none;
-            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-        }
-    </style>
+    ]
+}
+</script>
 </head>
-<body class="text-mc-light min-h-screen" style="background-color:#0B2238;">
-    <!-- 亚克力模糊背景 -->
-    <div class="acrylic-bg"></div>
-    <div class="acrylic-noise"></div>
+<body class="font-sans text-ink-900 antialiased">
 
-    <!-- 导航栏 -->
-    <nav class="bg-mc-deep/70 backdrop-blur-sm sticky top-0 z-50">
-        <div class="max-w-6xl mx-auto px-4 py-4 flex justify-end items-center">
-            <div class="space-x-6 hidden md:flex">
-                <a href="#info" class="hover:text-mc-wave transition-colors">服务器信息</a>
-                <a href="#modpacks" class="hover:text-mc-wave transition-colors">整合包</a>
-                <a href="#history" class="hover:text-mc-wave transition-colors">历史</a>
-                <a href="#sponsor" class="hover:text-mc-wave transition-colors">赞助</a>
-                <a href="#players" class="hover:text-mc-wave transition-colors">玩家</a>
+<!-- ============ 顶部导航 ============ -->
+<header id="siteHeader" class="fixed inset-x-0 top-0 z-50 transition-all duration-300">
+    <div class="mx-auto max-w-content px-5">
+        <div id="navShell" class="mt-3 flex items-center justify-between gap-4 rounded-2xl border border-transparent px-3 py-2.5 transition-all duration-300">
+            <a href="#top" class="group flex shrink-0 items-center gap-3">
+                <span class="grid h-10 w-10 place-items-center rounded-[13px] bg-ink-900 transition-colors duration-300 group-hover:bg-brand-500">
+                    <svg class="h-[21px] w-[21px]" viewBox="0 0 48 48" aria-hidden="true">
+                        <path d="M24 9L38 17 24 25 10 17Z" fill="#63D98C"/>
+                        <path d="M10 17L24 25v14L10 31Z" fill="#35B96A"/>
+                        <path d="M38 17L24 25v14l14-8Z" fill="#17703E"/>
+                    </svg>
+                </span>
+                <span class="hidden leading-tight sm:block">
+                    <span class="block text-[14.5px] font-black tracking-tight text-ink-900">今天是个好日子啊</span>
+                    <span class="block font-mono text-[9.5px] font-semibold tracking-[.18em] text-ink-400">MINECRAFT SERVER</span>
+                </span>
+            </a>
+
+            <nav class="hidden items-center gap-0.5 md:flex">
+                <a href="#info"     class="nav-link">服务器信息</a>
+                <a href="#modpacks" class="nav-link">整合包</a>
+                <a href="#history"  class="nav-link">历史</a>
+                <a href="gallery/"    class="nav-link">画廊</a>
+                <a href="#players"  class="nav-link">玩家</a>
+                <a href="#sponsor"  class="nav-link">赞助</a>
+            </nav>
+
+            <div class="flex items-center gap-2">
+                <button onclick="copyIP(this)" data-copy="938289365" class="btn btn-dark px-4 py-2 text-[12.5px]">
+                    <svg class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="12" height="12" rx="2.5"/><path d="M5 15V5.5A2.5 2.5 0 017.5 3H15"/></svg>
+                    <span class="hidden sm:inline">复制群号</span>
+                    <span class="sm:hidden">群号</span>
+                </button>
+                <button id="menuBtn" aria-label="菜单"
+                        class="grid h-10 w-10 place-items-center rounded-xl border border-ink-100 bg-white text-ink-700 transition-colors hover:border-brand-500 hover:text-brand-500 md:hidden">
+                    <svg class="h-[18px] w-[18px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+                </button>
             </div>
         </div>
-    </nav>
 
-    <!-- 顶部大横幅 -->
-    <section class="relative py-24 md:py-32 bg-gradient-to-b from-mc-blue/30 via-mc-deep/20 to-transparent">
-        <div class="max-w-6xl mx-auto px-4 text-center">
-            <h1 class="text-[clamp(2rem,5vw,4rem)] font-bold mb-4 text-shadow">
-            <span class="text-mc-yellow">今天是个好日子啊</span>
-            </h1>
-            <p class="text-lg md:text-xl mb-8 text-gray-300">私人小服务器 </p>
-            
-            <div class="bg-mc-deep/60 rounded-lg p-6 max-w-xl mx-auto mb-8">
-                <p class="text-gray-400 mb-2">服务器Q群</p>
-                <div class="flex flex-col sm:flex-row gap-3 justify-center items-center">
-                    <code id="ip" class="text-xl font-mono bg-mc-deep/80 px-4 py-2 rounded text-mc-wave">938289365</code>
-                    <button onclick="copyIP()" class="mc-btn text-sm">复制群号</button>
+        <div id="mobileMenu" class="mt-2 hidden rounded-2xl border border-ink-100 bg-white p-2 shadow-[0_18px_40px_-20px_rgba(14,19,17,.35)] md:hidden">
+            <a href="#info"     class="mobile-link">服务器信息</a>
+            <a href="#modpacks" class="mobile-link">整合包</a>
+            <a href="#history"  class="mobile-link">历史</a>
+            <a href="gallery/"  class="mobile-link">画廊</a>
+            <a href="#players"  class="mobile-link">玩家</a>
+            <a href="#sponsor"  class="mobile-link">赞助</a>
+        </div>
+    </div>
+</header>
+
+<style>
+    .nav-link {
+        position: relative; padding: 8px 14px; border-radius: 10px;
+        font-size: 13.5px; font-weight: 600; color: #47504B;
+        transition: color .25s ease, background .25s ease;
+    }
+    .nav-link:hover { color: #17703E; background: #EAF6EF; }
+    .mobile-link {
+        display: block; padding: 12px 15px; border-radius: 12px;
+        font-size: 15px; font-weight: 600; color: #2C3631;
+        transition: background .2s ease, color .2s ease;
+    }
+    .mobile-link:hover { background: #EAF6EF; color: #17703E; }
+</style>
+
+<!-- ============ 首屏 ============ -->
+<section id="top" class="relative overflow-hidden pt-32 md:pt-40">
+    <div class="canvas-grid"></div>
+
+    <div class="relative mx-auto max-w-content px-5 pb-20 md:pb-24">
+        <div class="grid items-center gap-14 lg:grid-cols-[1.05fr_.95fr] lg:gap-10">
+
+            <!-- 左：文案 -->
+            <div>
+                <div class="reveal inline-flex items-center gap-2.5 rounded-full border border-ink-100 bg-white py-1.5 pl-2.5 pr-4 shadow-[0_4px_14px_-8px_rgba(14,19,17,.35)]">
+                    <span class="grid h-6 w-6 place-items-center rounded-full bg-brand-50">
+                        <span class="blink h-1.5 w-1.5 rounded-full bg-brand-400"></span>
+                    </span>
+                    <span class="text-[12.5px] font-bold text-ink-600">私人服务器 · Java 版 · 全天在线</span>
+                </div>
+
+                <h1 class="reveal mt-7 text-[clamp(2.4rem,6.2vw,4.6rem)] font-black leading-[1.04] tracking-[-.035em] text-ink-900">
+                    今天是个<br>
+                    <span class="relative inline-block">
+                        好日子啊
+                        <svg class="absolute -bottom-1 left-0 h-[9px] w-full text-brand-300" viewBox="0 0 300 10" preserveAspectRatio="none" aria-hidden="true">
+                            <rect x="0" y="0" width="300" height="10" rx="3" fill="currentColor" opacity=".2"/>
+                        </svg>
+                    </span>
+                </h1>
+
+                <p class="reveal mt-8 max-w-lg text-[15.5px] leading-[1.8] text-ink-500">
+                    私人小服务器，超多整合包随心切换。想玩什么就换什么，随时开服，随时组队。
+                </p>
+
+                <!-- 群号 -->
+                <div class="reveal mt-9 flex max-w-[440px] flex-col gap-3 sm:flex-row sm:items-center">
+                    <div class="flex flex-1 items-center gap-3 rounded-2xl border border-ink-100 bg-white px-4 py-3 shadow-[0_1px_2px_rgba(14,19,17,.04)]">
+                        <span class="font-mono text-[11px] font-bold tracking-[.14em] text-ink-400">Q群</span>
+                        <span class="h-4 w-px bg-ink-100"></span>
+                        <code id="ip" class="font-mono text-[19px] font-bold tracking-[.1em] text-ink-900">938289365</code>
+                    </div>
+                    <button onclick="copyIP(this)" data-copy="938289365" class="btn btn-green px-6 py-[15px] text-[13.5px]">
+                        <span>复制群号</span>
+                    </button>
+                </div>
+
+                <div class="reveal mt-8 flex flex-wrap items-center gap-2.5">
+                    <span class="tag">丰富整合包</span>
+                    <span class="tag">宝可梦 / 机械 / 生存</span>
+                    <span class="tag">单人与多人联机</span>
                 </div>
             </div>
 
-            <div class="flex flex-wrap gap-4 justify-center">
-                <span class="bg-mc-blue/25 text-mc-wave px-4 py-2 rounded-full">Java版</span>
-                <span class="bg-mc-yellow/20 text-mc-yellow px-4 py-2 rounded-full">丰富整合包</span>
+            <!-- 右：方块插画 -->
+            <div class="reveal mx-auto w-full max-w-[460px] lg:max-w-none">
+                <svg class="voxel h-auto w-full" viewBox="0 0 520 440" fill="none" aria-hidden="true">
+                    <!-- 主方块 -->
+                    <g class="c">
+                        <path d="M250 147.5L355 200 250 252.5 145 200Z" fill="#63D98C"/>
+                        <path d="M145 200L250 252.5V338.5L145 286Z" fill="#1E8E4E"/>
+                        <path d="M250 252.5L355 200V286L250 338.5Z" fill="#114529"/>
+                    </g>
+                    <!-- 右上 -->
+                    <g class="c c2">
+                        <path d="M395 79L457 110 395 141 333 110Z" fill="#63D98C"/>
+                        <path d="M333 110L395 141V191L333 160Z" fill="#1E8E4E"/>
+                        <path d="M395 141L457 110V160L395 191Z" fill="#114529"/>
+                    </g>
+                    <!-- 左上 -->
+                    <g class="c c3">
+                        <path d="M105 81L153 105 105 129 57 105Z" fill="#63D98C"/>
+                        <path d="M57 105L105 129V167L57 143Z" fill="#1E8E4E"/>
+                        <path d="M105 129L153 105V143L105 167Z" fill="#114529"/>
+                    </g>
+                    <!-- 顶部小方块（点缀色） -->
+                    <g class="c c4">
+                        <path d="M300 28L334 45 300 62 266 45Z" fill="#F5C463"/>
+                        <path d="M266 45L300 62V88L266 71Z" fill="#E0900C"/>
+                        <path d="M300 62L334 45V71L300 88Z" fill="#B87208"/>
+                    </g>
+                </svg>
             </div>
         </div>
-    </section>
+    </div>
 
-    <!-- 服务器信息卡片 -->
-    <section id="info" class="py-20">
-        <div class="max-w-6xl mx-auto px-4">
-            <h2 class="text-3xl font-bold text-center mb-12">服务器信息</h2>
-            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
-                <div class="bg-mc-deep/50 rounded-lg p-6 text-center">
-                    <div class="text-3xl mb-2">🌍</div>
-                    <h3 class="font-bold mb-1">游戏版本</h3>
-                    <p class="text-gray-400">视整合包版本而定</p>
+    <div class="terrain" aria-hidden="true"></div>
+</section>
+
+<!-- ============ 服务器信息 ============ -->
+<section id="info" class="relative py-20 md:py-24">
+    <div class="mx-auto max-w-content px-5">
+        <div class="reveal sec-head">
+            <span class="sec-idx">01</span>
+            <div>
+                <h2 class="sec-title">服务器信息</h2>
+                <p class="sec-sub">开服以来的基本配置，随时保持在线</p>
+            </div>
+            <span class="sec-rule hidden md:block"></span>
+        </div>
+
+        <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4 lg:gap-5">
+            <div class="reveal card p-6">
+                <div class="icon-tile">
+                    <svg class="h-[22px] w-[22px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M3 12h18"/><path d="M12 3c2.6 2.8 2.6 15.2 0 18M12 3c-2.6 2.8-2.6 15.2 0 18"/></svg>
                 </div>
-                <div class="bg-mc-deep/50 rounded-lg p-6 text-center">
-                    <div class="text-3xl mb-2">👥</div>
-                    <h3 class="font-bold mb-1">最大人数</h3>
-                    <p class="text-gray-400">114514</p>
+                <p class="mt-5 font-mono text-[11px] font-bold uppercase tracking-[.16em] text-ink-400">游戏版本</p>
+                <p class="mt-2 text-[15px] font-bold text-ink-900">视整合包版本而定</p>
+            </div>
+            <div class="reveal card p-6">
+                <div class="icon-tile">
+                    <svg class="h-[22px] w-[22px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M16 20v-1.6A3.4 3.4 0 0012.6 15H7.4A3.4 3.4 0 004 18.4V20"/><circle cx="10" cy="8" r="3.2"/><path d="M20 20v-1.6a3.4 3.4 0 00-2.6-3.3M15.4 5.3a3.2 3.2 0 010 5.5"/></svg>
                 </div>
-                <div class="bg-mc-deep/50 rounded-lg p-6 text-center">
-                    <div class="text-3xl mb-2">⚔️</div>
-                    <h3 class="font-bold mb-1">游戏模式</h3>
-                    <p class="text-gray-400">超多整合包随心开</p>
+                <p class="mt-5 font-mono text-[11px] font-bold uppercase tracking-[.16em] text-ink-400">最大人数</p>
+                <p class="mt-2 font-mono text-[26px] font-black leading-none tracking-tight text-brand-500">114514</p>
+            </div>
+            <div class="reveal card p-6">
+                <div class="icon-tile">
+                    <svg class="h-[22px] w-[22px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l8 4.5-8 4.5-8-4.5L12 3z"/><path d="M4 12l8 4.5 8-4.5"/><path d="M4 16.5L12 21l8-4.5"/></svg>
                 </div>
-                <div class="bg-mc-deep/50 rounded-lg p-6 text-center">
-                    <div class="text-3xl mb-2">⏰</div>
-                    <h3 class="font-bold mb-1">开服时间</h3>
-                    <p class="text-gray-400">全天24小时</p>
+                <p class="mt-5 font-mono text-[11px] font-bold uppercase tracking-[.16em] text-ink-400">游戏模式</p>
+                <p class="mt-2 text-[15px] font-bold text-ink-900">超多整合包随心开</p>
+            </div>
+            <div class="reveal card p-6">
+                <div class="icon-tile">
+                    <svg class="h-[22px] w-[22px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7.2V12l3.4 2"/></svg>
                 </div>
+                <p class="mt-5 font-mono text-[11px] font-bold uppercase tracking-[.16em] text-ink-400">开服时间</p>
+                <p class="mt-2 text-[15px] font-bold text-ink-900">全天 24 小时</p>
             </div>
         </div>
-    </section>
+    </div>
+</section>
 
-    <!-- 整合包介绍 -->
-    <section id="modpacks" class="py-20 bg-mc-deep/30">
-        <div class="max-w-6xl mx-auto px-4">
-            <h2 class="text-3xl font-bold text-center mb-3">当前整合包</h2>
-            <p class="text-center text-gray-400 mb-12">服务器当前运行的整合包，随时可切换</p>
-            <div class="max-w-2xl mx-auto">
-                <!-- 整合包卡片 -->
-                <div class="bg-mc-deep/60 rounded-lg p-6 md:p-8 border border-mc-blue/30 hover:border-mc-yellow/50 transition-colors">
-                    <div class="flex items-center gap-4 mb-5">
-                        <div class="w-14 h-14 rounded-lg bg-mc-blue/30 flex items-center justify-center shrink-0">
-                            <svg class="w-8 h-8" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="#FDD000" stroke-width="2"/><path d="M3 12h18" stroke="#FDD000" stroke-width="2"/><circle cx="12" cy="12" r="2.5" fill="#FDD000"/><path d="M12 3a9 9 0 019 9h-9V3z" fill="#FDD000" opacity="0.3"/></svg>
+<!-- ============ 当前整合包 ============ -->
+<section id="modpacks" class="relative py-20 md:py-24">
+    <div class="mx-auto max-w-content px-5">
+        <div class="reveal sec-head">
+            <span class="sec-idx">02</span>
+            <div>
+                <h2 class="sec-title">当前整合包</h2>
+                <p class="sec-sub">服务器正在运行的整合包，随时可切换</p>
+            </div>
+            <span class="sec-rule hidden md:block"></span>
+        </div>
+
+        <div class="reveal panel overflow-hidden">
+            <div class="h-[3px] w-full bg-gradient-to-r from-brand-500 via-brand-300 to-amber-300"></div>
+            <div class="p-6 sm:p-8 md:p-10">
+                <div class="flex flex-wrap items-start gap-5">
+                    <div class="grid h-16 w-16 shrink-0 place-items-center rounded-2xl bg-gradient-to-br from-brand-50 to-brand-100 text-brand-500 ring-1 ring-brand-100">
+                        <svg class="h-8 w-8" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="12" r="9"/><path d="M3.2 12h5.3M15.5 12h5.3"/><circle cx="12" cy="12" r="3.1" fill="currentColor" fill-opacity=".18"/>
+                        </svg>
+                    </div>
+                    <div class="min-w-0 flex-1">
+                        <div class="flex flex-wrap items-center gap-3">
+                            <h3 class="text-[24px] font-black tracking-tight text-ink-900 sm:text-[28px]">去吧，方可梦大师</h3>
+                            <span class="inline-flex items-center gap-1.5 rounded-full bg-brand-50 px-2.5 py-1 text-[11.5px] font-bold text-brand-600 ring-1 ring-brand-100">
+                                <span class="blink h-1.5 w-1.5 rounded-full bg-brand-400"></span>当前运行中
+                            </span>
                         </div>
-                        <div>
-                            <h3 class="font-bold text-xl text-mc-yellow">去吧，方可梦大师</h3>
-                            <span class="text-xs text-gray-400">MC 1.21.1 · 整合包 v5.9.2 · 当前运行中</span>
+                        <div class="mt-2.5 flex flex-wrap items-center gap-x-3 gap-y-1 font-mono text-[12.5px] text-ink-400">
+                            <span>MC 1.21.1</span>
+                            <span class="h-1 w-1 rounded-full bg-ink-200"></span>
+                            <span>整合包 v5.9.2</span>
                         </div>
                     </div>
-                    <p class="text-gray-300 text-sm mb-5 leading-relaxed">基于 Cobblemon 方块宝可梦模组的高版本整合包，收录全世代 1077+ 只宝可梦，第九世代朱紫内容 1:1 还原。支持 Mega 进化、Z 招式、钛晶化、极巨化完整对战系统。配备万字详细任务引导，从新手教程到神兽召唤一应俱全；新增投球小游戏、宝可梦骑乘、皮肤装备、跟随等趣味模组，支持单人与多人联机。</p>
-                    <div class="flex flex-wrap gap-2 mb-6">
-                        <span class="bg-mc-blue/20 text-mc-wave text-xs px-3 py-1 rounded-full">宝可梦</span>
-                        <span class="bg-mc-blue/20 text-mc-wave text-xs px-3 py-1 rounded-full">Cobblemon</span>
-                        <span class="bg-mc-blue/20 text-mc-wave text-xs px-3 py-1 rounded-full">全世代</span>
-                        <span class="bg-mc-blue/20 text-mc-wave text-xs px-3 py-1 rounded-full">冒险RPG</span>
-                        <span class="bg-mc-yellow/20 text-mc-yellow text-xs px-3 py-1 rounded-full">当前在线</span>
-                    </div>
-                    <a href="https://www.bilibili.com/video/BV1QU8X6LEYP/?spm_id_from=333.337.search-card.all.click&vd_source=2fb96332b77794ac64a215705ab4b817" target="_blank" rel="noopener noreferrer"
-                       class="inline-flex items-center gap-2 bg-mc-yellow text-mc-deep font-bold py-2.5 px-5 rounded hover:bg-yellow-300 transition-all duration-200 transform hover:scale-105 text-sm">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                </div>
+
+                <p class="mt-7 max-w-3xl text-[14.5px] leading-[1.9] text-ink-600">
+                    基于 Cobblemon 方块宝可梦模组的高版本整合包，收录全世代 1077+ 只宝可梦，第九世代朱紫内容 1:1 还原。支持 Mega 进化、Z 招式、钛晶化、极巨化完整对战系统。配备万字详细任务引导，从新手教程到神兽召唤一应俱全；新增投球小游戏、宝可梦骑乘、皮肤装备、跟随等趣味模组，支持单人与多人联机。
+                </p>
+
+                <div class="mt-7 flex flex-wrap gap-2">
+                    <span class="tag">宝可梦</span>
+                    <span class="tag">Cobblemon</span>
+                    <span class="tag">全世代</span>
+                    <span class="tag">冒险 RPG</span>
+                    <span class="tag tag-amber">新人友好</span>
+                </div>
+
+                <div class="mt-8 flex flex-wrap items-center gap-4 border-t border-ink-100 pt-7">
+                    <a href="https://www.bilibili.com/video/BV1QU8X6LEYP/?spm_id_from=333.337.search-card.all.click&vd_source=2fb96332b77794ac64a215705ab4b817"
+                       target="_blank" rel="noopener noreferrer" class="btn btn-dark px-6 py-3 text-[13.5px]">
+                        <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.5 9.4l4.6 2.9-4.6 2.9V9.4z" fill="currentColor" stroke="none"/><circle cx="12" cy="12" r="9"/></svg>
                         观看整合包介绍视频
                     </a>
+                    <span class="text-[12.5px] text-ink-400">跳转至 Bilibili 观看</span>
                 </div>
             </div>
         </div>
-    </section>
+    </div>
+</section>
 
-    <!-- 服务器历史 -->
-    <section id="history" class="py-20">
-        <div class="max-w-4xl mx-auto px-4">
-            <h2 class="text-3xl font-bold text-center mb-3">服务器历史</h2>
-            <p class="text-center text-gray-400 mb-12">一路走来的整合包更迭记录</p>
-            <div class="bg-mc-deep/60 rounded-xl p-6 md:p-8 border border-mc-blue/30">
+<!-- ============ 服务器历史 ============ -->
+<section id="history" class="relative py-20 md:py-24">
+    <div class="mx-auto max-w-content px-5">
+        <div class="reveal sec-head">
+            <span class="sec-idx">03</span>
+            <div>
+                <h2 class="sec-title">服务器历史</h2>
+                <p class="sec-sub">一路走来的整合包更迭记录</p>
+            </div>
+            <span class="sec-rule hidden md:block"></span>
+        </div>
 
-                <!-- 2025年 -->
-                <h3 class="text-mc-yellow font-bold text-lg mb-4 flex items-center gap-2">
-                    <span class="w-2 h-2 rounded-full bg-mc-yellow"></span>2025 年
-                </h3>
-                <div class="relative pl-6 mb-8">
-                    <div class="absolute left-[7px] top-2 bottom-2 w-px bg-mc-blue/40"></div>
+        <div class="reveal panel p-6 sm:p-8 md:p-10">
 
-                    <div class="relative flex items-baseline gap-4 py-2">
-                        <span class="absolute -left-6 top-3 w-3.5 h-3.5 rounded-full bg-mc-blue border-2 border-mc-wave"></span>
-                        <span class="text-mc-wave text-sm font-mono w-36 shrink-0">3.8 — 7.12</span>
-                        <span class="text-mc-light">1.21 原版生存</span>
-                    </div>
-                    <div class="relative flex items-baseline gap-4 py-2">
-                        <span class="absolute -left-6 top-3 w-3.5 h-3.5 rounded-full bg-mc-blue border-2 border-mc-wave"></span>
-                        <span class="text-mc-wave text-sm font-mono w-36 shrink-0">7.12 — 9.25</span>
-                        <span class="text-mc-light">乌托邦 3.5</span>
-                    </div>
-                    <div class="relative flex items-baseline gap-4 py-2">
-                        <span class="absolute -left-6 top-3 w-3.5 h-3.5 rounded-full bg-mc-blue border-2 border-mc-wave"></span>
-                        <span class="text-mc-wave text-sm font-mono w-36 shrink-0">9.25 — 10.30</span>
-                        <span class="text-mc-light">乌托邦 3.5 fix</span>
-                    </div>
-                    <div class="relative flex items-baseline gap-4 py-2">
-                        <span class="absolute -left-6 top-3 w-3.5 h-3.5 rounded-full bg-mc-blue border-2 border-mc-wave"></span>
-                        <span class="text-mc-wave text-sm font-mono w-36 shrink-0">10.30 — 12.2</span>
-                        <span class="text-mc-light">剑与王国 测试版</span>
-                    </div>
-                    <div class="relative flex items-baseline gap-4 py-2">
-                        <span class="absolute -left-6 top-3 w-3.5 h-3.5 rounded-full bg-mc-blue border-2 border-mc-wave"></span>
-                        <span class="text-mc-wave text-sm font-mono w-36 shrink-0">12.2 — 12.18</span>
-                        <span class="text-mc-light">愚者</span>
-                    </div>
-                    <div class="relative flex items-baseline gap-4 py-2">
-                        <span class="absolute -left-6 top-3 w-3.5 h-3.5 rounded-full bg-mc-blue border-2 border-mc-wave"></span>
-                        <span class="text-mc-wave text-sm font-mono w-36 shrink-0">12.18 — 2026.01.10</span>
-                        <span class="text-mc-light">重度机械症</span>
-                    </div>
+            <!-- 2025 -->
+            <div class="grid gap-5 md:grid-cols-[132px_1fr] md:gap-8">
+                <div>
+                    <p class="font-mono text-[28px] font-black leading-none tracking-tight text-ink-900">2025</p>
+                    <p class="mt-2 font-mono text-[11.5px] tracking-[.1em] text-ink-400">6 个整合包</p>
                 </div>
+                <ul>
+                    <li class="row">
+                        <span class="row-date">3.8 — 7.12</span>
+                        <span class="row-name">1.21 原版生存</span>
+                    </li>
+                    <li class="row">
+                        <span class="row-date">7.12 — 9.25</span>
+                        <span class="row-name">乌托邦 3.5</span>
+                    </li>
+                    <li class="row">
+                        <span class="row-date">9.25 — 10.30</span>
+                        <span class="row-name">乌托邦 3.5 fix</span>
+                    </li>
+                    <li class="row">
+                        <span class="row-date">10.30 — 12.2</span>
+                        <span class="row-name">剑与王国 测试版</span>
+                    </li>
+                    <li class="row">
+                        <span class="row-date">12.2 — 12.18</span>
+                        <span class="row-name">愚者</span>
+                    </li>
+                    <li class="row">
+                        <span class="row-date">12.18 — 2026.01.10</span>
+                        <span class="row-name">重度机械症</span>
+                    </li>
+                </ul>
+            </div>
 
-                <!-- 2026年 -->
-                <h3 class="text-mc-yellow font-bold text-lg mb-4 flex items-center gap-2">
-                    <span class="w-2 h-2 rounded-full bg-mc-yellow"></span>2026 年
-                </h3>
-                <div class="relative pl-6">
-                    <div class="absolute left-[7px] top-2 bottom-2 w-px bg-mc-blue/40"></div>
+            <div class="my-9 h-px w-full bg-ink-100"></div>
 
-                    <div class="relative flex items-baseline gap-4 py-2">
-                        <span class="absolute -left-6 top-3 w-3.5 h-3.5 rounded-full bg-mc-blue border-2 border-mc-wave"></span>
-                        <span class="text-mc-wave text-sm font-mono w-36 shrink-0">1.10 — 1.16</span>
-                        <span class="text-mc-light">亡者世界</span>
-                    </div>
-                    <div class="relative flex items-baseline gap-4 py-2">
-                        <span class="absolute -left-6 top-3 w-3.5 h-3.5 rounded-full bg-mc-blue border-2 border-mc-wave"></span>
-                        <span class="text-mc-wave text-sm font-mono w-36 shrink-0">1.16 — 2.19</span>
-                        <span class="text-mc-light">农场物语</span>
-                    </div>
-                    <div class="relative flex items-baseline gap-4 py-2">
-                        <span class="absolute -left-6 top-3 w-3.5 h-3.5 rounded-full bg-mc-blue border-2 border-mc-wave"></span>
-                        <span class="text-mc-wave text-sm font-mono w-36 shrink-0">2.19 — 3.12</span>
-                        <span class="text-mc-light">落幕曲</span>
-                    </div>
-                    <div class="relative flex items-baseline gap-4 py-2">
-                        <span class="absolute -left-6 top-3 w-3.5 h-3.5 rounded-full bg-mc-blue border-2 border-mc-wave"></span>
-                        <span class="text-mc-wave text-sm font-mono w-36 shrink-0">3.12 — 4.11</span>
-                        <span class="text-mc-light">剑与王国 正式版</span>
-                    </div>
-                    <div class="relative flex items-baseline gap-4 py-2">
-                        <span class="absolute -left-6 top-3 w-3.5 h-3.5 rounded-full bg-mc-blue border-2 border-mc-wave"></span>
-                        <span class="text-mc-wave text-sm font-mono w-36 shrink-0">4.12 — 4.12</span>
-                        <span class="text-mc-light">你好，新世代！</span>
-                    </div>
-                    <div class="relative flex items-baseline gap-4 py-2">
-                        <span class="absolute -left-6 top-3 w-3.5 h-3.5 rounded-full bg-mc-blue border-2 border-mc-wave"></span>
-                        <span class="text-mc-wave text-sm font-mono w-36 shrink-0">4.13 — 5.1</span>
-                        <span class="text-mc-light">All The Mods 10 v5.6</span>
-                    </div>
-                    <div class="relative flex items-baseline gap-4 py-2">
-                        <span class="absolute -left-6 top-3 w-3.5 h-3.5 rounded-full bg-mc-blue border-2 border-mc-wave"></span>
-                        <span class="text-mc-wave text-sm font-mono w-36 shrink-0">5.2 — 5.5</span>
-                        <span class="text-mc-light">你好，新蒸程！v1.10</span>
-                    </div>
-                    <div class="relative flex items-baseline gap-4 py-2">
-                        <span class="absolute -left-6 top-3 w-3.5 h-3.5 rounded-full bg-mc-blue border-2 border-mc-wave"></span>
-                        <span class="text-mc-wave text-sm font-mono w-36 shrink-0">5.5 — 7.21</span>
-                        <span class="text-mc-light">重度机械症回归 · 航空学</span>
-                    </div>
-                    <div class="relative flex items-baseline gap-4 py-2">
-                        <span class="absolute -left-6 top-3 w-3.5 h-3.5 rounded-full bg-mc-blue border-2 border-mc-wave"></span>
-                        <span class="text-mc-wave text-sm font-mono w-36 shrink-0">7.21 — 7.31</span>
-                        <span class="text-mc-light">严阵以待</span>
-                    </div>
-                    <div class="relative flex items-baseline gap-4 py-2">
-                        <span class="absolute -left-6 top-3 w-3.5 h-3.5 rounded-full bg-mc-blue border-2 border-mc-wave"></span>
-                        <span class="text-mc-wave text-sm font-mono w-36 shrink-0">7.31 — 8.31</span>
-                        <span class="text-mc-light">沉浸式战斗</span>
-                    </div>
-                    <div class="relative flex items-baseline gap-4 py-2">
-                        <span class="absolute -left-6 top-3 w-3.5 h-3.5 rounded-full bg-mc-blue border-2 border-mc-wave"></span>
-                        <span class="text-mc-wave text-sm font-mono w-36 shrink-0">8.31 — 9.6</span>
-                        <span class="text-mc-light">Last One 终末幸存者</span>
-                    </div>
-                    <div class="relative flex items-baseline gap-4 py-2">
-                        <span class="absolute -left-6 top-3 w-3.5 h-3.5 rounded-full bg-mc-blue border-2 border-mc-wave"></span>
-                        <span class="text-mc-wave text-sm font-mono w-36 shrink-0">9.6 — 9.11</span>
-                        <span class="text-mc-light">元素觉醒</span>
-                    </div>
-                    <div class="relative flex items-baseline gap-4 py-2">
-                        <span class="absolute -left-6 top-3 w-3.5 h-3.5 rounded-full bg-mc-blue border-2 border-mc-wave"></span>
-                        <span class="text-mc-wave text-sm font-mono w-36 shrink-0">9.11 — 9.19</span>
-                        <span class="text-mc-light">香草纪元：食旅纪行</span>
-                    </div>
-                    <!-- 当前运行 -->
-                    <div class="relative flex items-baseline gap-4 py-2.5 mt-1 rounded-lg bg-mc-yellow/10 border border-mc-yellow/30 px-3 -mx-3">
-                        <span class="absolute -left-6 top-4 w-4 h-4 rounded-full bg-mc-yellow border-2 border-mc-yellow shadow-[0_0_8px_rgba(253,208,0,0.6)]"></span>
-                        <span class="text-mc-yellow text-sm font-mono w-36 shrink-0 font-bold">9.19 至今</span>
-                        <span class="text-mc-yellow font-bold">去吧，方可梦大师</span>
-                        <span class="ml-auto text-xs bg-mc-yellow text-mc-deep px-2 py-0.5 rounded-full font-bold shrink-0">当前运行</span>
-                    </div>
+            <!-- 2026 -->
+            <div class="grid gap-5 md:grid-cols-[132px_1fr] md:gap-8">
+                <div>
+                    <p class="font-mono text-[28px] font-black leading-none tracking-tight text-ink-900">2026</p>
+                    <p class="mt-2 font-mono text-[11.5px] tracking-[.1em] text-ink-400">14 个整合包</p>
                 </div>
-
+                <ul>
+                    <li class="row">
+                        <span class="row-date">1.10 — 1.16</span>
+                        <span class="row-name">亡者世界</span>
+                    </li>
+                    <li class="row">
+                        <span class="row-date">1.16 — 2.19</span>
+                        <span class="row-name">农场物语</span>
+                    </li>
+                    <li class="row">
+                        <span class="row-date">2.19 — 3.12</span>
+                        <span class="row-name">落幕曲</span>
+                    </li>
+                    <li class="row">
+                        <span class="row-date">3.12 — 4.11</span>
+                        <span class="row-name">剑与王国 正式版</span>
+                    </li>
+                    <li class="row">
+                        <span class="row-date">4.12 — 4.12</span>
+                        <span class="row-name">你好，新世代！</span>
+                    </li>
+                    <li class="row">
+                        <span class="row-date">4.13 — 5.1</span>
+                        <span class="row-name">All The Mods 10 v5.6</span>
+                    </li>
+                    <li class="row">
+                        <span class="row-date">5.2 — 5.5</span>
+                        <span class="row-name">你好，新蒸程！v1.10</span>
+                    </li>
+                    <li class="row">
+                        <span class="row-date">5.5 — 7.21</span>
+                        <span class="row-name">重度机械症回归 · 航空学</span>
+                    </li>
+                    <li class="row">
+                        <span class="row-date">7.21 — 7.31</span>
+                        <span class="row-name">严阵以待</span>
+                    </li>
+                    <li class="row">
+                        <span class="row-date">7.31 — 8.31</span>
+                        <span class="row-name">沉浸式战斗</span>
+                    </li>
+                    <li class="row">
+                        <span class="row-date">8.31 — 9.6</span>
+                        <span class="row-name">Last One 终末幸存者</span>
+                    </li>
+                    <li class="row">
+                        <span class="row-date">9.6 — 9.11</span>
+                        <span class="row-name">元素觉醒</span>
+                    </li>
+                    <li class="row">
+                        <span class="row-date">9.11 — 9.19</span>
+                        <span class="row-name">香草纪元：食旅纪行</span>
+                    </li>
+                    <li class="row row-now">
+                        <span class="row-date">9.19 至今</span>
+                        <span class="row-name">去吧，方可梦大师</span>
+                        <span class="row-badge">当前运行</span>
+                    </li>
+                </ul>
             </div>
         </div>
-    </section>
+    </div>
+</section>
 
-    <!-- 玩家栏目 -->
-    <section id="players" class="py-20 bg-mc-deep/30">
-        <div class="max-w-6xl mx-auto px-4">
-            <h2 class="text-3xl font-bold text-center mb-3">玩家风采</h2>
-            <p class="text-center text-gray-400 mb-12">服务器玩家与专属头衔</p>
-            <div class="max-w-2xl mx-auto">
-                <div class="bg-mc-deep/60 rounded-lg p-6">
-                    <div class="space-y-1">
-                        <div class="flex items-center justify-between py-3 border-b border-mc-blue/20 gap-4">
-                            <span class="text-mc-light font-medium shrink-0">Katom_megumi</span>
-                            <span class="text-mc-yellow text-sm font-bold text-right">腐竹</span>
-                        </div>
-                        <div class="flex items-center justify-between py-3 border-b border-mc-blue/20 gap-4">
-                            <span class="text-mc-light font-medium shrink-0">114514zyl</span>
-                            <span class="text-mc-wave text-sm font-bold text-right">和山一样大的褐色大分</span>
-                        </div>
-                        <div class="flex items-center justify-between py-3 border-b border-mc-blue/20 gap-4">
-                            <span class="text-mc-light font-medium shrink-0">F_K_Z_Y</span>
-                            <span class="text-mc-wave text-sm font-bold text-right">OP舰长</span>
-                        </div>
-                        <div class="flex items-center justify-between py-3 border-b border-mc-blue/20 gap-4">
-                            <span class="text-mc-light font-medium shrink-0">xxtFF</span>
-                            <span class="text-mc-wave text-sm font-bold text-right">和猪一样大的黑色鸽子</span>
-                        </div>
-                        <div class="flex items-center justify-between py-3 gap-4">
-                            <span class="text-mc-light font-medium shrink-0">ljhmaster</span>
-                            <span class="text-mc-wave text-sm font-bold text-right">问剑新葡京</span>
-                        </div>
-                    </div>
-                </div>
+<style>
+    .row {
+        display: flex; align-items: baseline; gap: 18px;
+        padding: 9px 12px 9px 0; border-radius: 10px;
+        border-bottom: 1px solid transparent;
+        transition: background .2s ease, padding .2s ease;
+    }
+    .row:hover { background: #F7F9F6; padding-left: 12px; }
+    .row-date {
+        flex: none; width: 148px;
+        font-family: ui-monospace, Consolas, monospace; font-size: 12.5px;
+        font-variant-numeric: tabular-nums; color: #9AA39D;
+        transition: color .2s ease;
+    }
+    .row:hover .row-date { color: #47504B; }
+    .row-name { font-size: 15px; font-weight: 600; color: #2C3631; }
+    .row-now {
+        background: #EAF6EF; border: 1px solid #D2EBDB;
+        padding: 12px 14px; margin-top: 6px; align-items: center;
+    }
+    .row-now:hover { background: #EAF6EF; padding-left: 14px; }
+    .row-now .row-date { color: #17703E; font-weight: 700; }
+    .row-now .row-name { color: #0E1311; font-weight: 800; }
+    .row-badge {
+        margin-left: auto; flex: none;
+        background: #1E8E4E; color: #fff;
+        padding: 3px 10px; border-radius: 999px;
+        font-size: 11px; font-weight: 800; letter-spacing: .02em;
+    }
+    @media (max-width: 639px) {
+        .row { flex-wrap: wrap; gap: 4px 12px; padding: 11px 0; }
+        .row-date { width: auto; }
+        .row:hover { padding-left: 0; }
+        .row-now { padding: 12px 14px; }
+        .row-now:hover { padding-left: 14px; }
+        .row-badge { margin-left: 0; }
+    }
+</style>
+
+<!-- ============ 精选截图 ============ -->
+<section id="gallery" class="relative py-20 md:py-24">
+    <div class="mx-auto max-w-content px-5">
+        <div class="reveal sec-head">
+            <span class="sec-idx">04</span>
+            <div>
+                <h2 class="sec-title">精选截图</h2>
+                <p class="sec-sub">从各个周目里随手挑的几帧，完整画廊已按整合包分类</p>
+            </div>
+            <span class="sec-rule hidden md:block"></span>
+        </div>
+
+        <!-- 精选图：静态写入，保证无 JS 时也能看到；完整画廊在 /gallery/ -->
+        <div class="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-3">
+            <figure class="gitem reveal" tabindex="0" role="button"
+                    data-full="assets/gallery/01.jpg" data-title="出生点 · 清晨">
+                <img src="assets/gallery/01.jpg" alt="服务器出生点的清晨地形" width="1200" height="675" loading="lazy" decoding="async">
+                <span class="gitem-veil"></span>
+                <span class="gitem-zoom" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.6-3.6M11 8.5v5M8.5 11h5"/></svg>
+                </span>
+                <figcaption class="gitem-cap">
+                    <span>出生点 · 清晨</span>
+                    <span class="font-mono">去吧，方可梦大师</span>
+                </figcaption>
+            </figure>
+            <figure class="gitem reveal" tabindex="0" role="button"
+                    data-full="assets/gallery/03.jpg" data-title="下矿 · 洞穴矿脉">
+                <img src="assets/gallery/03.jpg" alt="洞穴深处的矿脉" width="1200" height="675" loading="lazy" decoding="async">
+                <span class="gitem-veil"></span>
+                <span class="gitem-zoom" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.6-3.6M11 8.5v5M8.5 11h5"/></svg>
+                </span>
+                <figcaption class="gitem-cap">
+                    <span>下矿 · 洞穴矿脉</span>
+                    <span class="font-mono">重度机械症</span>
+                </figcaption>
+            </figure>
+            <figure class="gitem reveal" tabindex="0" role="button"
+                    data-full="assets/gallery/04.jpg" data-title="海岸线 · 涨潮">
+                <img src="assets/gallery/04.jpg" alt="服务器海岸线与涨潮水面" width="1200" height="675" loading="lazy" decoding="async">
+                <span class="gitem-veil"></span>
+                <span class="gitem-zoom" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.6-3.6M11 8.5v5M8.5 11h5"/></svg>
+                </span>
+                <figcaption class="gitem-cap">
+                    <span>海岸线 · 涨潮</span>
+                    <span class="font-mono">香草纪元</span>
+                </figcaption>
+            </figure>
+        </div>
+
+        <div class="reveal mt-6 flex flex-col items-center gap-6 rounded-2xl border border-dashed border-ink-200 bg-white/70 px-6 py-7 text-center sm:flex-row sm:justify-between sm:text-left">
+            <div>
+                <p class="text-[15.5px] font-black tracking-tight text-ink-900">完整画廊：20 个周目，各归各位</p>
+                <p class="mt-1.5 text-[13.5px] leading-relaxed text-ink-500">按整合包分组、支持筛选与放大，你的截图也可以挂上去</p>
+            </div>
+            <div class="flex shrink-0 flex-wrap justify-center gap-3">
+                <a href="gallery/" class="btn btn-green px-5 py-3 text-[13.5px]">
+                    <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="8" height="8" rx="1.6"/><rect x="13" y="3" width="8" height="8" rx="1.6"/><rect x="3" y="13" width="8" height="8" rx="1.6"/><rect x="13" y="13" width="8" height="8" rx="1.6"/></svg>
+                    进入截图画廊
+                </a>
+                <button onclick="copyIP(this)" data-copy="938289365" class="btn btn-ghost px-5 py-3 text-[13.5px]">
+                    <span>复制群号投稿</span>
+                </button>
             </div>
         </div>
-    </section>
+    </div>
+</section>
 
-    <!-- 服务器状态查询 -->
-    <section class="py-16">
-        <div class="max-w-4xl mx-auto px-4">
-            <div class="bg-gradient-to-r from-mc-blue to-mc-sky rounded-xl p-8 md:p-12 text-center relative overflow-hidden">
-                <div class="absolute inset-0 opacity-10">
-                    <svg class="w-full h-full" viewBox="0 0 100 100" preserveAspectRatio="none"><circle cx="20" cy="80" r="30" fill="white"/><circle cx="80" cy="20" r="40" fill="white"/></svg>
+<style>
+    /* ---------- 画廊 ---------- */
+    .gitem {
+        position: relative; display: block; margin: 0; cursor: zoom-in;
+        aspect-ratio: 16 / 9; overflow: hidden;
+        border: 1px solid #E4E8E1; border-radius: 18px; background: #F1F3EF;
+        box-shadow: 0 1px 2px rgba(14,19,17,.035), 0 12px 30px -22px rgba(14,19,17,.2);
+        transition: transform .34s cubic-bezier(.2,.75,.3,1), box-shadow .34s ease, border-color .34s ease;
+    }
+    .gitem img {
+        width: 100%; height: 100%; object-fit: cover; display: block;
+        transition: transform .7s cubic-bezier(.2,.75,.3,1), filter .4s ease;
+    }
+    .gitem:hover { transform: translateY(-3px); border-color: #CFE6D6; box-shadow: 0 2px 4px rgba(14,19,17,.04), 0 24px 46px -24px rgba(14,19,17,.3); }
+    .gitem:hover img { transform: scale(1.045); }
+    .gitem:focus-visible { outline: 2px solid #1E8E4E; outline-offset: 3px; }
+
+    .gitem-veil {
+        position: absolute; inset: 0; pointer-events: none;
+        background: linear-gradient(to top, rgba(14,19,17,.72) 0%, rgba(14,19,17,.28) 34%, rgba(14,19,17,0) 62%);
+        opacity: 0; transition: opacity .34s ease;
+    }
+    .gitem-cap {
+        position: absolute; inset: auto 0 0 0; z-index: 2;
+        display: flex; align-items: baseline; justify-content: space-between; gap: 10px;
+        padding: 16px 18px; color: #fff;
+        font-size: 14px; font-weight: 700; letter-spacing: -.01em;
+        opacity: 0; transform: translateY(8px);
+        transition: opacity .34s ease, transform .34s ease;
+    }
+    .gitem-cap .font-mono { font-size: 11.5px; font-weight: 700; color: rgba(255,255,255,.62); }
+    .gitem-zoom {
+        position: absolute; top: 14px; right: 14px; z-index: 2;
+        display: grid; place-items: center; width: 34px; height: 34px; border-radius: 50%;
+        background: rgba(255,255,255,.92); color: #0E1311;
+        box-shadow: 0 6px 18px -8px rgba(14,19,17,.6);
+        opacity: 0; transform: scale(.86); transition: opacity .3s ease, transform .3s ease;
+    }
+    .gitem-zoom svg { width: 17px; height: 17px; }
+
+    @media (hover: hover) {
+        .gitem:hover .gitem-veil,
+        .gitem:hover .gitem-cap,
+        .gitem:hover .gitem-zoom { opacity: 1; }
+        .gitem:hover .gitem-cap { transform: none; }
+        .gitem:hover .gitem-zoom { transform: none; }
+    }
+    /* 触屏设备：说明常驻，否则看不到文字 */
+    @media (hover: none) {
+        .gitem-veil { opacity: 1; }
+        .gitem-cap { opacity: 1; transform: none; }
+    }
+    /* 小屏两列：卡片变小，圆角与文字同步收一档 */
+    @media (max-width: 639px) {
+        .gitem { border-radius: 14px; }
+        .gitem-zoom { width: 28px; height: 28px; top: 9px; right: 9px; }
+        .gitem-zoom svg { width: 14px; height: 14px; }
+        .gitem-cap { padding: 10px 12px; font-size: 12px; gap: 6px; }
+        .gitem-cap .font-mono { font-size: 10px; }
+    }
+
+    /* ---------- 灯箱 ---------- */
+    .lb {
+        position: fixed; inset: 0; z-index: 60;
+        display: grid; place-items: center; padding: 22px;
+        background: rgba(8,11,10,.96);
+        opacity: 0; visibility: hidden;
+        transition: opacity .3s ease, visibility .3s ease;
+    }
+    .lb.on { opacity: 1; visibility: visible; }
+    .lb-stage { margin: 0; max-width: 100%; text-align: center; }
+    .lb-stage img {
+        max-width: min(1100px, 100%); max-height: 76vh;
+        width: auto; height: auto; display: block; margin: 0 auto;
+        border-radius: 16px; border: 1px solid rgba(255,255,255,.14);
+        box-shadow: 0 40px 90px -40px rgba(0,0,0,.9);
+        background: #0E1311;
+    }
+    .lb-cap {
+        display: flex; align-items: baseline; justify-content: center; gap: 14px;
+        margin-top: 18px; color: #fff; font-size: 14.5px; font-weight: 700;
+    }
+    .lb-cap .font-mono { font-size: 12px; font-weight: 700; color: rgba(255,255,255,.5); }
+    .lb-btn {
+        position: fixed; z-index: 2;
+        display: grid; place-items: center; width: 46px; height: 46px; border-radius: 50%;
+        border: 1px solid rgba(255,255,255,.18); background: rgba(255,255,255,.08); color: #fff;
+        transition: background .25s ease, border-color .25s ease, transform .25s ease;
+    }
+    .lb-btn:hover { background: rgba(255,255,255,.18); border-color: rgba(255,255,255,.34); }
+    .lb-btn svg { width: 20px; height: 20px; }
+    #lbClose { top: 22px; right: 22px; }
+    #lbClose:hover { transform: rotate(90deg); }
+    #lbPrev { left: 22px; top: 50%; transform: translateY(-50%); }
+    #lbNext { right: 22px; top: 50%; transform: translateY(-50%); }
+    #lbPrev:hover { transform: translateY(-50%) translateX(-3px); }
+    #lbNext:hover { transform: translateY(-50%) translateX(3px); }
+
+    @media (max-width: 639px) {
+        .lb { padding: 16px; }
+        .lb-btn { width: 40px; height: 40px; }
+        #lbClose { top: 14px; right: 14px; }
+        #lbPrev { left: 12px; }
+        #lbNext { right: 12px; }
+        .lb-stage img { max-height: 62vh; }
+    }
+</style>
+
+<!-- ============ 灯箱 ============ -->
+<div id="lightbox" class="lb" role="dialog" aria-modal="true" aria-label="截图预览" aria-hidden="true">
+    <button id="lbClose" class="lb-btn" aria-label="关闭">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>
+    </button>
+    <button id="lbPrev" class="lb-btn" aria-label="上一张">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 5.5L8 12l6.5 6.5"/></svg>
+    </button>
+    <button id="lbNext" class="lb-btn" aria-label="下一张">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9.5 5.5L16 12l-6.5 6.5"/></svg>
+    </button>
+    <figure class="lb-stage">
+        <img id="lbImg" alt="">
+        <figcaption class="lb-cap">
+            <span id="lbTitle"></span>
+            <span class="font-mono" id="lbCount"></span>
+        </figcaption>
+    </figure>
+</div>
+
+<!-- ============ 玩家风采 ============ -->
+<section id="players" class="relative py-20 md:py-24">
+    <div class="mx-auto max-w-content px-5">
+        <div class="reveal sec-head">
+            <span class="sec-idx">05</span>
+            <div>
+                <h2 class="sec-title">玩家风采</h2>
+                <p class="sec-sub">服务器玩家与专属头衔</p>
+            </div>
+            <span class="sec-rule hidden md:block"></span>
+        </div>
+
+        <div class="reveal panel overflow-hidden p-2 sm:p-3">
+            <ul>
+                <li class="prow prow-owner">
+                    <span class="prow-idx">01</span>
+                    <span class="prow-name">Katom_megumi</span>
+                    <span class="prow-title">腐竹</span>
+                </li>
+                <li class="prow">
+                    <span class="prow-idx">02</span>
+                    <span class="prow-name">114514zyl</span>
+                    <span class="prow-title">和山一样大的褐色大分</span>
+                </li>
+                <li class="prow">
+                    <span class="prow-idx">03</span>
+                    <span class="prow-name">F_K_Z_Y</span>
+                    <span class="prow-title">OP 舰长</span>
+                </li>
+                <li class="prow">
+                    <span class="prow-idx">04</span>
+                    <span class="prow-name">xxtFF</span>
+                    <span class="prow-title">和猪一样大的黑色鸽子</span>
+                </li>
+                <li class="prow">
+                    <span class="prow-idx">05</span>
+                    <span class="prow-name">ljhmaster</span>
+                    <span class="prow-title">问剑新葡京</span>
+                </li>
+            </ul>
+        </div>
+    </div>
+</section>
+
+<style>
+    .prow {
+        display: flex; align-items: center; gap: 16px;
+        padding: 16px 18px; border-radius: 14px;
+        transition: background .2s ease;
+    }
+    .prow + .prow { border-top: 1px solid #F1F3EF; }
+    .prow:hover { background: #F7F9F6; }
+    .prow-idx {
+        flex: none; width: 26px;
+        font-family: ui-monospace, Consolas, monospace; font-size: 12px;
+        font-variant-numeric: tabular-nums; color: #C3CAC4;
+    }
+    .prow-name { font-size: 15.5px; font-weight: 700; color: #0E1311; }
+    .prow-title {
+        margin-left: auto; flex: none; text-align: right;
+        font-size: 13px; font-weight: 600; color: #7A847E;
+    }
+    .prow-owner { background: #EAF6EF; border: 1px solid #D2EBDB; }
+    .prow-owner:hover { background: #EAF6EF; }
+    .prow-owner .prow-idx { color: #35B96A; }
+    .prow-owner .prow-name { color: #0A2A19; }
+    .prow-owner .prow-title {
+        margin-left: auto; display: inline-flex; align-items: center; gap: 5px;
+        background: #1E8E4E; color: #fff; padding: 4px 11px; border-radius: 999px;
+        font-size: 11.5px; font-weight: 800;
+    }
+    @media (max-width: 639px) {
+        .prow { flex-wrap: wrap; gap: 6px 14px; padding: 15px 14px; }
+        .prow-title { margin-left: 0; text-align: left; width: 100%; }
+        .prow-owner .prow-title { width: auto; margin-left: 0; }
+    }
+</style>
+
+<!-- ============ 状态查询 ============ -->
+<section class="relative pb-4 pt-8 md:pt-10">
+    <div class="mx-auto max-w-content px-5">
+        <div class="reveal rocked relative overflow-hidden rounded-3xl bg-ink-900 px-7 py-12 md:px-14 md:py-16">
+            <div class="pointer-events-none absolute inset-0 opacity-[.055]"
+                 style="background-image:linear-gradient(#fff 1px,transparent 1px),linear-gradient(90deg,#fff 1px,transparent 1px);background-size:38px 38px;"></div>
+            <div class="pointer-events-none absolute -right-16 -top-16 h-64 w-64 rounded-full bg-brand-500/25 blur-3xl"></div>
+
+            <div class="relative flex flex-col items-start gap-8 md:flex-row md:items-center md:justify-between">
+                <div class="max-w-xl">
+                    <p class="font-mono text-[11px] font-bold uppercase tracking-[.24em] text-brand-300">Live Status</p>
+                    <h2 class="mt-4 text-[clamp(1.5rem,3.2vw,2.15rem)] font-black leading-tight tracking-tight text-white">
+                        查询服务器实时状态
+                    </h2>
+                    <p class="mt-3.5 text-[14.5px] leading-relaxed text-ink-200">
+                        查看服务器在线人数、延迟与运行状态，随时掌握服务器情况
+                    </p>
+                    <p class="mt-4 font-mono text-[11.5px] text-ink-400">跳转至 simp.host 服务器状态查询平台</p>
                 </div>
-                <div class="relative z-10">
-                    <h2 class="text-2xl md:text-3xl font-bold mb-3 text-white">查询服务器实时状态</h2>
-                    <p class="text-white/80 mb-6 max-w-lg mx-auto">查看服务器在线人数、延迟与运行状态，随时掌握服务器情况</p>
-                    <a href="https://simp.host/status/simpfun" target="_blank" rel="noopener noreferrer"
-                       class="inline-flex items-center gap-2 bg-mc-yellow text-mc-deep font-bold py-3 px-8 rounded-lg hover:bg-yellow-300 transition-all duration-200 transform hover:scale-105 shadow-lg">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/></svg>
-                        前往状态查询
-                    </a>
-                    <p class="text-white/60 text-xs mt-4">跳转至 simp.host 服务器状态查询平台</p>
-                </div>
+                <a href="https://simp.host/status/simpfun" target="_blank" rel="noopener noreferrer"
+                   class="btn btn-green shrink-0 px-7 py-3.5 text-[14px]">
+                    <svg class="h-[18px] w-[18px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 17l5-5 4 3.5L21 6"/><path d="M14.5 6H21v6.5"/></svg>
+                    前往状态查询
+                </a>
             </div>
         </div>
-    </section>
+    </div>
+</section>
 
-    <!-- 赞助栏目 -->
-    <section id="sponsor" class="py-16 bg-mc-deep/30">
-        <div class="max-w-4xl mx-auto px-4">
-            <h2 class="text-3xl font-bold text-center mb-3">赞助支持</h2>
-            <p class="text-center text-gray-400 mb-10">你的支持是服务器持续运营的动力</p>
-            <div class="max-w-sm mx-auto">
-                <div class="bg-mc-deep/60 rounded-xl p-6 border border-mc-blue/30">
-                    <img src="assets/sponsor-qr.jpg" alt="微信赞助二维码" class="w-full rounded-lg shadow-lg">
-                    <p class="text-center text-gray-400 text-sm mt-4">微信扫码赞助，感谢支持！</p>
+<!-- ============ 赞助 ============ -->
+<section id="sponsor" class="relative py-20 md:py-24">
+    <div class="mx-auto max-w-content px-5">
+        <div class="reveal sec-head">
+            <span class="sec-idx">06</span>
+            <div>
+                <h2 class="sec-title">赞助支持</h2>
+                <p class="sec-sub">你的支持是服务器持续运营的动力</p>
+            </div>
+            <span class="sec-rule hidden md:block"></span>
+        </div>
+
+        <div class="reveal panel grid gap-8 p-7 sm:p-9 md:grid-cols-[1fr_228px] md:items-center md:gap-12">
+            <div>
+                <p class="text-[17px] font-black tracking-tight text-ink-900">微信扫码，请腐竹喝瓶快乐水</p>
+                <p class="mt-3.5 max-w-md text-[14.5px] leading-[1.9] text-ink-500">
+                    服务器没有任何强制消费，所有整合包对所有玩家开放。如果你玩得开心，欢迎随手支持一下，用于服务器续费与带宽升级。
+                </p>
+                <div class="mt-6 flex flex-wrap gap-2">
+                    <span class="tag">无强制消费</span>
+                    <span class="tag">用于服务器续费</span>
                 </div>
             </div>
+            <div class="mx-auto w-full max-w-[228px]">
+                <div class="overflow-hidden rounded-2xl border border-ink-100 bg-white p-2">
+                    <img src="assets/sponsor-qr.jpg" alt="微信赞助二维码" class="w-full rounded-xl" loading="lazy">
+                </div>
+                <p class="mt-3 text-center text-[12.5px] text-ink-400">微信扫码赞助，感谢支持！</p>
+            </div>
         </div>
-    </section>
+    </div>
+</section>
 
-    <!-- 底部 -->
-    <footer class="bg-mc-deep/70 py-8">
-        <div class="max-w-6xl mx-auto px-4 text-center text-gray-500">
-            <p>© 2025- 今天是个好日子啊 | 本网站非Mojang官方出品</p>
-            <p class="mt-2 text-sm">玩家QQ群：938289365 | 管理员联系：3383507390</p>
+<!-- ============ 底部 ============ -->
+<div class="terrain terrain-dark" aria-hidden="true"></div>
+<footer class="relative bg-ink-900">
+    <div class="pointer-events-none absolute inset-0 opacity-[.14]"
+         style="background-image:url('assets/textures/slate.svg');background-size:64px 64px;image-rendering:pixelated"></div>
+    <div class="relative mx-auto max-w-content px-5 py-14">
+        <div class="flex flex-col gap-8 md:flex-row md:items-center md:justify-between">
+            <div class="flex items-center gap-3.5">
+                <span class="grid h-11 w-11 place-items-center rounded-[13px] bg-white/5 ring-1 ring-white/10">
+                    <svg class="h-[22px] w-[22px]" viewBox="0 0 48 48" aria-hidden="true">
+                        <path d="M24 9L38 17 24 25 10 17Z" fill="#63D98C"/>
+                        <path d="M10 17L24 25v14L10 31Z" fill="#35B96A"/>
+                        <path d="M38 17L24 25v14l14-8Z" fill="#17703E"/>
+                    </svg>
+                </span>
+                <div>
+                    <p class="text-[15px] font-black tracking-tight text-white">今天是个好日子啊</p>
+                    <p class="mt-0.5 font-mono text-[11px] tracking-[.14em] text-ink-400">PRIVATE MINECRAFT SERVER</p>
+                </div>
+            </div>
+
+            <div class="flex flex-wrap items-center gap-x-8 gap-y-2 text-[13px] text-ink-300">
+                <span>玩家 QQ 群：<span class="font-mono text-white">938289365</span></span>
+                <span>管理员联系：<span class="font-mono text-white">3383507390</span></span>
+            </div>
         </div>
-    </footer>
 
-    <script>
-        // 一键复制IP功能
-        function copyIP() {
-            const ipText = document.getElementById('ip').innerText;
-            navigator.clipboard.writeText(ipText).then(() => {
-                const btn = event.target;
-                const original = btn.innerText;
-                btn.innerText = '已复制!';
-                setTimeout(() => btn.innerText = original, 1500);
-            });
+        <div class="mt-10 border-t border-white/10 pt-6">
+            <p class="text-[12px] text-ink-400">© 2025- 今天是个好日子啊 ｜ 本网站非 Mojang 官方出品</p>
+        </div>
+    </div>
+</footer>
+
+<!-- 回到顶部 -->
+<button id="toTop" aria-label="回到顶部"
+        class="fixed bottom-6 right-6 z-40 grid h-11 w-11 translate-y-3 place-items-center rounded-full border border-ink-100 bg-white text-ink-700 opacity-0 shadow-[0_10px_26px_-12px_rgba(14,19,17,.5)] transition-all duration-300 hover:border-brand-500 hover:text-brand-500">
+    <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M5.5 11.5L12 5l6.5 6.5"/></svg>
+</button>
+
+<script>
+    /* ---------- 复制群号 ---------- */
+    function copyIP(btn) {
+        const text = (btn && btn.dataset && btn.dataset.copy) || document.getElementById('ip').innerText.trim();
+        const write = navigator.clipboard ? navigator.clipboard.writeText(text) : Promise.reject();
+
+        write.then(function () {
+            flash(btn, '已复制!');
+        }).catch(function () {
+            const ta = document.createElement('textarea');
+            ta.value = text;
+            ta.style.position = 'fixed';
+            ta.style.opacity = '0';
+            document.body.appendChild(ta);
+            ta.select();
+            try { document.execCommand('copy'); flash(btn, '已复制!'); }
+            catch (e) { flash(btn, '复制失败'); }
+            document.body.removeChild(ta);
+        });
+    }
+    function flash(btn, msg) {
+        if (!btn) return;
+        var label = null;
+        var spans = btn.querySelectorAll('span');
+        for (var i = 0; i < spans.length; i++) {
+            if (spans[i].getBoundingClientRect().width > 0) { label = spans[i]; break; }
         }
-    </script>
+        if (!label) label = btn;
+        var original = label.innerText;
+        label.innerText = msg;
+        btn.disabled = true;
+        setTimeout(function () { label.innerText = original; btn.disabled = false; }, 1500);
+    }
+
+    /* ---------- 滚动进场 ---------- */
+    (function () {
+        const items = document.querySelectorAll('.reveal');
+        if (!('IntersectionObserver' in window)) {
+            items.forEach(function (el) { el.classList.add('in'); });
+            return;
+        }
+        const io = new IntersectionObserver(function (entries) {
+            entries.forEach(function (entry, i) {
+                if (entry.isIntersecting) {
+                    const el = entry.target;
+                    setTimeout(function () { el.classList.add('in'); }, Math.min(i * 60, 240));
+                    io.unobserve(el);
+                }
+            });
+        }, { rootMargin: '0px 0px -10% 0px', threshold: 0.06 });
+        items.forEach(function (el) { io.observe(el); });
+    })();
+
+    /* ---------- 导航滚动状态 ---------- */
+    (function () {
+        const shell = document.getElementById('navShell');
+        const toTop = document.getElementById('toTop');
+        function onScroll() {
+            const y = window.scrollY;
+            if (y > 16) {
+                shell.classList.add('border-ink-100', 'bg-white/85', 'backdrop-blur-md', 'shadow-[0_10px_30px_-18px_rgba(14,19,17,.35)]');
+            } else {
+                shell.classList.remove('border-ink-100', 'bg-white/85', 'backdrop-blur-md', 'shadow-[0_10px_30px_-18px_rgba(14,19,17,.35)]');
+            }
+            if (y > 620) {
+                toTop.classList.remove('opacity-0', 'translate-y-3');
+            } else {
+                toTop.classList.add('opacity-0', 'translate-y-3');
+            }
+        }
+        window.addEventListener('scroll', onScroll, { passive: true });
+        onScroll();
+        toTop.addEventListener('click', function () { window.scrollTo({ top: 0, behavior: 'smooth' }); });
+    })();
+
+    /* ---------- 移动端菜单 ---------- */
+    (function () {
+        const btn = document.getElementById('menuBtn');
+        const menu = document.getElementById('mobileMenu');
+        btn.addEventListener('click', function () { menu.classList.toggle('hidden'); });
+        menu.querySelectorAll('a').forEach(function (a) {
+            a.addEventListener('click', function () { menu.classList.add('hidden'); });
+        });
+    })();
+
+    /* ---------- 截图画廊灯箱 ---------- */
+    (function () {
+        const items = Array.prototype.slice.call(document.querySelectorAll('.gitem'));
+        const lb = document.getElementById('lightbox');
+        if (!items.length || !lb) return;
+
+        const imgEl = document.getElementById('lbImg');
+        const titleEl = document.getElementById('lbTitle');
+        const countEl = document.getElementById('lbCount');
+        let idx = 0, lastFocus = null, opened = false;
+
+        function srcOf(it) {
+            return it.dataset.full || (it.querySelector('img') || {}).src || '';
+        }
+        function render() {
+            const it = items[idx];
+            imgEl.src = srcOf(it);
+            imgEl.alt = it.dataset.title || '';
+            titleEl.textContent = it.dataset.title || '';
+            countEl.textContent = (idx + 1) + ' / ' + items.length;
+            // 预载下一张，翻页更跟手
+            const next = items[(idx + 1) % items.length];
+            if (next) { const p = new Image(); p.src = srcOf(next); }
+        }
+        function open(i, from) {
+            idx = i; lastFocus = from || document.activeElement;
+            render();
+            lb.classList.add('on');
+            lb.setAttribute('aria-hidden', 'false');
+            document.body.style.overflow = 'hidden';
+            opened = true;
+            document.getElementById('lbClose').focus();
+        }
+        function close() {
+            lb.classList.remove('on');
+            lb.setAttribute('aria-hidden', 'true');
+            document.body.style.overflow = '';
+            opened = false;
+            if (lastFocus && lastFocus.focus) lastFocus.focus();
+        }
+        function step(d) {
+            idx = (idx + d + items.length) % items.length;
+            render();
+        }
+
+        items.forEach(function (it, i) {
+            it.addEventListener('click', function () { open(i, it); });
+            it.addEventListener('keydown', function (e) {
+                if (e.key === 'Enter' || e.key === ' ' || e.key === 'Spacebar') {
+                    e.preventDefault(); open(i, it);
+                }
+            });
+        });
+
+        document.getElementById('lbClose').addEventListener('click', close);
+        document.getElementById('lbPrev').addEventListener('click', function (e) { e.stopPropagation(); step(-1); });
+        document.getElementById('lbNext').addEventListener('click', function (e) { e.stopPropagation(); step(1); });
+        lb.addEventListener('click', function (e) { if (e.target === lb || e.target.classList.contains('lb-stage')) close(); });
+
+        document.addEventListener('keydown', function (e) {
+            if (!opened) return;
+            if (e.key === 'Escape') close();
+            else if (e.key === 'ArrowLeft') step(-1);
+            else if (e.key === 'ArrowRight') step(1);
+        });
+
+        // 触屏左右滑动
+        let sx = 0, sy = 0, tracking = false;
+        lb.addEventListener('touchstart', function (e) {
+            if (e.touches.length !== 1) return;
+            sx = e.touches[0].clientX; sy = e.touches[0].clientY; tracking = true;
+        }, { passive: true });
+        lb.addEventListener('touchend', function (e) {
+            if (!tracking) return;
+            tracking = false;
+            const t = e.changedTouches[0];
+            const dx = t.clientX - sx, dy = t.clientY - sy;
+            if (Math.abs(dx) > 48 && Math.abs(dx) > Math.abs(dy) * 1.4) step(dx < 0 ? 1 : -1);
+        }, { passive: true });
+    })();
+</script>
 </body>
 </html>

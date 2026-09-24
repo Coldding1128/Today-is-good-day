@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>今天是个好日子啊</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        mc: {
+                            blue: '#005BAC',
+                            sky: '#438EDB',
+                            wave: '#8EC5F0',
+                            yellow: '#FDD000',
+                            dark: '#0B2238',
+                            deep: '#07182A',
+                            light: '#F2F7FC'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style type="text/tailwindcss">
+        @layer utilities {
+            .text-shadow { text-shadow: 2px 2px 4px rgba(0,0,0,0.5); }
+            .mc-btn { @apply bg-mc-blue hover:bg-mc-wave text-white font-bold py-3 px-6 rounded transition-all duration-200 transform hover:scale-105; }
+        }
+        /* 亚克力模糊背景 */
+        .acrylic-bg {
+            position: fixed;
+            inset: 0;
+            z-index: -1;
+            background: linear-gradient(160deg, #07182A 0%, #0B2238 40%, #0A1F33 100%);
+            overflow: hidden;
+        }
+        .acrylic-bg::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 120vmin;
+            height: 120vmin;
+            transform: translate(-50%, -50%);
+            background: url('assets/gdou-logo.png') center/contain no-repeat;
+            filter: blur(18px) saturate(1.3);
+            opacity: 0.30;
+        }
+        .acrylic-bg::after {
+            content: '';
+            position: absolute;
+            top: -10%;
+            right: -5%;
+            width: 60vmin;
+            height: 60vmin;
+            background: url('assets/gdou-logo.png') center/contain no-repeat;
+            filter: blur(12px) saturate(1.2);
+            opacity: 0.18;
+            transform: rotate(15deg);
+        }
+        .acrylic-noise {
+            position: fixed;
+            inset: 0;
+            z-index: -1;
+            opacity: 0.04;
+            pointer-events: none;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+        }
+    </style>
+</head>
+<body class="text-mc-light min-h-screen" style="background-color:#0B2238;">
+    <!-- 亚克力模糊背景 -->
+    <div class="acrylic-bg"></div>
+    <div class="acrylic-noise"></div>
+
+    <!-- 导航栏 -->
+    <nav class="bg-mc-deep/70 backdrop-blur-sm sticky top-0 z-50">
+        <div class="max-w-6xl mx-auto px-4 py-4 flex justify-end items-center">
+            <div class="space-x-6 hidden md:flex">
+                <a href="#info" class="hover:text-mc-wave transition-colors">服务器信息</a>
+                <a href="#modpacks" class="hover:text-mc-wave transition-colors">整合包</a>
+                <a href="#history" class="hover:text-mc-wave transition-colors">历史</a>
+                <a href="#sponsor" class="hover:text-mc-wave transition-colors">赞助</a>
+                <a href="#players" class="hover:text-mc-wave transition-colors">玩家</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 顶部大横幅 -->
+    <section class="relative py-24 md:py-32 bg-gradient-to-b from-mc-blue/30 via-mc-deep/20 to-transparent">
+        <div class="max-w-6xl mx-auto px-4 text-center">
+            <h1 class="text-[clamp(2rem,5vw,4rem)] font-bold mb-4 text-shadow">
+            <span class="text-mc-yellow">今天是个好日子啊</span>
+            </h1>
+            <p class="text-lg md:text-xl mb-8 text-gray-300">私人小服务器 </p>
+            
+            <div class="bg-mc-deep/60 rounded-lg p-6 max-w-xl mx-auto mb-8">
+                <p class="text-gray-400 mb-2">服务器Q群</p>
+                <div class="flex flex-col sm:flex-row gap-3 justify-center items-center">
+                    <code id="ip" class="text-xl font-mono bg-mc-deep/80 px-4 py-2 rounded text-mc-wave">938289365</code>
+                    <button onclick="copyIP()" class="mc-btn text-sm">复制群号</button>
+                </div>
+            </div>
+
+            <div class="flex flex-wrap gap-4 justify-center">
+                <span class="bg-mc-blue/25 text-mc-wave px-4 py-2 rounded-full">Java版</span>
+                <span class="bg-mc-yellow/20 text-mc-yellow px-4 py-2 rounded-full">丰富整合包</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- 服务器信息卡片 -->
+    <section id="info" class="py-20">
+        <div class="max-w-6xl mx-auto px-4">
+            <h2 class="text-3xl font-bold text-center mb-12">服务器信息</h2>
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
+                <div class="bg-mc-deep/50 rounded-lg p-6 text-center">
+                    <div class="text-3xl mb-2">🌍</div>
+                    <h3 class="font-bold mb-1">游戏版本</h3>
+                    <p class="text-gray-400">视整合包版本而定</p>
+                </div>
+                <div class="bg-mc-deep/50 rounded-lg p-6 text-center">
+                    <div class="text-3xl mb-2">👥</div>
+                    <h3 class="font-bold mb-1">最大人数</h3>
+                    <p class="text-gray-400">114514</p>
+                </div>
+                <div class="bg-mc-deep/50 rounded-lg p-6 text-center">
+                    <div class="text-3xl mb-2">⚔️</div>
+                    <h3 class="font-bold mb-1">游戏模式</h3>
+                    <p class="text-gray-400">超多整合包随心开</p>
+                </div>
+                <div class="bg-mc-deep/50 rounded-lg p-6 text-center">
+                    <div class="text-3xl mb-2">⏰</div>
+                    <h3 class="font-bold mb-1">开服时间</h3>
+                    <p class="text-gray-400">全天24小时</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 整合包介绍 -->
+    <section id="modpacks" class="py-20 bg-mc-deep/30">
+        <div class="max-w-6xl mx-auto px-4">
+            <h2 class="text-3xl font-bold text-center mb-3">当前整合包</h2>
+            <p class="text-center text-gray-400 mb-12">服务器当前运行的整合包，随时可切换</p>
+            <div class="max-w-2xl mx-auto">
+                <!-- 整合包卡片 -->
+                <div class="bg-mc-deep/60 rounded-lg p-6 md:p-8 border border-mc-blue/30 hover:border-mc-yellow/50 transition-colors">
+                    <div class="flex items-center gap-4 mb-5">
+                        <div class="w-14 h-14 rounded-lg bg-mc-blue/30 flex items-center justify-center shrink-0">
+                            <svg class="w-8 h-8" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="#FDD000" stroke-width="2"/><path d="M3 12h18" stroke="#FDD000" stroke-width="2"/><circle cx="12" cy="12" r="2.5" fill="#FDD000"/><path d="M12 3a9 9 0 019 9h-9V3z" fill="#FDD000" opacity="0.3"/></svg>
+                        </div>
+                        <div>
+                            <h3 class="font-bold text-xl text-mc-yellow">去吧，方可梦大师</h3>
+                            <span class="text-xs text-gray-400">MC 1.21.1 · 整合包 v5.9.2 · 当前运行中</span>
+                        </div>
+                    </div>
+                    <p class="text-gray-300 text-sm mb-5 leading-relaxed">基于 Cobblemon 方块宝可梦模组的高版本整合包，收录全世代 1077+ 只宝可梦，第九世代朱紫内容 1:1 还原。支持 Mega 进化、Z 招式、钛晶化、极巨化完整对战系统。配备万字详细任务引导，从新手教程到神兽召唤一应俱全；新增投球小游戏、宝可梦骑乘、皮肤装备、跟随等趣味模组，支持单人与多人联机。</p>
+                    <div class="flex flex-wrap gap-2 mb-6">
+                        <span class="bg-mc-blue/20 text-mc-wave text-xs px-3 py-1 rounded-full">宝可梦</span>
+                        <span class="bg-mc-blue/20 text-mc-wave text-xs px-3 py-1 rounded-full">Cobblemon</span>
+                        <span class="bg-mc-blue/20 text-mc-wave text-xs px-3 py-1 rounded-full">全世代</span>
+                        <span class="bg-mc-blue/20 text-mc-wave text-xs px-3 py-1 rounded-full">冒险RPG</span>
+                        <span class="bg-mc-yellow/20 text-mc-yellow text-xs px-3 py-1 rounded-full">当前在线</span>
+                    </div>
+                    <a href="https://www.bilibili.com/video/BV1QU8X6LEYP/?spm_id_from=333.337.search-card.all.click&vd_source=2fb96332b77794ac64a215705ab4b817" target="_blank" rel="noopener noreferrer"
+                       class="inline-flex items-center gap-2 bg-mc-yellow text-mc-deep font-bold py-2.5 px-5 rounded hover:bg-yellow-300 transition-all duration-200 transform hover:scale-105 text-sm">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                        观看整合包介绍视频
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 服务器历史 -->
+    <section id="history" class="py-20">
+        <div class="max-w-4xl mx-auto px-4">
+            <h2 class="text-3xl font-bold text-center mb-3">服务器历史</h2>
+            <p class="text-center text-gray-400 mb-12">一路走来的整合包更迭记录</p>
+            <div class="bg-mc-deep/60 rounded-xl p-6 md:p-8 border border-mc-blue/30">
+
+                <!-- 2025年 -->
+                <h3 class="text-mc-yellow font-bold text-lg mb-4 flex items-center gap-2">
+                    <span class="w-2 h-2 rounded-full bg-mc-yellow"></span>2025 年
+                </h3>
+                <div class="relative pl-6 mb-8">
+                    <div class="absolute left-[7px] top-2 bottom-2 w-px bg-mc-blue/40"></div>
+
+                    <div class="relative flex items-baseline gap-4 py-2">
+                        <span class="absolute -left-6 top-3 w-3.5 h-3.5 rounded-full bg-mc-blue border-2 border-mc-wave"></span>
+                        <span class="text-mc-wave text-sm font-mono w-36 shrink-0">3.8 — 7.12</span>
+                        <span class="text-mc-light">1.21 原版生存</span>
+                    </div>
+                    <div class="relative flex items-baseline gap-4 py-2">
+                        <span class="absolute -left-6 top-3 w-3.5 h-3.5 rounded-full bg-mc-blue border-2 border-mc-wave"></span>
+                        <span class="text-mc-wave text-sm font-mono w-36 shrink-0">7.12 — 9.25</span>
+                        <span class="text-mc-light">乌托邦 3.5</span>
+                    </div>
+                    <div class="relative flex items-baseline gap-4 py-2">
+                        <span class="absolute -left-6 top-3 w-3.5 h-3.5 rounded-full bg-mc-blue border-2 border-mc-wave"></span>
+                        <span class="text-mc-wave text-sm font-mono w-36 shrink-0">9.25 — 10.30</span>
+                        <span class="text-mc-light">乌托邦 3.5 fix</span>
+                    </div>
+                    <div class="relative flex items-baseline gap-4 py-2">
+                        <span class="absolute -left-6 top-3 w-3.5 h-3.5 rounded-full bg-mc-blue border-2 border-mc-wave"></span>
+                        <span class="text-mc-wave text-sm font-mono w-36 shrink-0">10.30 — 12.2</span>
+                        <span class="text-mc-light">剑与王国 测试版</span>
+                    </div>
+                    <div class="relative flex items-baseline gap-4 py-2">
+                        <span class="absolute -left-6 top-3 w-3.5 h-3.5 rounded-full bg-mc-blue border-2 border-mc-wave"></span>
+                        <span class="text-mc-wave text-sm font-mono w-36 shrink-0">12.2 — 12.18</span>
+                        <span class="text-mc-light">愚者</span>
+                    </div>
+                    <div class="relative flex items-baseline gap-4 py-2">
+                        <span class="absolute -left-6 top-3 w-3.5 h-3.5 rounded-full bg-mc-blue border-2 border-mc-wave"></span>
+                        <span class="text-mc-wave text-sm font-mono w-36 shrink-0">12.18 — 2026.01.10</span>
+                        <span class="text-mc-light">重度机械症</span>
+                    </div>
+                </div>
+
+                <!-- 2026年 -->
+                <h3 class="text-mc-yellow font-bold text-lg mb-4 flex items-center gap-2">
+                    <span class="w-2 h-2 rounded-full bg-mc-yellow"></span>2026 年
+                </h3>
+                <div class="relative pl-6">
+                    <div class="absolute left-[7px] top-2 bottom-2 w-px bg-mc-blue/40"></div>
+
+                    <div class="relative flex items-baseline gap-4 py-2">
+                        <span class="absolute -left-6 top-3 w-3.5 h-3.5 rounded-full bg-mc-blue border-2 border-mc-wave"></span>
+                        <span class="text-mc-wave text-sm font-mono w-36 shrink-0">1.10 — 1.16</span>
+                        <span class="text-mc-light">亡者世界</span>
+                    </div>
+                    <div class="relative flex items-baseline gap-4 py-2">
+                        <span class="absolute -left-6 top-3 w-3.5 h-3.5 rounded-full bg-mc-blue border-2 border-mc-wave"></span>
+                        <span class="text-mc-wave text-sm font-mono w-36 shrink-0">1.16 — 2.19</span>
+                        <span class="text-mc-light">农场物语</span>
+                    </div>
+                    <div class="relative flex items-baseline gap-4 py-2">
+                        <span class="absolute -left-6 top-3 w-3.5 h-3.5 rounded-full bg-mc-blue border-2 border-mc-wave"></span>
+                        <span class="text-mc-wave text-sm font-mono w-36 shrink-0">2.19 — 3.12</span>
+                        <span class="text-mc-light">落幕曲</span>
+                    </div>
+                    <div class="relative flex items-baseline gap-4 py-2">
+                        <span class="absolute -left-6 top-3 w-3.5 h-3.5 rounded-full bg-mc-blue border-2 border-mc-wave"></span>
+                        <span class="text-mc-wave text-sm font-mono w-36 shrink-0">3.12 — 4.11</span>
+                        <span class="text-mc-light">剑与王国 正式版</span>
+                    </div>
+                    <div class="relative flex items-baseline gap-4 py-2">
+                        <span class="absolute -left-6 top-3 w-3.5 h-3.5 rounded-full bg-mc-blue border-2 border-mc-wave"></span>
+                        <span class="text-mc-wave text-sm font-mono w-36 shrink-0">4.12 — 4.12</span>
+                        <span class="text-mc-light">你好，新世代！</span>
+                    </div>
+                    <div class="relative flex items-baseline gap-4 py-2">
+                        <span class="absolute -left-6 top-3 w-3.5 h-3.5 rounded-full bg-mc-blue border-2 border-mc-wave"></span>
+                        <span class="text-mc-wave text-sm font-mono w-36 shrink-0">4.13 — 5.1</span>
+                        <span class="text-mc-light">All The Mods 10 v5.6</span>
+                    </div>
+                    <div class="relative flex items-baseline gap-4 py-2">
+                        <span class="absolute -left-6 top-3 w-3.5 h-3.5 rounded-full bg-mc-blue border-2 border-mc-wave"></span>
+                        <span class="text-mc-wave text-sm font-mono w-36 shrink-0">5.2 — 5.5</span>
+                        <span class="text-mc-light">你好，新蒸程！v1.10</span>
+                    </div>
+                    <div class="relative flex items-baseline gap-4 py-2">
+                        <span class="absolute -left-6 top-3 w-3.5 h-3.5 rounded-full bg-mc-blue border-2 border-mc-wave"></span>
+                        <span class="text-mc-wave text-sm font-mono w-36 shrink-0">5.5 — 7.21</span>
+                        <span class="text-mc-light">重度机械症回归 · 航空学</span>
+                    </div>
+                    <div class="relative flex items-baseline gap-4 py-2">
+                        <span class="absolute -left-6 top-3 w-3.5 h-3.5 rounded-full bg-mc-blue border-2 border-mc-wave"></span>
+                        <span class="text-mc-wave text-sm font-mono w-36 shrink-0">7.21 — 7.31</span>
+                        <span class="text-mc-light">严阵以待</span>
+                    </div>
+                    <div class="relative flex items-baseline gap-4 py-2">
+                        <span class="absolute -left-6 top-3 w-3.5 h-3.5 rounded-full bg-mc-blue border-2 border-mc-wave"></span>
+                        <span class="text-mc-wave text-sm font-mono w-36 shrink-0">7.31 — 8.31</span>
+                        <span class="text-mc-light">沉浸式战斗</span>
+                    </div>
+                    <div class="relative flex items-baseline gap-4 py-2">
+                        <span class="absolute -left-6 top-3 w-3.5 h-3.5 rounded-full bg-mc-blue border-2 border-mc-wave"></span>
+                        <span class="text-mc-wave text-sm font-mono w-36 shrink-0">8.31 — 9.6</span>
+                        <span class="text-mc-light">Last One 终末幸存者</span>
+                    </div>
+                    <div class="relative flex items-baseline gap-4 py-2">
+                        <span class="absolute -left-6 top-3 w-3.5 h-3.5 rounded-full bg-mc-blue border-2 border-mc-wave"></span>
+                        <span class="text-mc-wave text-sm font-mono w-36 shrink-0">9.6 — 9.11</span>
+                        <span class="text-mc-light">元素觉醒</span>
+                    </div>
+                    <div class="relative flex items-baseline gap-4 py-2">
+                        <span class="absolute -left-6 top-3 w-3.5 h-3.5 rounded-full bg-mc-blue border-2 border-mc-wave"></span>
+                        <span class="text-mc-wave text-sm font-mono w-36 shrink-0">9.11 — 9.19</span>
+                        <span class="text-mc-light">香草纪元：食旅纪行</span>
+                    </div>
+                    <!-- 当前运行 -->
+                    <div class="relative flex items-baseline gap-4 py-2.5 mt-1 rounded-lg bg-mc-yellow/10 border border-mc-yellow/30 px-3 -mx-3">
+                        <span class="absolute -left-6 top-4 w-4 h-4 rounded-full bg-mc-yellow border-2 border-mc-yellow shadow-[0_0_8px_rgba(253,208,0,0.6)]"></span>
+                        <span class="text-mc-yellow text-sm font-mono w-36 shrink-0 font-bold">9.19 至今</span>
+                        <span class="text-mc-yellow font-bold">去吧，方可梦大师</span>
+                        <span class="ml-auto text-xs bg-mc-yellow text-mc-deep px-2 py-0.5 rounded-full font-bold shrink-0">当前运行</span>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- 玩家栏目 -->
+    <section id="players" class="py-20 bg-mc-deep/30">
+        <div class="max-w-6xl mx-auto px-4">
+            <h2 class="text-3xl font-bold text-center mb-3">玩家风采</h2>
+            <p class="text-center text-gray-400 mb-12">服务器玩家与专属头衔</p>
+            <div class="max-w-2xl mx-auto">
+                <div class="bg-mc-deep/60 rounded-lg p-6">
+                    <div class="space-y-1">
+                        <div class="flex items-center justify-between py-3 border-b border-mc-blue/20 gap-4">
+                            <span class="text-mc-light font-medium shrink-0">Katom_megumi</span>
+                            <span class="text-mc-yellow text-sm font-bold text-right">腐竹</span>
+                        </div>
+                        <div class="flex items-center justify-between py-3 border-b border-mc-blue/20 gap-4">
+                            <span class="text-mc-light font-medium shrink-0">114514zyl</span>
+                            <span class="text-mc-wave text-sm font-bold text-right">和山一样大的褐色大分</span>
+                        </div>
+                        <div class="flex items-center justify-between py-3 border-b border-mc-blue/20 gap-4">
+                            <span class="text-mc-light font-medium shrink-0">F_K_Z_Y</span>
+                            <span class="text-mc-wave text-sm font-bold text-right">OP舰长</span>
+                        </div>
+                        <div class="flex items-center justify-between py-3 border-b border-mc-blue/20 gap-4">
+                            <span class="text-mc-light font-medium shrink-0">xxtFF</span>
+                            <span class="text-mc-wave text-sm font-bold text-right">和猪一样大的黑色鸽子</span>
+                        </div>
+                        <div class="flex items-center justify-between py-3 gap-4">
+                            <span class="text-mc-light font-medium shrink-0">ljhmaster</span>
+                            <span class="text-mc-wave text-sm font-bold text-right">问剑新葡京</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 服务器状态查询 -->
+    <section class="py-16">
+        <div class="max-w-4xl mx-auto px-4">
+            <div class="bg-gradient-to-r from-mc-blue to-mc-sky rounded-xl p-8 md:p-12 text-center relative overflow-hidden">
+                <div class="absolute inset-0 opacity-10">
+                    <svg class="w-full h-full" viewBox="0 0 100 100" preserveAspectRatio="none"><circle cx="20" cy="80" r="30" fill="white"/><circle cx="80" cy="20" r="40" fill="white"/></svg>
+                </div>
+                <div class="relative z-10">
+                    <h2 class="text-2xl md:text-3xl font-bold mb-3 text-white">查询服务器实时状态</h2>
+                    <p class="text-white/80 mb-6 max-w-lg mx-auto">查看服务器在线人数、延迟与运行状态，随时掌握服务器情况</p>
+                    <a href="https://simp.host/status/simpfun" target="_blank" rel="noopener noreferrer"
+                       class="inline-flex items-center gap-2 bg-mc-yellow text-mc-deep font-bold py-3 px-8 rounded-lg hover:bg-yellow-300 transition-all duration-200 transform hover:scale-105 shadow-lg">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/></svg>
+                        前往状态查询
+                    </a>
+                    <p class="text-white/60 text-xs mt-4">跳转至 simp.host 服务器状态查询平台</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 赞助栏目 -->
+    <section id="sponsor" class="py-16 bg-mc-deep/30">
+        <div class="max-w-4xl mx-auto px-4">
+            <h2 class="text-3xl font-bold text-center mb-3">赞助支持</h2>
+            <p class="text-center text-gray-400 mb-10">你的支持是服务器持续运营的动力</p>
+            <div class="max-w-sm mx-auto">
+                <div class="bg-mc-deep/60 rounded-xl p-6 border border-mc-blue/30">
+                    <img src="assets/sponsor-qr.jpg" alt="微信赞助二维码" class="w-full rounded-lg shadow-lg">
+                    <p class="text-center text-gray-400 text-sm mt-4">微信扫码赞助，感谢支持！</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 底部 -->
+    <footer class="bg-mc-deep/70 py-8">
+        <div class="max-w-6xl mx-auto px-4 text-center text-gray-500">
+            <p>© 2025- 今天是个好日子啊 | 本网站非Mojang官方出品</p>
+            <p class="mt-2 text-sm">玩家QQ群：938289365 | 管理员联系：3383507390</p>
+        </div>
+    </footer>
+
+    <script>
+        // 一键复制IP功能
+        function copyIP() {
+            const ipText = document.getElementById('ip').innerText;
+            navigator.clipboard.writeText(ipText).then(() => {
+                const btn = event.target;
+                const original = btn.innerText;
+                btn.innerText = '已复制!';
+                setTimeout(() => btn.innerText = original, 1500);
+            });
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://today-is-good-day.pages.dev/sitemap.xml

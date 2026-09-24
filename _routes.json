@@ -1,0 +1,10 @@
+/**
+ * 只让 /api/* 和 /img/* 进入 Functions。
+ * 其余请求（首页、画廊页、图片、纹理）全部走静态资源，
+ * 不消耗 Workers 的每日请求额度。
+ */
+{
+    "version": 1,
+    "include": ["/api/*", "/img/*"],
+    "exclude": []
+}
