@@ -202,6 +202,34 @@
         border: 1px solid #D2EBDB; color: #1E8E4E;
     }
 
+    /* ---------- 当前周目的主题元素（Cobblemon 精灵球红白） ---------- */
+    .tex {
+        width: 26px; height: 26px; flex: none; border-radius: 3px;
+        background-size: 26px 26px; background-repeat: repeat;
+        image-rendering: pixelated;
+        box-shadow: 0 0 0 2px #39433D, 0 2px 6px -2px rgba(14,19,17,.5);
+    }
+    .tex-theme-poke { background-image: url('assets/textures/theme-poke.svg'); }
+    /* 物品栏槽位里放着的精灵球 */
+    .mcp-tile {
+        position: relative; display: grid; place-items: center;
+        width: 64px; height: 64px; flex: none; overflow: hidden;
+        border-radius: 14px; background: #FAE8E7;
+        box-shadow: 0 0 0 2px #8A2622, inset -2px -2px 0 rgba(0,0,0,.14), inset 2px 2px 0 rgba(255,255,255,.6);
+    }
+    /* 底部压一条主题材质，交代这个槽位属于哪个周目 */
+    .mcp-tile::after {
+        content: ''; position: absolute; inset: auto 0 0 0; height: 13px;
+        background-image: url('assets/textures/theme-poke.svg');
+        background-size: 13px 13px; image-rendering: pixelated;
+    }
+    .mcp-tile img { position: relative; z-index: 1; width: 40px; height: 40px; margin-bottom: 6px; image-rendering: pixelated; }
+    .mcp-flag {
+        display: inline-flex; align-items: center; gap: 6px;
+        padding: 4px 11px; border-radius: 999px;
+        font-size: 11.5px; font-weight: 800; color: #fff; background: #D9433F;
+    }
+
     /* ---------- 首屏方块插画 ---------- */
     .voxel { filter: drop-shadow(0 26px 30px rgba(17,69,41,.16)); }
     .voxel .c { animation: bob 6.5s ease-in-out infinite; transform-origin: 250px 210px; }
@@ -279,7 +307,6 @@
             </a>
 
             <nav class="hidden items-center gap-0.5 md:flex">
-                <a href="#info"     class="nav-link">服务器信息</a>
                 <a href="#modpacks" class="nav-link">整合包</a>
                 <a href="#history"  class="nav-link">历史</a>
                 <a href="gallery/"    class="nav-link">画廊</a>
@@ -301,7 +328,6 @@
         </div>
 
         <div id="mobileMenu" class="mt-2 hidden rounded-2xl border border-ink-100 bg-white p-2 shadow-[0_18px_40px_-20px_rgba(14,19,17,.35)] md:hidden">
-            <a href="#info"     class="mobile-link">服务器信息</a>
             <a href="#modpacks" class="mobile-link">整合包</a>
             <a href="#history"  class="mobile-link">历史</a>
             <a href="gallery/"  class="mobile-link">画廊</a>
@@ -339,7 +365,7 @@
                     <span class="grid h-6 w-6 place-items-center rounded-full bg-brand-50">
                         <span class="blink h-1.5 w-1.5 rounded-full bg-brand-400"></span>
                     </span>
-                    <span class="text-[12.5px] font-bold text-ink-600">私人服务器 · Java 版 · 全天在线</span>
+                    <span class="text-[12.5px] font-bold text-ink-600">私人服务器 · Java 版 · 全天 24 小时开服</span>
                 </div>
 
                 <h1 class="reveal mt-7 text-[clamp(2.4rem,6.2vw,4.6rem)] font-black leading-[1.04] tracking-[-.035em] text-ink-900">
@@ -410,56 +436,11 @@
     <div class="terrain" aria-hidden="true"></div>
 </section>
 
-<!-- ============ 服务器信息 ============ -->
-<section id="info" class="relative py-20 md:py-24">
-    <div class="mx-auto max-w-content px-5">
-        <div class="reveal sec-head">
-            <span class="sec-idx">01</span>
-            <div>
-                <h2 class="sec-title">服务器信息</h2>
-                <p class="sec-sub">开服以来的基本配置，随时保持在线</p>
-            </div>
-            <span class="sec-rule hidden md:block"></span>
-        </div>
-
-        <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4 lg:gap-5">
-            <div class="reveal card p-6">
-                <div class="icon-tile">
-                    <svg class="h-[22px] w-[22px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M3 12h18"/><path d="M12 3c2.6 2.8 2.6 15.2 0 18M12 3c-2.6 2.8-2.6 15.2 0 18"/></svg>
-                </div>
-                <p class="mt-5 font-mono text-[11px] font-bold uppercase tracking-[.16em] text-ink-400">游戏版本</p>
-                <p class="mt-2 text-[15px] font-bold text-ink-900">视整合包版本而定</p>
-            </div>
-            <div class="reveal card p-6">
-                <div class="icon-tile">
-                    <svg class="h-[22px] w-[22px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M16 20v-1.6A3.4 3.4 0 0012.6 15H7.4A3.4 3.4 0 004 18.4V20"/><circle cx="10" cy="8" r="3.2"/><path d="M20 20v-1.6a3.4 3.4 0 00-2.6-3.3M15.4 5.3a3.2 3.2 0 010 5.5"/></svg>
-                </div>
-                <p class="mt-5 font-mono text-[11px] font-bold uppercase tracking-[.16em] text-ink-400">最大人数</p>
-                <p class="mt-2 font-mono text-[26px] font-black leading-none tracking-tight text-brand-500">114514</p>
-            </div>
-            <div class="reveal card p-6">
-                <div class="icon-tile">
-                    <svg class="h-[22px] w-[22px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l8 4.5-8 4.5-8-4.5L12 3z"/><path d="M4 12l8 4.5 8-4.5"/><path d="M4 16.5L12 21l8-4.5"/></svg>
-                </div>
-                <p class="mt-5 font-mono text-[11px] font-bold uppercase tracking-[.16em] text-ink-400">游戏模式</p>
-                <p class="mt-2 text-[15px] font-bold text-ink-900">超多整合包随心开</p>
-            </div>
-            <div class="reveal card p-6">
-                <div class="icon-tile">
-                    <svg class="h-[22px] w-[22px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7.2V12l3.4 2"/></svg>
-                </div>
-                <p class="mt-5 font-mono text-[11px] font-bold uppercase tracking-[.16em] text-ink-400">开服时间</p>
-                <p class="mt-2 text-[15px] font-bold text-ink-900">全天 24 小时</p>
-            </div>
-        </div>
-    </div>
-</section>
-
 <!-- ============ 当前整合包 ============ -->
 <section id="modpacks" class="relative py-20 md:py-24">
     <div class="mx-auto max-w-content px-5">
         <div class="reveal sec-head">
-            <span class="sec-idx">02</span>
+            <span class="sec-idx">01</span>
             <div>
                 <h2 class="sec-title">当前整合包</h2>
                 <p class="sec-sub">服务器正在运行的整合包，随时可切换</p>
@@ -468,19 +449,18 @@
         </div>
 
         <div class="reveal panel overflow-hidden">
-            <div class="h-[3px] w-full bg-gradient-to-r from-brand-500 via-brand-300 to-amber-300"></div>
+            <div class="h-[3px] w-full bg-gradient-to-r from-[#D9433F] via-[#E4534F] to-[#F4F1EA]"></div>
             <div class="p-6 sm:p-8 md:p-10">
                 <div class="flex flex-wrap items-start gap-5">
-                    <div class="grid h-16 w-16 shrink-0 place-items-center rounded-2xl bg-gradient-to-br from-brand-50 to-brand-100 text-brand-500 ring-1 ring-brand-100">
-                        <svg class="h-8 w-8" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
-                            <circle cx="12" cy="12" r="9"/><path d="M3.2 12h5.3M15.5 12h5.3"/><circle cx="12" cy="12" r="3.1" fill="currentColor" fill-opacity=".18"/>
-                        </svg>
+                    <div class="mcp-tile">
+                        <img src="assets/textures/pokeball.svg" alt="Cobblemon 精灵球">
                     </div>
                     <div class="min-w-0 flex-1">
                         <div class="flex flex-wrap items-center gap-3">
+                            <span class="tex tex-theme-poke" aria-hidden="true"></span>
                             <h3 class="text-[24px] font-black tracking-tight text-ink-900 sm:text-[28px]">去吧，方可梦大师</h3>
-                            <span class="inline-flex items-center gap-1.5 rounded-full bg-brand-50 px-2.5 py-1 text-[11.5px] font-bold text-brand-600 ring-1 ring-brand-100">
-                                <span class="blink h-1.5 w-1.5 rounded-full bg-brand-400"></span>当前运行中
+                            <span class="mcp-flag">
+                                <span class="blink h-1.5 w-1.5 rounded-full bg-white"></span>当前运行中
                             </span>
                         </div>
                         <div class="mt-2.5 flex flex-wrap items-center gap-x-3 gap-y-1 font-mono text-[12.5px] text-ink-400">
@@ -520,7 +500,7 @@
 <section id="history" class="relative py-20 md:py-24">
     <div class="mx-auto max-w-content px-5">
         <div class="reveal sec-head">
-            <span class="sec-idx">03</span>
+            <span class="sec-idx">02</span>
             <div>
                 <h2 class="sec-title">服务器历史</h2>
                 <p class="sec-sub">一路走来的整合包更迭记录</p>
@@ -627,8 +607,9 @@
                     </li>
                     <li class="row row-now">
                         <span class="row-date">9.19 至今</span>
+                        <img class="row-ball" src="assets/textures/pokeball.svg" alt="" width="21" height="21">
                         <span class="row-name">去吧，方可梦大师</span>
-                        <span class="row-badge">当前运行</span>
+                        <span class="row-badge"><span class="blink h-1.5 w-1.5 rounded-full bg-white"></span>当前运行</span>
                     </li>
                 </ul>
             </div>
@@ -652,26 +633,47 @@
     }
     .row:hover .row-date { color: #47504B; }
     .row-name { font-size: 15px; font-weight: 600; color: #2C3631; }
+    /* ---------- 当前运行的周目 ----------
+       不跟其它条目共用主色，而是用这个整合包自己的主题色跳出来。
+       换周目时只改这三个值（对应 gallery/index.html 里 THEMES 中该周目的 ac / tint）：
+       --now-ac 主题色，--now-rgb 同一个色的 rgb 分量，--now-tint 浅底 */
     .row-now {
-        background: #EAF6EF; border: 1px solid #D2EBDB;
-        padding: 12px 14px; margin-top: 6px; align-items: center;
+        --now-ac: #D9433F;          /* 去吧，方可梦大师 · Cobblemon 精灵球红 */
+        --now-rgb: 217, 67, 63;
+        --now-tint: #FAE8E7;
+
+        position: relative; gap: 12px;
+        background: var(--now-tint);
+        border: 1px solid rgba(var(--now-rgb), .3);
+        border-left: 4px solid var(--now-ac);
+        padding: 13px 15px 13px 12px; margin-top: 8px; align-items: center;
+        box-shadow: 0 8px 22px -16px rgba(var(--now-rgb), .8);
     }
-    .row-now:hover { background: #EAF6EF; padding-left: 14px; }
-    .row-now .row-date { color: #17703E; font-weight: 700; }
+    .row-now:hover { background: var(--now-tint); padding-left: 12px; }
+    .row-now .row-date { color: var(--now-ac); font-weight: 700; }
     .row-now .row-name { color: #0E1311; font-weight: 800; }
+    /* 这一条专属的像素标识，跟主页「当前整合包」用的是同一颗球 */
+    .row-ball {
+        flex: none; width: 21px; height: 21px; margin-right: -4px;
+        image-rendering: pixelated;
+        filter: drop-shadow(0 2px 3px rgba(var(--now-rgb), .45));
+    }
     .row-badge {
         margin-left: auto; flex: none;
-        background: #1E8E4E; color: #fff;
-        padding: 3px 10px; border-radius: 999px;
+        display: inline-flex; align-items: center; gap: 6px;
+        background: var(--now-ac, #1E8E4E); color: #fff;
+        padding: 4px 11px; border-radius: 999px;
         font-size: 11px; font-weight: 800; letter-spacing: .02em;
+        box-shadow: 0 0 0 3px rgba(var(--now-rgb), .14);
     }
     @media (max-width: 639px) {
         .row { flex-wrap: wrap; gap: 4px 12px; padding: 11px 0; }
         .row-date { width: auto; }
         .row:hover { padding-left: 0; }
-        .row-now { padding: 12px 14px; }
-        .row-now:hover { padding-left: 14px; }
-        .row-badge { margin-left: 0; }
+        .row-now { gap: 8px; padding: 12px 13px 12px 10px; }
+        .row-now:hover { padding-left: 10px; }
+        /* 徽章仍靠右，跟桌面一致；ball 与名称之间留出 gap，不要贴着字 */
+        .row-ball { width: 18px; height: 18px; margin-right: 0; }
     }
 </style>
 
@@ -679,55 +681,44 @@
 <section id="gallery" class="relative py-20 md:py-24">
     <div class="mx-auto max-w-content px-5">
         <div class="reveal sec-head">
-            <span class="sec-idx">04</span>
+            <span class="sec-idx">03</span>
             <div>
                 <h2 class="sec-title">精选截图</h2>
-                <p class="sec-sub">从各个周目里随手挑的几帧，完整画廊已按整合包分类</p>
+                <p class="sec-sub">群友投稿的服务器截图，按周目各归各位</p>
             </div>
             <span class="sec-rule hidden md:block"></span>
         </div>
 
-        <!-- 精选图：静态写入，保证无 JS 时也能看到；完整画廊在 /gallery/ -->
-        <div class="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-3">
-            <figure class="gitem reveal" tabindex="0" role="button"
-                    data-full="assets/gallery/01.jpg" data-title="出生点 · 清晨">
-                <img src="assets/gallery/01.jpg" alt="服务器出生点的清晨地形" width="1200" height="675" loading="lazy" decoding="async">
-                <span class="gitem-veil"></span>
-                <span class="gitem-zoom" aria-hidden="true">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.6-3.6M11 8.5v5M8.5 11h5"/></svg>
-                </span>
-                <figcaption class="gitem-cap">
-                    <span>出生点 · 清晨</span>
-                    <span class="font-mono">去吧，方可梦大师</span>
-                </figcaption>
-            </figure>
-            <figure class="gitem reveal" tabindex="0" role="button"
-                    data-full="assets/gallery/03.jpg" data-title="下矿 · 洞穴矿脉">
-                <img src="assets/gallery/03.jpg" alt="洞穴深处的矿脉" width="1200" height="675" loading="lazy" decoding="async">
-                <span class="gitem-veil"></span>
-                <span class="gitem-zoom" aria-hidden="true">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.6-3.6M11 8.5v5M8.5 11h5"/></svg>
-                </span>
-                <figcaption class="gitem-cap">
-                    <span>下矿 · 洞穴矿脉</span>
-                    <span class="font-mono">重度机械症</span>
-                </figcaption>
-            </figure>
-            <figure class="gitem reveal" tabindex="0" role="button"
-                    data-full="assets/gallery/04.jpg" data-title="海岸线 · 涨潮">
-                <img src="assets/gallery/04.jpg" alt="服务器海岸线与涨潮水面" width="1200" height="675" loading="lazy" decoding="async">
-                <span class="gitem-veil"></span>
-                <span class="gitem-zoom" aria-hidden="true">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.6-3.6M11 8.5v5M8.5 11h5"/></svg>
-                </span>
-                <figcaption class="gitem-cap">
-                    <span>海岸线 · 涨潮</span>
-                    <span class="font-mono">香草纪元</span>
-                </figcaption>
-            </figure>
+        <!-- 精选图：由群友投稿自动填充。还没有截图时显示下面的空状态 -->
+        <div id="pickGrid" class="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-3" style="display:none"></div>
+
+        <div id="pickEmpty"
+             class="flex flex-col items-center gap-5 rounded-2xl border border-dashed border-ink-200 bg-white/70 px-6 py-14 text-center">
+            <span class="grid h-14 w-14 place-items-center rounded-2xl bg-brand-50 text-brand-500 ring-1 ring-brand-100">
+                <svg class="h-7 w-7" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="3" y="4.6" width="18" height="14.8" rx="2.4"/>
+                    <circle cx="8.6" cy="9.8" r="1.7"/>
+                    <path d="M3.4 16.4l4.8-4.2 3.6 3.1 3-2.6 4.8 4.2"/>
+                </svg>
+            </span>
+            <div>
+                <p class="text-[16px] font-black tracking-tight text-ink-900">画廊还没开张</p>
+                <p class="mx-auto mt-2 max-w-md text-[13.5px] leading-relaxed text-ink-500">
+                    第一张截图正在等它的主人。群友投稿、腐竹审核通过之后，会按周目归到画廊里，这里也会自动显示最新的几张。
+                </p>
+            </div>
+            <div class="flex flex-wrap justify-center gap-3">
+                <a href="gallery/" class="btn btn-green px-5 py-3 text-[13.5px]">
+                    <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 16.5V5.5M7.5 10L12 5.5 16.5 10"/><path d="M4.5 19.5h15"/></svg>
+                    去画廊投稿
+                </a>
+                <button onclick="copyIP(this)" data-copy="938289365" class="btn btn-ghost px-5 py-3 text-[13.5px]">
+                    <span>复制群号</span>
+                </button>
+            </div>
         </div>
 
-        <div class="reveal mt-6 flex flex-col items-center gap-6 rounded-2xl border border-dashed border-ink-200 bg-white/70 px-6 py-7 text-center sm:flex-row sm:justify-between sm:text-left">
+        <div id="galleryCta" class="reveal mt-6 flex flex-col items-center gap-6 rounded-2xl border border-dashed border-ink-200 bg-white/70 px-6 py-7 text-center sm:flex-row sm:justify-between sm:text-left">
             <div>
                 <p class="text-[15.5px] font-black tracking-tight text-ink-900">完整画廊：20 个周目，各归各位</p>
                 <p class="mt-1.5 text-[13.5px] leading-relaxed text-ink-500">按整合包分组、支持筛选与放大，你的截图也可以挂上去</p>
@@ -746,36 +737,43 @@
 </section>
 
 <style>
-    /* ---------- 画廊 ---------- */
+    /* ---------- 精选图 ---------- */
     .gitem {
-        position: relative; display: block; margin: 0; cursor: zoom-in;
-        aspect-ratio: 16 / 9; overflow: hidden;
+        display: flex; flex-direction: column; gap: 10px; margin: 0; cursor: zoom-in;
+        transition: transform .34s cubic-bezier(.2,.75,.3,1);
+    }
+    .gitem-shot {
+        position: relative; display: block; overflow: hidden;
+        aspect-ratio: 16 / 9;
         border: 1px solid #E4E8E1; border-radius: 18px; background: #F1F3EF;
         box-shadow: 0 1px 2px rgba(14,19,17,.035), 0 12px 30px -22px rgba(14,19,17,.2);
-        transition: transform .34s cubic-bezier(.2,.75,.3,1), box-shadow .34s ease, border-color .34s ease;
+        transition: box-shadow .34s ease, border-color .34s ease;
     }
-    .gitem img {
+    .gitem-shot img {
         width: 100%; height: 100%; object-fit: cover; display: block;
-        transition: transform .7s cubic-bezier(.2,.75,.3,1), filter .4s ease;
+        transition: transform .7s cubic-bezier(.2,.75,.3,1);
     }
-    .gitem:hover { transform: translateY(-3px); border-color: #CFE6D6; box-shadow: 0 2px 4px rgba(14,19,17,.04), 0 24px 46px -24px rgba(14,19,17,.3); }
+    .gitem:hover { transform: translateY(-3px); }
+    .gitem:hover .gitem-shot {
+        border-color: #CFE6D6;
+        box-shadow: 0 2px 4px rgba(14,19,17,.04), 0 24px 46px -24px rgba(14,19,17,.3);
+    }
     .gitem:hover img { transform: scale(1.045); }
     .gitem:focus-visible { outline: 2px solid #1E8E4E; outline-offset: 3px; }
 
+    /* 悬停时图片底部透出一层渐变，纯氛围，不放文字 */
     .gitem-veil {
         position: absolute; inset: 0; pointer-events: none;
-        background: linear-gradient(to top, rgba(14,19,17,.72) 0%, rgba(14,19,17,.28) 34%, rgba(14,19,17,0) 62%);
+        background: linear-gradient(to top, rgba(14,19,17,.6) 0%, rgba(14,19,17,.2) 36%, rgba(14,19,17,0) 64%);
         opacity: 0; transition: opacity .34s ease;
     }
+    /* 说明与整合包名常驻在图下方 —— 这是信息位，不藏在悬停里 */
     .gitem-cap {
-        position: absolute; inset: auto 0 0 0; z-index: 2;
         display: flex; align-items: baseline; justify-content: space-between; gap: 10px;
-        padding: 16px 18px; color: #fff;
+        padding: 0 4px; color: #0E1311;
         font-size: 14px; font-weight: 700; letter-spacing: -.01em;
-        opacity: 0; transform: translateY(8px);
-        transition: opacity .34s ease, transform .34s ease;
     }
-    .gitem-cap .font-mono { font-size: 11.5px; font-weight: 700; color: rgba(255,255,255,.62); }
+    .gitem-cap .font-mono { font-size: 11.5px; font-weight: 700; color: #7A847E; }
     .gitem-zoom {
         position: absolute; top: 14px; right: 14px; z-index: 2;
         display: grid; place-items: center; width: 34px; height: 34px; border-radius: 50%;
@@ -787,22 +785,19 @@
 
     @media (hover: hover) {
         .gitem:hover .gitem-veil,
-        .gitem:hover .gitem-cap,
         .gitem:hover .gitem-zoom { opacity: 1; }
-        .gitem:hover .gitem-cap { transform: none; }
         .gitem:hover .gitem-zoom { transform: none; }
-    }
-    /* 触屏设备：说明常驻，否则看不到文字 */
-    @media (hover: none) {
-        .gitem-veil { opacity: 1; }
-        .gitem-cap { opacity: 1; transform: none; }
     }
     /* 小屏两列：卡片变小，圆角与文字同步收一档 */
     @media (max-width: 639px) {
-        .gitem { border-radius: 14px; }
+        .gitem { gap: 8px; }
+        .gitem-shot { border-radius: 14px; }
         .gitem-zoom { width: 28px; height: 28px; top: 9px; right: 9px; }
         .gitem-zoom svg { width: 14px; height: 14px; }
-        .gitem-cap { padding: 10px 12px; font-size: 12px; gap: 6px; }
+        .gitem-cap {
+            padding: 0 2px; font-size: 12px; gap: 2px;
+            flex-direction: column; align-items: flex-start;
+        }
         .gitem-cap .font-mono { font-size: 10px; }
     }
 
@@ -877,7 +872,7 @@
 <section id="players" class="relative py-20 md:py-24">
     <div class="mx-auto max-w-content px-5">
         <div class="reveal sec-head">
-            <span class="sec-idx">05</span>
+            <span class="sec-idx">04</span>
             <div>
                 <h2 class="sec-title">玩家风采</h2>
                 <p class="sec-sub">服务器玩家与专属头衔</p>
@@ -984,7 +979,7 @@
 <section id="sponsor" class="relative py-20 md:py-24">
     <div class="mx-auto max-w-content px-5">
         <div class="reveal sec-head">
-            <span class="sec-idx">06</span>
+            <span class="sec-idx">05</span>
             <div>
                 <h2 class="sec-title">赞助支持</h2>
                 <p class="sec-sub">你的支持是服务器持续运营的动力</p>
@@ -1139,9 +1134,10 @@
 
     /* ---------- 截图画廊灯箱 ---------- */
     (function () {
-        const items = Array.prototype.slice.call(document.querySelectorAll('.gitem'));
         const lb = document.getElementById('lightbox');
-        if (!items.length || !lb) return;
+        if (!lb) return;
+        /* 图是后填进来的，所以每次都重新收集，而不是启动时抓一次 */
+        function list() { return Array.prototype.slice.call(document.querySelectorAll('.gitem')); }
 
         const imgEl = document.getElementById('lbImg');
         const titleEl = document.getElementById('lbTitle');
@@ -1152,7 +1148,9 @@
             return it.dataset.full || (it.querySelector('img') || {}).src || '';
         }
         function render() {
+            const items = list();
             const it = items[idx];
+            if (!it) return;
             imgEl.src = srcOf(it);
             imgEl.alt = it.dataset.title || '';
             titleEl.textContent = it.dataset.title || '';
@@ -1178,17 +1176,29 @@
             if (lastFocus && lastFocus.focus) lastFocus.focus();
         }
         function step(d) {
+            const items = list();
+            if (!items.length) return;
             idx = (idx + d + items.length) % items.length;
             render();
         }
 
-        items.forEach(function (it, i) {
-            it.addEventListener('click', function () { open(i, it); });
-            it.addEventListener('keydown', function (e) {
-                if (e.key === 'Enter' || e.key === ' ' || e.key === 'Spacebar') {
-                    e.preventDefault(); open(i, it);
-                }
-            });
+        /* 事件委托：动态填进来的图不用重新绑定 */
+        function hit(e) {
+            return e.target && e.target.closest ? e.target.closest('.gitem') : null;
+        }
+        document.addEventListener('click', function (e) {
+            const it = hit(e);
+            if (!it) return;
+            const items = list();
+            open(items.indexOf(it), it);
+        });
+        document.addEventListener('keydown', function (e) {
+            if (e.key !== 'Enter' && e.key !== ' ' && e.key !== 'Spacebar') return;
+            const it = hit(e);
+            if (!it) return;
+            e.preventDefault();
+            const items = list();
+            open(items.indexOf(it), it);
         });
 
         document.getElementById('lbClose').addEventListener('click', close);
@@ -1216,6 +1226,116 @@
             const dx = t.clientX - sx, dy = t.clientY - sy;
             if (Math.abs(dx) > 48 && Math.abs(dx) > Math.abs(dy) * 1.4) step(dx < 0 ? 1 : -1);
         }, { passive: true });
+    })();
+    /* ============================================================
+       主页「精选截图」设置
+       ------------------------------------------------------------
+       日常运营根本不用改这里 —— 去画廊页的「腐竹审核台」，在图上点
+       「☆ 设为精选」，它就会排到主页最前面。下面三个选项只是微调用：
+       ------------------------------------------------------------
+       count  显示几张。3 的倍数最整齐：3 或 6
+       packs  只从这几个整合包里挑，留空 = 不限。例：['cobblemon', 'swordking']
+              可选值就是下面 PACK_NAMES 的键名
+       ids    手动指定投稿、并固定顺序（优先级最高，会盖掉精选排序）
+              投稿编号在审核台里能看到（每张的 #号）。例：[12, 9, 15]
+       ------------------------------------------------------------
+       不填 ids 时的顺序：★ 精选的排前面 → 其余按投稿时间倒序
+       ============================================================ */
+    const PICK = {
+        count: 3,
+        packs: [],
+        ids: []
+    };
+
+    /* 整合包 id → 名称。要和 gallery/index.html 里的 MODPACKS 保持一致 */
+    const PACK_NAMES = {
+        'cobblemon':      '去吧，方可梦大师',
+        'vanilla-food':   '香草纪元：食旅纪行',
+        'element':        '元素觉醒',
+        'lastone':        'Last One 终末幸存者',
+        'combat':         '沉浸式战斗',
+        'alert':          '严阵以待',
+        'mech2':          '重度机械症回归 · 航空学',
+        'newsteam':       '你好，新蒸程！v1.10',
+        'atm10':          'All The Mods 10 v5.6',
+        'newgen':         '你好，新世代！',
+        'swordking':      '剑与王国 正式版',
+        'curtain':        '落幕曲',
+        'farm':           '农场物语',
+        'deadworld':      '亡者世界',
+        'mech':           '重度机械症',
+        'fool':           '愚者',
+        'swordking-beta': '剑与王国 测试版',
+        'utopia-fix':     '乌托邦 3.5 fix',
+        'utopia':         '乌托邦 3.5',
+        'vanilla':        '1.21 原版生存'
+    };
+
+    /* ---------- 精选截图：拉已审核的投稿 ---------- */
+    (function () {
+        const grid = document.getElementById('pickGrid');
+        const empty = document.getElementById('pickEmpty');
+        if (!grid || !empty) return;
+
+        function esc(v) {
+            return String(v == null ? '' : v).replace(/[&<>"]/g, function (c) {
+                return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c];
+            });
+        }
+
+        fetch('/api/photos', { headers: { accept: 'application/json' } })
+            .then(function (r) { return r.ok ? r.json() : null; })
+            .then(function (d) {
+                const all = (d && d.photos) || [];
+                let list = PICK.packs.length
+                    ? all.filter(function (p) { return PICK.packs.indexOf(p.pack) !== -1; })
+                    : all.slice();
+
+                if (PICK.ids.length) {
+                    /* 手动指定：按写的顺序来；被删掉的自动跳过 */
+                    const byId = {};
+                    all.forEach(function (p) { byId[p.id] = p; });
+                    list = PICK.ids.map(function (id) { return byId[id]; }).filter(Boolean);
+                } else {
+                    /* 审核台里点过「精选」的排前面，其余按投稿时间倒序 */
+                    list.sort(function (a, b) {
+                        const fa = a.featured ? 1 : 0, fb = b.featured ? 1 : 0;
+                        if (fa !== fb) return fb - fa;
+                        return (b.at || 0) - (a.at || 0);
+                    });
+                }
+                list = list.slice(0, PICK.count > 0 ? PICK.count : 3);
+
+                if (!list.length) {
+                    /* 一张图都没有时，空状态卡片已经引导过了，下面的横幅是重复的 */
+                    const cta = document.getElementById('galleryCta');
+                    if (cta) cta.style.display = 'none';
+                    return;
+                }
+
+                grid.innerHTML = list.map(function (p) {
+                    const title = p.title || '未命名';
+                    const pack = PACK_NAMES[p.pack] || p.pack;
+                    /* 灯箱里把周目也带上；卡片上是分开的两行，不会重复 */
+                    const lbTitle = title + ' · ' + pack;
+                    return '<figure class="gitem reveal in" tabindex="0" role="button"'
+                        + ' data-full="' + esc(p.url) + '" data-title="' + esc(lbTitle) + '"'
+                        + ' data-pack="' + esc(pack) + '">'
+                        + '<span class="gitem-shot">'
+                        + '<img src="' + esc(p.url) + '" alt="' + esc(title + ' · ' + pack) + '" width="1200" height="675" loading="lazy" decoding="async">'
+                        + '<span class="gitem-veil"></span>'
+                        + '<span class="gitem-zoom" aria-hidden="true">'
+                        + '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round">'
+                        + '<circle cx="11" cy="11" r="7"/><path d="M20 20l-3.6-3.6M11 8.5v5M8.5 11h5"/></svg>'
+                        + '</span></span>'
+                        + '<figcaption class="gitem-cap"><span>' + esc(title) + '</span>'
+                        + '<span class="font-mono">' + esc(pack) + '</span></figcaption></figure>';
+                }).join('');
+
+                grid.style.display = '';
+                empty.style.display = 'none';
+            })
+            .catch(function () { /* 拉不到就保持空状态，不算错误 */ });
     })();
 </script>
 </body>

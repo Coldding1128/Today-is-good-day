@@ -1,0 +1,14 @@
+# 草稿目录：本地留着就行，不要发布到站点上
+_shots/
+_backup/
+
+# 临时校验文件（视觉复核时生成）
+__verify.html
+__lb.html
+__probe.html
+__mg.html
+__ov.html
+__mobview.html
+__measure.html
+__p.html
+__v.html

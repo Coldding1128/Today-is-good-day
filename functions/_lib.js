@@ -43,6 +43,10 @@ export function toPhoto(row) {
         by: row.uploader || '',
         url: '/img/' + row.r2_key,
         status: row.status,
-        at: row.created_at
+        at: row.created_at,
+        /* 腐竹在审核台勾选的「精选」，会排到主页前面。
+           写成 row.featured ? 1 : 0 而不是直接取字段：万一 featured 列还没加上，
+           这里拿到 undefined 也只是当作 0，不会把整个接口带崩 */
+        featured: row.featured ? 1 : 0
     };
 }

@@ -8,8 +8,9 @@ export async function onRequestGet({ request, env }) {
     if (!env.DB) return json({ error: 'not_configured' }, 503);
 
     const pack = new URL(request.url).searchParams.get('pack');
-    let sql = "SELECT id, pack_id, title, uploader, r2_key, status, created_at "
-            + "FROM photos WHERE status = 'approved'";
+    /* 用 SELECT * 而不是逐列列举：这样万一 featured 列还没加上，
+       接口也只是少一个字段，不会直接 500 把画廊带崩 */
+    let sql = "SELECT * FROM photos WHERE status = 'approved'";
     const args = [];
     if (pack) { sql += ' AND pack_id = ?'; args.push(pack); }
     sql += ' ORDER BY created_at DESC LIMIT 300';

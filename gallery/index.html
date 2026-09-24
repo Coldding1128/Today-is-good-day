@@ -137,16 +137,22 @@
     .tex-water      { background-image: url('../assets/textures/water.svg'); }
     .tex-planks     { background-image: url('../assets/textures/planks.svg'); }
 
-    /* 各整合包主题纹理：原版方块凑不出主题感时用这几张 */
-    .tex-theme-poke     { background-image: url('../assets/textures/theme-poke.svg'); }
-    .tex-theme-tech     { background-image: url('../assets/textures/theme-tech.svg'); }
-    .tex-theme-food     { background-image: url('../assets/textures/theme-food.svg'); }
-    .tex-theme-arcane   { background-image: url('../assets/textures/theme-arcane.svg'); }
-    .tex-theme-waste    { background-image: url('../assets/textures/theme-waste.svg'); }
-    .tex-theme-fantasy  { background-image: url('../assets/textures/theme-fantasy.svg'); }
-    .tex-theme-military { background-image: url('../assets/textures/theme-military.svg'); }
-    .tex-theme-deep     { background-image: url('../assets/textures/theme-deep.svg'); }
-    .tex-theme-vanilla  { background-image: url('../assets/textures/grassblock.svg'); }
+    /* 各整合包主题纹理：按查证到的实际模组定色与纹样 */
+    .tex-theme-poke     { background-image: url('../assets/textures/theme-poke.svg'); }     /* 精灵球 红白 */
+    .tex-theme-delight  { background-image: url('../assets/textures/theme-delight.svg'); }  /* 农夫乐事 麦金 */
+    .tex-theme-arcane   { background-image: url('../assets/textures/theme-arcane.svg'); }   /* 法术书 紫 */
+    .tex-theme-survivor { background-image: url('../assets/textures/theme-survivor.svg'); } /* 卡牌 深青 */
+    .tex-theme-souls    { background-image: url('../assets/textures/theme-souls.svg'); }    /* 魂系 暗红 */
+    .tex-theme-swat     { background-image: url('../assets/textures/theme-swat.svg'); }     /* 特警 深蓝黑 */
+    .tex-theme-create   { background-image: url('../assets/textures/theme-create.svg'); }   /* 机械动力 黄铜 */
+    .tex-theme-colony   { background-image: url('../assets/textures/theme-colony.svg'); }   /* 模拟殖民地 石砖 */
+    .tex-theme-blade    { background-image: url('../assets/textures/theme-blade.svg'); }    /* 拔刀剑 靛蓝 */
+    .tex-theme-stardew  { background-image: url('../assets/textures/theme-stardew.svg'); }  /* 星露谷 暖木 */
+    .tex-theme-urban    { background-image: url('../assets/textures/theme-urban.svg'); }    /* 僵尸都市 锈绿 */
+    .tex-theme-scenery  { background-image: url('../assets/textures/theme-scenery.svg'); }  /* 乌托邦 风景 */
+    .tex-theme-tarot    { background-image: url('../assets/textures/theme-tarot.svg'); }    /* 愚者 黑金塔罗 */
+    .tex-theme-atm      { background-image: url('../assets/textures/theme-atm.svg'); }      /* ATM 深蓝青 */
+    .tex-theme-vanilla  { background-image: url('../assets/textures/grassblock.svg'); }     /* 原版 草方块 */
 
     /* 主题强调：每个周目只借到"一条底线 + 一个图标 + 选中色"，不做整块改色 */
     .glyph { width: 18px; height: 18px; flex: none; color: var(--ac, #1E8E4E); }
@@ -405,7 +411,7 @@
 </section>
 
 <!-- ============ 筛选条 ============ -->
-<div class="sticky top-16 z-40 border-y border-ink-100 bg-[#F7F8F5]/92 backdrop-blur-md">
+<div id="chipBar" class="sticky top-16 z-40 border-y border-ink-100 bg-[#F7F8F5]/92 backdrop-blur-md">
     <div class="mx-auto max-w-content px-5">
         <div id="chips" class="flex gap-2 overflow-x-auto py-3.5" style="scrollbar-width:none"></div>
     </div>
@@ -415,41 +421,17 @@
 <main id="groups" class="mx-auto max-w-content px-5 pt-12 pb-4"></main>
 
 <!-- ============ 还没有截图的整合包 ============ -->
-<section class="mx-auto max-w-content px-5 pb-14">
+<section class="mx-auto max-w-content px-5 pb-20">
     <div id="emptyWrap" class="rounded-2xl border border-dashed border-ink-200 bg-white/70 px-6 py-6">
-        <p class="text-[14.5px] font-black tracking-tight text-ink-900">这些周目还没有截图</p>
-        <p class="mt-1.5 text-[13px] leading-relaxed text-ink-500">
+        <p id="emptyTitle" class="text-[14.5px] font-black tracking-tight text-ink-900">这些周目还没有截图</p>
+        <p id="emptyDesc" class="mt-1.5 text-[13px] leading-relaxed text-ink-500">
             如果你手里还留着这些整合包的存档截图，欢迎投稿，让它们也有自己的位置
         </p>
+        <button onclick="document.getElementById('openUpload').click()" class="btn btn-green mt-5 px-5 py-2.5 text-[13px]">
+            <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 16.5V5.5M7.5 10L12 5.5 16.5 10"/><path d="M4.5 19.5h15"/></svg>
+            <span>投稿截图</span>
+        </button>
         <div id="emptyChips" class="mt-4 flex flex-wrap gap-2"></div>
-    </div>
-</section>
-
-<!-- ============ 投稿 ============ -->
-<section class="mx-auto max-w-content px-5 pb-20">
-    <div class="relative overflow-hidden rounded-3xl bg-ink-900 px-7 py-11 md:px-12 md:py-14">
-        <div class="pointer-events-none absolute inset-0 opacity-[.16]"
-             style="background-image:url('../assets/textures/deepslate.svg');background-size:64px 64px;image-rendering:pixelated"></div>
-        <div class="pointer-events-none absolute inset-0 opacity-[.05]"
-             style="background-image:linear-gradient(#fff 1px,transparent 1px),linear-gradient(90deg,#fff 1px,transparent 1px);background-size:38px 38px;"></div>
-        <div class="pointer-events-none absolute -right-16 -top-16 h-64 w-64 rounded-full bg-brand-500/25 blur-3xl"></div>
-        <div class="relative flex flex-col items-start gap-7 md:flex-row md:items-center md:justify-between">
-            <div class="max-w-xl">
-                <p class="font-mono text-[11px] font-bold uppercase tracking-[.24em] text-brand-300">Submit</p>
-                <h2 class="mt-3.5 text-[clamp(1.35rem,3vw,1.85rem)] font-black leading-tight tracking-tight text-white">
-                    你的截图也想挂在这里？
-                </h2>
-                <p class="mt-3 text-[14px] leading-relaxed text-ink-200">
-                    加群把截图发给腐竹，标好是哪个整合包，下次更新就会出现在对应的分组里
-                </p>
-            </div>
-            <div class="flex shrink-0 flex-wrap gap-3">
-                <button onclick="copyGroup(this)" data-copy="938289365" class="btn btn-green px-6 py-3.5 text-[13.5px]">
-                    <span>复制群号</span>
-                </button>
-                <a href="../index.html#sponsor" class="btn px-6 py-3.5 text-[13.5px] text-white ring-1 ring-white/25 transition-colors hover:bg-white/10">去赞助</a>
-            </div>
-        </div>
     </div>
 </section>
 
@@ -597,59 +579,74 @@
                接口不可用时画廊依然是完整的，不会开天窗
    ============================================================ */
 const THEMES = {
-    poke:     { tex: 'theme-poke',     ac: '#D9433F', tint: '#FAE8E7' },
-    tech:     { tex: 'theme-tech',     ac: '#A2662F', tint: '#F8EEE2' },
-    food:     { tex: 'theme-food',     ac: '#9C7515', tint: '#FAF2DC' },
-    arcane:   { tex: 'theme-arcane',   ac: '#5B4BA8', tint: '#ECE9F8' },
-    waste:    { tex: 'theme-waste',    ac: '#5F6B4A', tint: '#EEF0E6' },
-    fantasy:  { tex: 'theme-fantasy',  ac: '#3E5A8E', tint: '#E9EEF7' },
-    military: { tex: 'theme-military', ac: '#4A5537', tint: '#EDEFE4' },
-    deep:     { tex: 'theme-deep',     ac: '#8A6B08', tint: '#F6F0DA' },
-    vanilla:  { tex: 'theme-vanilla',  ac: '#1E8E4E', tint: '#EAF6EF' }
+    /* ac = 强调色, tint = 浅底。颜色取自各整合包实际核心模组的主视觉 */
+    poke:     { tex: 'theme-poke',     ac: '#D9433F', tint: '#FAE8E7' },  // Cobblemon 精灵球 红白
+    delight:  { tex: 'theme-delight',  ac: '#A5701F', tint: '#F9F0DF' },  // 农夫乐事 麦金
+    arcane:   { tex: 'theme-arcane',   ac: '#5B4BA8', tint: '#ECE9F8' },  // 元素觉醒 法术书 紫
+    survivor: { tex: 'theme-survivor', ac: '#2F6E7C', tint: '#E5F0F2' },  // 类幸存者 卡牌 深青
+    souls:    { tex: 'theme-souls',    ac: '#A03A2E', tint: '#FAE9E6' },  // 魂系动作 太刀 暗红
+    swat:     { tex: 'theme-swat',     ac: '#3A4757', tint: '#E9EDF2' },  // 严阵以待 MON 特警 深蓝黑
+    create:   { tex: 'theme-create',   ac: '#A2662F', tint: '#F8EEE2' },  // 机械动力 黄铜齿轮
+    colony:   { tex: 'theme-colony',   ac: '#6B685F', tint: '#EFEEE9' },  // 模拟殖民地+百年战争 石砖
+    blade:    { tex: 'theme-blade',    ac: '#3B4573', tint: '#EAECF5' },  // 落幕曲 拔刀剑+TACZ 靛蓝
+    stardew:  { tex: 'theme-stardew',  ac: '#8A6524', tint: '#F8F1E0' },  // 农场物语 星露谷 暖木
+    urban:    { tex: 'theme-urban',    ac: '#55603F', tint: '#EEF0E6' },  // 亡者世界 僵尸都市 锈绿
+    scenery:  { tex: 'theme-scenery',  ac: '#2F7C78', tint: '#E3F0EF' },  // 乌托邦 记录风景 青绿
+    tarot:    { tex: 'theme-tarot',    ac: '#8A6B08', tint: '#F6F0DA' },  // 愚者 塔罗 黑金
+    atm:      { tex: 'theme-atm',      ac: '#26666F', tint: '#E4F1F2' },  // All The Mods 深蓝青
+    vanilla:  { tex: 'theme-vanilla',  ac: '#1E8E4E', tint: '#EAF6EF' }   // 原版生存（兜底）
 };
 
 const GLYPHS = {
     poke:     '<circle cx="12" cy="12" r="8.4"/><path d="M3.6 12h16.8"/><circle cx="12" cy="12" r="2.6"/>',
-    tech:     '<circle cx="12" cy="12" r="3.2"/><path d="M12 2.6v3M12 18.4v3M4.3 7.3l2.6 1.5M17.1 15.2l2.6 1.5M4.3 16.7l2.6-1.5M17.1 8.8l2.6-1.5"/>',
-    food:     '<path d="M12 21V9"/><path d="M12 9c-3.2 0-4.6-2.6-4.6-5.2C10.6 3.8 12 6.4 12 9zM12 9c3.2 0 4.6-2.6 4.6-5.2C13.4 3.8 12 6.4 12 9z"/><path d="M12 15c-2.6 0-4-1.8-4-3.6 2.6-.2 4 1.6 4 3.6zM12 15c2.6 0 4-1.8 4-3.6-2.6-.2-4 1.6-4 3.6z"/>',
-    arcane:   '<path d="M12 2.8L20 12l-8 9.2L4 12z"/><path d="M12 7.6L16 12l-4 4.6L8 12z"/>',
-    waste:    '<path d="M12 3.4l8.6 15H3.4z"/><path d="M12 9.6v4.2M12 16.6v.1"/>',
-    fantasy:  '<path d="M18.6 3.4L9.4 12.6M14.4 3.4h4.2v4.2"/><path d="M9.4 12.6l-4.2 4.2 2.8 2.8 4.2-4.2"/>',
-    military: '<path d="M12 2.8l7 2.6v6c0 4.6-3 8.4-7 9.8-4-1.4-7-5.2-7-9.8v-6z"/><path d="M8.8 12l2.4 2.4 4-4.6"/>',
-    deep:     '<path d="M12 3l2.6 6.2 6.7.5-5.1 4.4 1.5 6.6L12 17.2 6.3 20.7l1.5-6.6L2.7 9.7l6.7-.5z"/>',
+    delight:  '<path d="M3.4 13.4h12.2a6.1 6.1 0 01-6.1 6.1H9.5a6.1 6.1 0 01-6.1-6.1z"/><path d="M15.6 13.4h5"/><path d="M8 9.6V6.4M11.6 9.6V5.2"/>',
+    arcane:   '<path d="M6 3.6h9.4a2 2 0 012 2v14.8H8a2 2 0 01-2-2z"/><path d="M6 3.6v14.8a2 2 0 002 2"/><path d="M11.4 8l2.2 3-2.2 3"/>',
+    survivor: '<rect x="3.4" y="5.4" width="9.6" height="13.2" rx="1.8"/><rect x="11" y="5.4" width="9.6" height="13.2" rx="1.8"/><path d="M15.8 11.2v4.4M13.6 13.4h4.4"/>',
+    souls:    '<path d="M20.4 3.6L9.8 14.2"/><path d="M7.4 12.4l4.2 4.2"/><path d="M8.6 16.2l-2.8 2.8-1.6-1.6 2.8-2.8z"/><path d="M3.4 20.6l2-2"/>',
+    swat:     '<path d="M12 2.8l7 2.6v6c0 4.6-3 8.4-7 9.8-4-1.4-7-5.2-7-9.8v-6z"/><path d="M8.8 12l2.4 2.4 4-4.6"/>',
+    create:   '<circle cx="12" cy="12" r="3.2"/><path d="M12 2.6v3M12 18.4v3M4.3 7.3l2.6 1.5M17.1 15.2l2.6 1.5M4.3 16.7l2.6-1.5M17.1 8.8l2.6-1.5"/>',
+    colony:   '<path d="M6.4 21V3.4"/><path d="M6.4 4.6h11.2l-2.6 3.8 2.6 3.8H6.4z"/><path d="M6.4 21h4.2"/>',
+    blade:    '<path d="M4 20.4l5.6-5.6"/><path d="M9.6 14.8l7-7 2.4 2.4-7 7z"/><path d="M20 20.4l-5.6-5.6"/><path d="M14.4 14.8l-7-7L5 10.2l7 7z"/>',
+    stardew:  '<path d="M6.6 9.4h9.2v8.2a2.4 2.4 0 01-2.4 2.4H9a2.4 2.4 0 01-2.4-2.4z"/><path d="M15.8 11.6l4.6-2.6"/><path d="M6.6 9.4L4 6.4"/><path d="M9 13.2h4.4"/>',
+    urban:    '<path d="M3 21V11.4h4.2V21M7.2 21V6.8h5V21M12.2 21v-7.6h4.2V21M16.4 21V9.4H21V21"/><path d="M3 21h18"/>',
+    scenery:  '<path d="M2.6 19.4l6.2-9.2 4.2 5.8 3.2-4.2 5.2 7.6z"/><circle cx="8.2" cy="6.2" r="2.3"/>',
+    tarot:    '<rect x="4.6" y="2.8" width="14.8" height="18.4" rx="2.2"/><path d="M12 7.4l1.5 3.4 3.5.4-2.6 2.4.8 3.6L12 15.4l-3.2 1.8.8-3.6-2.6-2.4 3.5-.4z"/>',
+    atm:      '<path d="M12 3l2.6 6.2 6.7.5-5.1 4.4 1.5 6.6L12 17.2 6.3 20.7l1.5-6.6L2.7 9.7l6.7-.5z"/>',
     vanilla:  '<path d="M12 3l7.4 4.1L12 11.2 4.6 7.1z"/><path d="M4.6 7.1v7.8L12 19l7.4-4.1V7.1"/>'
 };
 
 const MODPACKS = [
+    /* theme 按各整合包查证到的核心模组来定：
+       Cobblemon / 农夫乐事 / 法术构筑 / 类幸存者卡牌 / 魂系动作 / 特警CQB /
+       机械动力 / 模拟殖民地+百年战争 / 拔刀剑+TACZ / 星露谷 / 僵尸都市 / 风景 / 塔罗 / ATM */
     { id: 'cobblemon',    name: '去吧，方可梦大师',        period: '9.19 至今',        now: true, theme: 'poke' },
-    { id: 'vanilla-food', name: '香草纪元：食旅纪行',      period: '9.11 — 9.19',      theme: 'food' },
+    { id: 'vanilla-food', name: '香草纪元：食旅纪行',      period: '9.11 — 9.19',      theme: 'delight' },
     { id: 'element',      name: '元素觉醒',                period: '9.6 — 9.11',       theme: 'arcane' },
-    { id: 'lastone',      name: 'Last One 终末幸存者',     period: '8.31 — 9.6',       theme: 'waste' },
-    { id: 'combat',       name: '沉浸式战斗',              period: '7.31 — 8.31',      theme: 'military' },
-    { id: 'alert',        name: '严阵以待',                period: '7.21 — 7.31',      theme: 'military' },
-    { id: 'mech2',        name: '重度机械症回归 · 航空学', period: '5.5 — 7.21',       theme: 'tech' },
-    { id: 'newsteam',     name: '你好，新蒸程！v1.10',      period: '5.2 — 5.5',        theme: 'tech' },
-    { id: 'atm10',        name: 'All The Mods 10 v5.6',    period: '4.13 — 5.1',       theme: 'tech' },
-    { id: 'newgen',       name: '你好，新世代！',           period: '4.12 — 4.12',      theme: 'fantasy' },
-    { id: 'swordking',    name: '剑与王国 正式版',          period: '3.12 — 4.11',      theme: 'fantasy' },
-    { id: 'curtain',      name: '落幕曲',                  period: '2.19 — 3.12',      theme: 'deep' },
-    { id: 'farm',         name: '农场物语',                period: '1.16 — 2.19',      theme: 'food' },
-    { id: 'deadworld',    name: '亡者世界',                period: '1.10 — 1.16',      theme: 'waste' },
-    { id: 'mech',         name: '重度机械症',              period: '12.18 — 2026.01.10', theme: 'tech' },
-    { id: 'fool',         name: '愚者',                    period: '12.2 — 12.18',     theme: 'deep' },
-    { id: 'swordking-beta', name: '剑与王国 测试版',        period: '10.30 — 12.2',     theme: 'fantasy' },
-    { id: 'utopia-fix',   name: '乌托邦 3.5 fix',          period: '9.25 — 10.30',     theme: 'vanilla' },
-    { id: 'utopia',       name: '乌托邦 3.5',              period: '7.12 — 9.25',      theme: 'vanilla' },
+    { id: 'lastone',      name: 'Last One 终末幸存者',     period: '8.31 — 9.6',       theme: 'survivor' },
+    { id: 'combat',       name: '沉浸式战斗',              period: '7.31 — 8.31',      theme: 'souls' },
+    { id: 'alert',        name: '严阵以待',                period: '7.21 — 7.31',      theme: 'swat' },
+    { id: 'mech2',        name: '重度机械症回归 · 航空学', period: '5.5 — 7.21',       theme: 'create' },
+    { id: 'newsteam',     name: '你好，新蒸程！v1.10',      period: '5.2 — 5.5',        theme: 'create' },
+    { id: 'atm10',        name: 'All The Mods 10 v5.6',    period: '4.13 — 5.1',       theme: 'atm' },
+    { id: 'newgen',       name: '你好，新世代！',           period: '4.12 — 4.12',      theme: 'vanilla' },
+    { id: 'swordking',    name: '剑与王国 正式版',          period: '3.12 — 4.11',      theme: 'colony' },
+    { id: 'curtain',      name: '落幕曲',                  period: '2.19 — 3.12',      theme: 'blade' },
+    { id: 'farm',         name: '农场物语',                period: '1.16 — 2.19',      theme: 'stardew' },
+    { id: 'deadworld',    name: '亡者世界',                period: '1.10 — 1.16',      theme: 'urban' },
+    { id: 'mech',         name: '重度机械症',              period: '12.18 — 2026.01.10', theme: 'create' },
+    { id: 'fool',         name: '愚者',                    period: '12.2 — 12.18',     theme: 'tarot' },
+    { id: 'swordking-beta', name: '剑与王国 测试版',        period: '10.30 — 12.2',     theme: 'colony' },
+    { id: 'utopia-fix',   name: '乌托邦 3.5 fix',          period: '9.25 — 10.30',     theme: 'scenery' },
+    { id: 'utopia',       name: '乌托邦 3.5',              period: '7.12 — 9.25',      theme: 'scenery' },
     { id: 'vanilla',      name: '1.21 原版生存',           period: '3.8 — 7.12',       theme: 'vanilla' }
 ];
 
 const PHOTOS = [
-    { g: 'cobblemon',    src: '../assets/gallery/01.jpg', title: '出生点 · 清晨',   by: '示例投稿' },
-    { g: 'cobblemon',    src: '../assets/gallery/06.jpg', title: '农场 · 丰收',     by: '示例投稿' },
-    { g: 'vanilla-food', src: '../assets/gallery/04.jpg', title: '海岸线 · 涨潮',   by: '示例投稿' },
-    { g: 'mech',         src: '../assets/gallery/03.jpg', title: '下矿 · 洞穴矿脉', by: '示例投稿' },
-    { g: 'vanilla',      src: '../assets/gallery/02.jpg', title: '主城 · 建筑群',   by: '示例投稿' },
-    { g: 'vanilla',      src: '../assets/gallery/05.jpg', title: '雪原 · 夜巡',     by: '示例投稿' }
+    /* 站点自带的示例图已清空，画廊完全由群友投稿填充。
+       想临时放几张演示图的话，按这个格式加：
+       { g: 'cobblemon', src: '图片地址（相对路径或完整 URL）', title: '说明', by: '昵称' },
+       g 要对应下面 MODPACKS 里的某个 id
+       注意：/api/photos 返回的投稿会自动追加在后面，不会被这里覆盖 */
 ];
 
 (function () {
@@ -685,7 +682,8 @@ const PHOTOS = [
             + '<img src="' + esc(p.src) + '" alt="' + esc(p.title) + '" width="1200" height="675" loading="lazy" decoding="async">'
             + '<span class="gitem-veil"></span>' + ZOOM
             + '<figcaption class="gitem-cap"><span class="t">' + esc(p.title) + '</span>'
-            + '<span class="b">' + esc(p.by || '') + '</span></figcaption></figure>';
+            + '<span class="b">' + (p.featured ? '<span style="color:#E0B000">\u2605</span> ' : '')
+            + esc(p.by || '') + '</span></figcaption></figure>';
     }
 
     function themeOf(key) { return THEMES[key] || THEMES.vanilla; }
@@ -703,8 +701,9 @@ const PHOTOS = [
 
         /* 经验条装真实数据 */
         document.getElementById('xpLv').textContent = filled.length;
-        document.getElementById('xpNote').textContent =
-            filled.length + ' / ' + packs.length + ' 个周目已有截图 · 共 ' + photos.length + ' 张';
+        document.getElementById('xpNote').textContent = photos.length
+            ? filled.length + ' / ' + packs.length + ' 个周目已有截图 · 共 ' + photos.length + ' 张'
+            : '还没有投稿 · ' + packs.length + ' 个周目都在等第一张截图';
         const pct = packs.length ? Math.round(filled.length / packs.length * 100) : 0;
         requestAnimationFrame(function () {
             document.getElementById('xpFill').style.width = pct + '%';
@@ -737,9 +736,18 @@ const PHOTOS = [
         }).join('');
         emptyWrap.style.display = empty.length ? '' : 'none';
 
+        /* 一张图都没有时，这块就是主要内容，文案换成投稿引导 */
+        const none = !filled.length;
+        document.getElementById('emptyTitle').textContent =
+            none ? '画廊还空着，等第一张截图' : '这些周目还没有截图';
+        document.getElementById('emptyDesc').textContent = none
+            ? '点右上角「投稿截图」，把你手里这些周目的存档发上来，通过审核后就会归到对应的分组里'
+            : '如果你手里还留着这些整合包的存档截图，欢迎投稿，让它们也有自己的位置';
+
         const defs = [{ id: 'all', name: '全部', n: photos.length, theme: null }].concat(
             filled.map(function (p) { return { id: p.id, name: p.name, n: p.photos.length, theme: p.theme }; })
         );
+        document.getElementById('chipBar').style.display = photos.length ? '' : 'none';
         chipsEl.innerHTML = defs.map(function (c) {
             const th = c.theme ? themeOf(c.theme) : null;
             return '<button class="chip' + (c.id === current ? ' on' : '') + '" data-g="' + esc(c.id) + '"'
@@ -1109,15 +1117,25 @@ const PHOTOS = [
         }).then(function (r) { return r.json(); });
     }
 
-    function renderAdmin(rows) {
+    function renderAdmin(rows, legacy) {
         const pending = rows.filter(function (r) { return r.status === 'pending'; });
         document.getElementById('adStat').textContent =
             rows.length + ' 张 · 待审 ' + pending.length + ' 张';
+        /* featured 列还没加上时，接口会降级返回 legacy，这里明确告诉腐竹怎么修 */
+        const tip = legacy
+            ? '<p class="mb-1 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-[12.5px] font-semibold leading-relaxed text-amber-700">'
+              + '精选功能还没生效：数据库里缺少 featured 列。到 Cloudflare 的 D1 控制台执行一次 '
+              + '<code class="font-mono">ALTER TABLE photos ADD COLUMN featured INTEGER NOT NULL DEFAULT 0;</code>'
+              + ' 就正常了。</p>'
+            : (rows.some(function (r) { return r.featured; })
+                ? '<p class="mb-1 text-[12px] font-semibold text-amber-600">\u2605 标记的图会优先出现在主页「精选截图」里</p>'
+                : '');
+
         if (!rows.length) {
-            adList.innerHTML = '<p class="py-8 text-center text-[13.5px] text-ink-400">还没有任何投稿</p>';
+            adList.innerHTML = tip + '<p class="py-8 text-center text-[13.5px] text-ink-400">还没有任何投稿</p>';
             return;
         }
-        adList.innerHTML = rows.map(function (r) {
+        adList.innerHTML = tip + rows.map(function (r) {
             const th = themeOf(packById[r.pack] ? packById[r.pack].theme : 'vanilla');
             const badge = r.status === 'pending'
                 ? '<span class="rounded-full bg-amber-50 px-2.5 py-1 text-[11px] font-bold text-amber-600">待审</span>'
@@ -1128,7 +1146,9 @@ const PHOTOS = [
                 + '<img src="' + esc(r.url) + '" alt="" class="h-16 w-28 flex-none rounded-lg object-cover">'
                 + '<div class="min-w-0 flex-1">'
                 + '<div class="flex flex-wrap items-center gap-2">'
-                + '<span class="text-[14px] font-bold text-ink-900">' + esc(r.title || '未命名') + '</span>' + badge
+                + (r.featured ? '<span class="text-[15px] leading-none" style="color:#E0B000" title="已设为精选">\u2605</span>' : '')
+                + '<span class="text-[14px] font-bold text-ink-900">' + esc(r.title || '未命名') + '</span>'
+                + '<span class="font-mono text-[11px] text-ink-300">#' + r.id + '</span>' + badge
                 + '</div>'
                 + '<p class="mt-1.5 flex flex-wrap items-center gap-x-2 gap-y-1 text-[12.5px] text-ink-500">'
                 + '<span class="tx tex-' + esc(th.tex) + '" style="width:14px;height:14px;border-radius:2px;'
@@ -1140,6 +1160,13 @@ const PHOTOS = [
                 + '<div class="flex flex-none flex-wrap gap-2">'
                 + (r.status !== 'approved' ? '<button data-ad="approve" data-id="' + r.id + '" class="btn btn-green px-3.5 py-2 text-[12.5px]">通过</button>' : '')
                 + (r.status !== 'rejected' ? '<button data-ad="reject" data-id="' + r.id + '" class="btn btn-ghost px-3.5 py-2 text-[12.5px]">驳回</button>' : '')
+                + (r.status === 'approved'
+                    ? '<button data-ad="feature" data-id="' + r.id + '" data-on="' + (r.featured ? 1 : 0) + '"'
+                      + ' class="btn px-3.5 py-2 text-[12.5px] ' + (r.featured
+                        ? 'border border-amber-300 bg-amber-50 text-amber-600 hover:bg-amber-100'
+                        : 'btn-ghost') + '">'
+                      + (r.featured ? '\u2605 已精选' : '\u2606 设为精选') + '</button>'
+                    : '')
                 + '<button data-ad="delete" data-id="' + r.id + '" class="btn btn-ghost px-3.5 py-2 text-[12.5px] text-amber-600">删除</button>'
                 + '</div></div>';
         }).join('');
@@ -1150,7 +1177,7 @@ const PHOTOS = [
             if (d && d.photos) {
                 adLock.classList.add('hidden');
                 adBody.classList.remove('hidden');
-                renderAdmin(d.photos);
+                renderAdmin(d.photos, d.legacy);
             } else if (d && d.error === 'bad_code') {
                 adBody.classList.add('hidden'); adLock.classList.remove('hidden');
                 say(adMsg, '审核码不对', false);
@@ -1170,7 +1197,10 @@ const PHOTOS = [
         const action = b.dataset.ad;
         if (action === 'delete' && !window.confirm('确定删除这张截图？文件会一起删掉，不可恢复。')) return;
         b.disabled = true;
-        adminCall({ code: adCode, action: action, id: Number(b.dataset.id) })
+        const payload = { code: adCode, action: action, id: Number(b.dataset.id) };
+        /* 精选是个开关：当前是选中态就取消，否则设为精选 */
+        if (action === 'feature') payload.featured = b.dataset.on === '1' ? 0 : 1;
+        adminCall(payload)
             .then(function () { adminLoad(); loadRemote(); })
             .catch(function () { b.disabled = false; });
     });
@@ -1218,7 +1248,10 @@ const PHOTOS = [
                 const remote = d.photos
                     .filter(function (p) { return packById[p.pack]; })
                     .map(function (p) {
-                        return { g: p.pack, src: p.url, title: p.title || '未命名', by: p.by || '', remote: true };
+                        return {
+                            g: p.pack, src: p.url, title: p.title || '未命名', by: p.by || '',
+                            featured: p.featured ? 1 : 0, remote: true
+                        };
                     });
                 photos = PHOTOS.concat(remote);
                 renderAll();
