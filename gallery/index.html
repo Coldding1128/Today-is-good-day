@@ -544,6 +544,7 @@
                 <button id="adReload" class="btn btn-ghost ml-auto px-4 py-2 text-[12.5px]">刷新</button>
                 <button id="adExit" class="btn btn-ghost px-4 py-2 text-[12.5px]">退出</button>
             </div>
+            <div id="adFilters" class="flex flex-wrap gap-2 pb-4"></div>
             <div id="adList" class="grid gap-3"></div>
         </div>
     </div>
@@ -1117,10 +1118,42 @@ const PHOTOS = [
         }).then(function (r) { return r.json(); });
     }
 
+    let adRows = [];          // 最近一次拉到的全部投稿
+    let adFilter = 'all';     // 当前筛选
+    let adLegacy = false;
+
+    const AD_STATUS = {
+        pending:  { name: '待审',   cls: 'bg-amber-50 text-amber-600' },
+        approved: { name: '已通过', cls: 'bg-brand-50 text-brand-600' },
+        rejected: { name: '已驳回', cls: 'bg-ink-50 text-ink-400' }
+    };
+
     function renderAdmin(rows, legacy) {
-        const pending = rows.filter(function (r) { return r.status === 'pending'; });
+        adRows = rows;
+        adLegacy = legacy;
+
+        const c = { all: rows.length, pending: 0, approved: 0, rejected: 0 };
+        rows.forEach(function (r) { c[r.status] = (c[r.status] || 0) + 1; });
         document.getElementById('adStat').textContent =
-            rows.length + ' 张 · 待审 ' + pending.length + ' 张';
+            rows.length + ' 张 · 待审 ' + c.pending + ' 张';
+
+        /* 筛选条：投稿多了以后，已通过的那批混在待审后面很难翻出来 */
+        const DEFS = [
+            { id: 'all', name: '全部' }, { id: 'pending', name: '待审' },
+            { id: 'approved', name: '已通过' }, { id: 'rejected', name: '已驳回' }
+        ];
+        document.getElementById('adFilters').innerHTML = DEFS.map(function (f) {
+            const on = adFilter === f.id;
+            return '<button data-f="' + f.id + '"'
+                + ' class="rounded-full border px-3 py-1.5 text-[12px] font-bold transition-colors '
+                + (on ? 'border-ink-900 bg-ink-900 text-white'
+                      : 'border-ink-100 bg-white text-ink-500 hover:border-ink-300 hover:text-ink-900')
+                + '">' + f.name + ' <span class="font-mono opacity-60">' + (c[f.id] || 0) + '</span></button>';
+        }).join('');
+
+        const shown = adFilter === 'all'
+            ? rows
+            : rows.filter(function (r) { return r.status === adFilter; });
         /* featured 列还没加上时，接口会降级返回 legacy，这里明确告诉腐竹怎么修 */
         const tip = legacy
             ? '<p class="mb-1 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-[12.5px] font-semibold leading-relaxed text-amber-700">'
@@ -1131,17 +1164,15 @@ const PHOTOS = [
                 ? '<p class="mb-1 text-[12px] font-semibold text-amber-600">\u2605 标记的图会优先出现在主页「精选截图」里</p>'
                 : '');
 
-        if (!rows.length) {
-            adList.innerHTML = tip + '<p class="py-8 text-center text-[13.5px] text-ink-400">还没有任何投稿</p>';
+        if (!shown.length) {
+            adList.innerHTML = tip + '<p class="py-8 text-center text-[13.5px] text-ink-400">'
+                + (rows.length ? '这个筛选下没有图' : '还没有任何投稿') + '</p>';
             return;
         }
-        adList.innerHTML = tip + rows.map(function (r) {
+        adList.innerHTML = tip + shown.map(function (r) {
             const th = themeOf(packById[r.pack] ? packById[r.pack].theme : 'vanilla');
-            const badge = r.status === 'pending'
-                ? '<span class="rounded-full bg-amber-50 px-2.5 py-1 text-[11px] font-bold text-amber-600">待审</span>'
-                : (r.status === 'approved'
-                    ? '<span class="rounded-full bg-brand-50 px-2.5 py-1 text-[11px] font-bold text-brand-600">已通过</span>'
-                    : '<span class="rounded-full bg-ink-50 px-2.5 py-1 text-[11px] font-bold text-ink-400">已驳回</span>');
+            const st = AD_STATUS[r.status] || AD_STATUS.rejected;
+            const badge = '<span class="rounded-full px-2.5 py-1 text-[11px] font-bold ' + st.cls + '">' + st.name + '</span>';
             return '<div class="flex flex-wrap items-center gap-4 rounded-2xl border border-ink-100 bg-white p-3">'
                 + '<img src="' + esc(r.url) + '" alt="" class="h-16 w-28 flex-none rounded-lg object-cover">'
                 + '<div class="min-w-0 flex-1">'
@@ -1191,6 +1222,13 @@ const PHOTOS = [
         });
     }
 
+    document.getElementById('adFilters').addEventListener('click', function (e) {
+        const b = e.target.closest('button[data-f]');
+        if (!b) return;
+        adFilter = b.dataset.f;
+        renderAdmin(adRows, adLegacy);
+    });
+
     adList.addEventListener('click', function (e) {
         const b = e.target.closest('button[data-ad]');
         if (!b) return;
@@ -1220,6 +1258,7 @@ const PHOTOS = [
     document.getElementById('adReload').addEventListener('click', function () { adminLoad(); loadRemote(); });
     document.getElementById('adExit').addEventListener('click', function () {
         adCode = ''; try { localStorage.removeItem(LS_AD); } catch (e) {}
+        adFilter = 'all';
         adBody.classList.add('hidden'); adLock.classList.remove('hidden');
         document.getElementById('adCode').value = '';
     });
