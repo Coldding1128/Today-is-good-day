@@ -12,6 +12,26 @@ export const PACK_IDS = [
     'utopia', 'vanilla'
 ];
 
+/* ============================================================
+   站内可下载的整合包 —— 「不用加群直接下」用的清单
+   ------------------------------------------------------------
+   key 就是文件在 R2 桶（goodday-shots）里的对象名，上传时按这个名字传。
+   加一个新包：在数组里加一项，然后把文件传到对应的 key 即可，
+   页面和接口都会自己认出来（文件没传上去时会显示「准备中」，不会报错）。
+   ============================================================ */
+export const DOWNLOADS = [
+    {
+        id: 'cobblemon',
+        name: '去吧，方可梦大师',
+        version: 'v5.9.2',
+        mc: '1.21.1',
+        theme: 'poke',
+        key: 'packs/cobblemon.zip',
+        video: 'https://www.bilibili.com/video/BV1QU8X6LEYP/',
+        note: '服务器当前运行版本。下载后把 zip 直接拖进启动器窗口即可安装，不用解压。'
+    }
+];
+
 export const MAX_BYTES = 6 * 1024 * 1024;               // 单张上限 6MB（前端已压过，正常不超过 500KB）
 export const TYPES = {                                   // 只收这三种
     'image/jpeg': 'jpg',

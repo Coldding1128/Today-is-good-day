@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>整合包下载 · 今天是个好日子啊</title>
+<meta name="description" content="今天是个好日子啊服务器整合包直接下载，不用加群。当前运行：去吧，方可梦大师 v5.9.2（MC 1.21.1）。">
+<meta name="theme-color" content="#F7F8F5">
+<link rel="canonical" href="https://today-is-good-day.pages.dev/packs/">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 48'%3E%3Crect width='48' height='48' rx='10' fill='%230E1311'/%3E%3Cpath d='M24 9L38 17 24 25 10 17Z' fill='%2363D98C'/%3E%3Cpath d='M10 17L24 25v14L10 31Z' fill='%231E8E4E'/%3E%3Cpath d='M38 17L24 25v14l14-8Z' fill='%23114529'/%3E%3C/svg%3E">
+
+<!-- 分享预览卡 -->
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="今天是个好日子啊">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:url" content="https://today-is-good-day.pages.dev/packs/">
+<meta property="og:title" content="整合包下载 · 今天是个好日子啊">
+<meta property="og:description" content="不用加群，直接下载服务器当前运行的整合包。">
+<meta property="og:image" content="https://today-is-good-day.pages.dev/assets/og-cover.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://today-is-good-day.pages.dev/assets/og-cover.jpg">
+<link rel="image_src" href="https://today-is-good-day.pages.dev/assets/og-cover.jpg">
+
+<script>document.documentElement.classList.add('js');</script>
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+    tailwind.config = {
+        theme: {
+            extend: {
+                colors: {
+                    ink: { 900:'#0E1311',800:'#1B2320',700:'#2C3631',600:'#47504B',500:'#616B65',400:'#7A847E',300:'#9AA39D',200:'#C3CAC4',100:'#E1E5DE',50:'#F1F3EF' },
+                    brand: { 50:'#EAF6EF',100:'#D2EBDB',200:'#A6D7B8',300:'#63D98C',400:'#35B96A',500:'#1E8E4E',600:'#17703E',700:'#114529',900:'#0A2A19' },
+                    amber: { 50:'#FDF5E6',100:'#FAE9C8',300:'#F5C463',500:'#E0900C',600:'#B87208' }
+                },
+                fontFamily: {
+                    sans: ['"PingFang SC"','"HarmonyOS Sans SC"','"Microsoft YaHei"','"Noto Sans SC"','system-ui','-apple-system','"Segoe UI"','sans-serif'],
+                    mono: ['ui-monospace','SFMono-Regular','"JetBrains Mono"','Consolas','"Liberation Mono"','monospace']
+                },
+                maxWidth: { content: '1180px' }
+            }
+        }
+    }
+</script>
+
+<style>
+    body { background: #F7F8F5; overflow-x: hidden; }
+    ::selection { background: #1E8E4E; color: #fff; }
+
+    .terrain {
+        height: 26px; width: 100%;
+        background-image: url('../assets/textures/strip-grass.svg');
+        background-repeat: repeat-x; background-size: auto 26px;
+        image-rendering: pixelated;
+    }
+    .terrain-dark {
+        background-image: url('../assets/textures/strip-slate.svg');
+        height: 30px; background-size: auto 30px;
+    }
+    /* 页面背景那层淡淡的像素网格 */
+    .canvas-grid {
+        position: absolute; inset: 0; pointer-events: none; opacity: .5;
+        background-image: linear-gradient(rgba(14,19,17,.028) 1px, transparent 1px),
+                          linear-gradient(90deg, rgba(14,19,17,.028) 1px, transparent 1px);
+        background-size: 56px 56px;
+    }
+
+    .tag {
+        display: inline-flex; align-items: center; gap: 5px;
+        padding: 4px 11px; border-radius: 999px;
+        font-size: 12px; font-weight: 700; color: #47504B;
+        background: #fff; border: 1px solid #E1E5DE;
+    }
+    .tag-green { background: #EAF6EF; border-color: #D2EBDB; color: #17703E; }
+
+    .btn {
+        display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+        font-weight: 800; border-radius: 12px; white-space: nowrap; cursor: pointer;
+        transition: transform .25s cubic-bezier(.2,.75,.3,1), box-shadow .25s ease, background .25s ease, border-color .25s ease, color .25s ease;
+    }
+    .btn-green {
+        background: #1E8E4E; color: #fff;
+        box-shadow: 0 1px 2px rgba(14,19,17,.15), 0 12px 26px -14px rgba(30,142,78,.75);
+    }
+    .btn-green:hover { background: #17703E; transform: translateY(-2px); box-shadow: 0 1px 2px rgba(14,19,17,.15), 0 18px 34px -14px rgba(30,142,78,.85); }
+    .btn-dark { background: #0E1311; color: #fff; box-shadow: 0 1px 2px rgba(14,19,17,.2), 0 10px 22px -12px rgba(14,19,17,.55); }
+    .btn-dark:hover { background: #1E8E4E; transform: translateY(-2px); }
+    .btn-ghost { border: 1px solid #E1E5DE; color: #2C3631; background: #fff; }
+    .btn-ghost:hover { border-color: #1E8E4E; color: #17703E; background: #EAF6EF; }
+    .btn[disabled] { cursor: not-allowed; transform: none !important; }
+
+    /* ---------- 下载卡片 ---------- */
+    .dl-card {
+        position: relative; overflow: hidden;
+        border: 1px solid #E4E8E1; border-radius: 22px; background: #fff;
+        box-shadow: 0 1px 2px rgba(14,19,17,.035), 0 16px 40px -28px rgba(14,19,17,.28);
+    }
+    .dl-topbar { height: 4px; width: 100%; }
+    .tex {
+        width: 26px; height: 26px; flex: none; border-radius: 3px;
+        background-size: 26px 26px; background-repeat: repeat; image-rendering: pixelated;
+        box-shadow: 0 0 0 2px #39433D, 0 2px 6px -2px rgba(14,19,17,.5);
+    }
+    .tex-theme-poke { background-image: url('../assets/textures/theme-poke.svg'); }
+    .tex-theme-vanilla { background-image: url('../assets/textures/grassblock.svg'); }
+    .tile {
+        position: relative; display: grid; place-items: center;
+        width: 64px; height: 64px; flex: none; overflow: hidden;
+        border-radius: 14px; background: #FAE8E7;
+        box-shadow: 0 0 0 2px #8A2622, inset -2px -2px 0 rgba(0,0,0,.14), inset 2px 2px 0 rgba(255,255,255,.6);
+    }
+    .tile::after {
+        content: ''; position: absolute; inset: auto 0 0 0; height: 13px;
+        background-image: url('../assets/textures/theme-poke.svg');
+        background-size: 13px 13px; image-rendering: pixelated;
+    }
+    .tile img { position: relative; z-index: 1; width: 40px; height: 40px; margin-bottom: 6px; image-rendering: pixelated; }
+    .dl-meta {
+        display: flex; flex-wrap: wrap; align-items: center; gap: 6px 12px;
+        font-family: ui-monospace, Consolas, monospace; font-size: 12.5px; color: #7A847E;
+    }
+    .dot { width: 4px; height: 4px; border-radius: 999px; background: #C3CAC4; }
+    .flag {
+        display: inline-flex; align-items: center; gap: 6px;
+        padding: 4px 11px; border-radius: 999px;
+        font-size: 11.5px; font-weight: 800; color: #fff; background: #D9433F;
+    }
+    .flag-wait { background: #E0900C; }
+    .flag-green { background: #1E8E4E; }
+    @keyframes blink { 0%,100% { opacity: 1; transform: scale(1); } 50% { opacity: .35; transform: scale(.8); } }
+    .blink { animation: blink 1.9s ease-in-out infinite; }
+
+    .reveal { transition: opacity .7s cubic-bezier(.2,.75,.3,1), transform .7s cubic-bezier(.2,.75,.3,1); }
+    html.js .reveal { opacity: 0; transform: translateY(16px); }
+    html.js .reveal.in { opacity: 1; transform: none; }
+    @media (prefers-reduced-motion: reduce) {
+        html { scroll-behavior: auto; }
+        .reveal { opacity: 1 !important; transform: none !important; }
+        .blink { animation: none !important; }
+    }
+</style>
+</head>
+<body class="font-sans text-ink-900 antialiased">
+
+<!-- ============ 顶栏 ============ -->
+<header class="fixed inset-x-0 top-0 z-50 border-b border-ink-100 bg-white/85 backdrop-blur-md">
+    <div class="mx-auto flex h-16 max-w-content items-center gap-4 px-5">
+        <a href="../index.html" class="group flex shrink-0 items-center gap-3">
+            <span class="grid h-9 w-9 place-items-center rounded-xl bg-ink-900 text-white transition-transform duration-300 group-hover:scale-105">
+                <svg class="h-[18px] w-[18px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5.5L8.5 12l6.5 6.5"/></svg>
+            </span>
+            <span class="hidden text-[14px] font-black tracking-tight text-ink-900 sm:block">今天是个好日子啊</span>
+        </a>
+        <nav class="ml-auto flex items-center gap-1 text-[13.5px] font-bold">
+            <a href="https://simp.host/status/simpfun" target="_blank" rel="noopener noreferrer"
+               class="hidden rounded-lg px-3 py-2 text-ink-500 transition-colors hover:bg-ink-50 hover:text-ink-900 sm:block">状态</a>
+            <a href="../gallery/" class="hidden rounded-lg px-3 py-2 text-ink-500 transition-colors hover:bg-ink-50 hover:text-ink-900 sm:block">画廊</a>
+            <button onclick="copyGroup(this)" data-copy="938289365" class="btn btn-green px-4 py-2 text-[12.5px]">
+                <span>复制群号</span>
+            </button>
+        </nav>
+    </div>
+</header>
+
+<!-- ============ 标题区 ============ -->
+<section class="relative overflow-hidden pt-28 pb-14 md:pt-32">
+    <div class="canvas-grid"></div>
+    <div class="relative mx-auto max-w-content px-5">
+        <p class="font-mono text-[11px] font-bold uppercase tracking-[.24em] text-brand-500">Download</p>
+        <h1 class="mt-4 text-[clamp(2rem,5vw,3.2rem)] font-black leading-[1.06] tracking-[-.035em] text-ink-900">
+            整合包下载
+        </h1>
+        <p class="mt-5 max-w-2xl text-[15px] leading-[1.85] text-ink-500">
+            <span class="font-bold text-ink-900">不用加群</span>，点一下直接下载服务器正在运行的整合包。文件放在站内，下载走我们自己的域名。
+        </p>
+        <div class="mt-6 flex flex-wrap gap-2">
+            <span class="tag tag-green">免加群直下</span>
+            <span class="tag">服务器同版本</span>
+            <span class="tag">支持断点续传</span>
+        </div>
+    </div>
+    <div class="terrain absolute inset-x-0 bottom-0" aria-hidden="true"></div>
+</section>
+
+<!-- ============ 下载列表 ============ -->
+<main id="list" class="mx-auto max-w-content px-5 pt-14 pb-6">
+    <!-- 无 JS / 接口未就绪时的兜底，脚本跑起来后会替换掉 -->
+    <div class="dl-card reveal">
+        <div class="dl-topbar bg-gradient-to-r from-[#D9433F] via-[#E4534F] to-[#F4F1EA]"></div>
+        <div class="p-6 sm:p-8">
+            <p class="text-[15px] font-bold text-ink-900">正在读取下载列表…</p>
+            <p class="mt-2 text-[13.5px] text-ink-500">如果这里一直没有变化，可以先加群获取整合包。</p>
+        </div>
+    </div>
+</main>
+
+<!-- ============ 加群兜底 ============ -->
+<section class="mx-auto max-w-content px-5 pb-20">
+    <div class="flex flex-col items-center gap-6 rounded-2xl border border-dashed border-ink-200 bg-white/70 px-6 py-8 text-center sm:flex-row sm:justify-between sm:text-left">
+        <div>
+            <p class="text-[15.5px] font-black tracking-tight text-ink-900">下载有问题，或者想找人一起玩？</p>
+            <p class="mt-1.5 text-[13.5px] leading-relaxed text-ink-500">加群问腐竹，装不上、进不去也都能在群里解决</p>
+        </div>
+        <div class="flex shrink-0 flex-wrap justify-center gap-3">
+            <button onclick="copyGroup(this)" data-copy="938289365" class="btn btn-green px-5 py-3 text-[13.5px]">
+                <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="11" height="11" rx="2.4"/><path d="M15 5.6A2.6 2.6 0 0012.4 3H6a2.4 2.4 0 00-2.4 2.4v6.2A2.6 2.6 0 006 14.2"/></svg>
+                <span>复制群号</span>
+            </button>
+            <a href="../gallery/" class="btn btn-ghost px-5 py-3 text-[13.5px]">看看截图</a>
+        </div>
+    </div>
+</section>
+
+<!-- ============ 页脚 ============ -->
+<div class="terrain terrain-dark" aria-hidden="true"></div>
+<footer class="relative bg-ink-900">
+    <div class="relative mx-auto flex max-w-content flex-col gap-4 px-5 py-9 md:flex-row md:items-center md:justify-between">
+        <p class="text-[12.5px] text-ink-400">© 2025- 今天是个好日子啊 ｜ 本网站非 Mojang 官方出品</p>
+        <div class="flex flex-wrap gap-5 text-[12.5px] text-ink-400">
+            <a href="../index.html" class="transition-colors hover:text-white">返回首页</a>
+            <a href="../gallery/" class="transition-colors hover:text-white">截图画廊</a>
+            <a href="../index.html#history" class="transition-colors hover:text-white">服务器历史</a>
+        </div>
+    </div>
+</footer>
+
+<script>
+    /* ---------- 复制群号（和主页一致的行为） ---------- */
+    function copyGroup(btn) {
+        const text = (btn && btn.dataset && btn.dataset.copy) || '938289365';
+        const done = function () { flash(btn, '已复制!'); };
+        const fallback = function () {
+            const ta = document.createElement('textarea');
+            ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+            document.body.appendChild(ta); ta.select();
+            try { document.execCommand('copy'); done(); } catch (e) { flash(btn, '复制失败'); }
+            document.body.removeChild(ta);
+        };
+        if (navigator.clipboard) navigator.clipboard.writeText(text).then(done, fallback);
+        else fallback();
+    }
+    function flash(btn, msg) {
+        if (!btn) return;
+        let label = null;
+        const spans = btn.querySelectorAll('span');
+        for (let i = 0; i < spans.length; i++) {
+            if (spans[i].getBoundingClientRect().width > 0) { label = spans[i]; break; }
+        }
+        if (!label) label = btn;
+        const original = label.innerText;
+        label.innerText = msg; btn.disabled = true;
+        setTimeout(function () { label.innerText = original; btn.disabled = false; }, 1500);
+    }
+
+    /* ---------- 渲染下载卡片 ---------- */
+    (function () {
+        const listEl = document.getElementById('list');
+        if (!listEl) return;
+
+        function esc(v) {
+            return String(v == null ? '' : v).replace(/[&<>"]/g, function (c) {
+                return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c];
+            });
+        }
+        function sizeText(n) {
+            if (!n) return '';
+            const mb = n / 1048576;
+            if (mb >= 1024) return (mb / 1024).toFixed(2) + ' GB';
+            return (mb >= 100 ? Math.round(mb) : mb.toFixed(1)) + ' MB';
+        }
+
+        const DL_ICON = '<svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4.5v11M7.2 10.8L12 15.6l4.8-4.8"/><path d="M4.5 19.5h15"/></svg>';
+        const PLAY_ICON = '<svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M10.4 9.2l4.6 2.8-4.6 2.8z" fill="currentColor" stroke="none"/></svg>';
+
+        function card(d) {
+            const th = d.theme === 'poke' ? 'tex-theme-poke' : 'tex-theme-vanilla';
+            const tile = d.theme === 'poke'
+                ? '<div class="tile"><img src="../assets/textures/pokeball.svg" alt=""></div>'
+                : '<div class="tile" style="background:#EAF6EF;box-shadow:0 0 0 2px #114529,inset -2px -2px 0 rgba(0,0,0,.14),inset 2px 2px 0 rgba(255,255,255,.6)"></div>';
+
+            const flag = d.ready
+                ? '<span class="flag flag-green"><span class="blink h-1.5 w-1.5 rounded-full bg-white"></span>可下载</span>'
+                : '<span class="flag flag-wait">文件上传中</span>';
+
+            const meta = [];
+            if (d.mc) meta.push('MC ' + d.mc);
+            if (d.version) meta.push('整合包 ' + d.version);
+            if (d.ready && d.size) meta.push(sizeText(d.size));
+            if (d.ready && d.updated) meta.push('更新于 ' + d.updated);
+
+            const actions = d.ready
+                ? '<a href="' + esc(d.url) + '" class="btn btn-green px-6 py-3 text-[14px]" download>' + DL_ICON + '下载整合包</a>'
+                : '<button class="btn btn-ghost px-6 py-3 text-[14px]" disabled>' + DL_ICON + '暂未就绪</button>';
+
+            const video = d.video
+                ? '<a href="' + esc(d.video) + '" target="_blank" rel="noopener noreferrer" class="btn btn-dark px-5 py-3 text-[13.5px]">' + PLAY_ICON + '观看介绍视频</a>'
+                : '';
+
+            const waiting = d.ready ? '' :
+                '<p class="mt-4 rounded-xl border border-amber-100 bg-amber-50 px-4 py-3 text-[12.5px] font-semibold leading-relaxed text-amber-600">'
+                + '腐竹还没把文件传上来。可以先在群里拿，文件准备好之后这里会自动变成一个下载按钮。</p>';
+
+            return '<div class="dl-card reveal">'
+                + '<div class="dl-topbar bg-gradient-to-r from-[#D9433F] via-[#E4534F] to-[#F4F1EA]"></div>'
+                + '<div class="p-6 sm:p-8 md:p-9">'
+                + '<div class="flex flex-wrap items-start gap-5">'
+                + tile
+                + '<div class="min-w-0 flex-1">'
+                + '<div class="flex flex-wrap items-center gap-3">'
+                + '<span class="tex ' + th + '" aria-hidden="true"></span>'
+                + '<h2 class="text-[22px] font-black tracking-tight text-ink-900 sm:text-[26px]">' + esc(d.name) + '</h2>'
+                + flag
+                + '</div>'
+                + '<div class="dl-meta mt-2.5">' + meta.map(function (t) { return '<span>' + esc(t) + '</span>'; }).join('<span class="dot"></span>') + '</div>'
+                + '</div></div>'
+                + (d.note ? '<p class="mt-6 max-w-3xl text-[14.5px] leading-[1.9] text-ink-600">' + esc(d.note) + '</p>' : '')
+                + waiting
+                + '<div class="mt-7 flex flex-wrap items-center gap-3 border-t border-ink-100 pt-6">'
+                + actions + video
+                + '</div>'
+                + '</div></div>';
+        }
+
+        function observe(nodes) {
+            if (!('IntersectionObserver' in window)) {
+                Array.prototype.forEach.call(nodes, function (el) { el.classList.add('in'); });
+                return;
+            }
+            const io = new IntersectionObserver(function (entries) {
+                entries.forEach(function (en, i) {
+                    if (en.isIntersecting) {
+                        const el = en.target;
+                        setTimeout(function () { el.classList.add('in'); }, Math.min(i * 70, 280));
+                        io.unobserve(el);
+                    }
+                });
+            }, { rootMargin: '0px 0px -10% 0px', threshold: 0.04 });
+            Array.prototype.forEach.call(nodes, function (el) { io.observe(el); });
+        }
+
+        fetch('/api/downloads', { headers: { accept: 'application/json' } })
+            .then(function (r) { return r.ok ? r.json() : null; })
+            .then(function (d) {
+                const items = (d && d.downloads) || [];
+                if (!items.length) return;      /* 保持兜底卡片，不要开天窗 */
+                listEl.innerHTML = '<div class="grid gap-6">' + items.map(card).join('') + '</div>';
+                observe(listEl.querySelectorAll('.reveal'));
+            })
+            .catch(function () { /* 接口不可用时保持兜底内容 */ });
+    })();
+</script>
+</body>
+</html>
