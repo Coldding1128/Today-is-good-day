@@ -139,6 +139,42 @@
         .reveal { opacity: 1 !important; transform: none !important; }
         .blink { animation: none !important; }
     }
+    /* ---------- 腐竹上传弹窗 ---------- */
+    .lb {
+        position: fixed; inset: 0; z-index: 60;
+        display: grid; place-items: center; padding: 22px;
+        background: rgba(8,11,10,.94);
+        opacity: 0; visibility: hidden;
+        transition: opacity .3s ease, visibility .3s ease;
+    }
+    .lb.on { opacity: 1; visibility: visible; }
+    .lb-panel {
+        width: 100%; max-width: 580px; max-height: 88vh; overflow-y: auto;
+        border: 1px solid #E4E8E1; border-radius: 24px; background: #fff;
+        padding: 28px; box-shadow: 0 40px 90px -40px rgba(0,0,0,.9);
+    }
+    .lb-close {
+        position: fixed; top: 22px; right: 22px; z-index: 2;
+        display: grid; place-items: center; width: 44px; height: 44px; border-radius: 50%;
+        border: 1px solid rgba(255,255,255,.18); background: rgba(255,255,255,.08); color: #fff;
+        transition: background .25s ease, transform .25s ease;
+    }
+    .lb-close:hover { background: rgba(255,255,255,.18); transform: rotate(90deg); }
+    .lb-close svg { width: 19px; height: 19px; }
+    @media (max-width: 639px) {
+        .lb { padding: 14px; }
+        .lb-panel { padding: 22px; border-radius: 20px; }
+        .lb-close { top: 12px; right: 12px; width: 38px; height: 38px; }
+    }
+
+    .field {
+        width: 100%; border-radius: 12px; border: 1px solid #E1E5DE; background: #F1F3EF;
+        padding: 12px 15px; font-size: 14.5px; color: #0E1311; outline: none;
+        transition: border-color .2s ease;
+    }
+    .field:focus { border-color: #A6D7B8; }
+    .bar { height: 8px; border-radius: 999px; background: #E1E5DE; overflow: hidden; }
+    .bar i { display: block; height: 100%; width: 0; border-radius: 999px; background: #1E8E4E; transition: width .3s ease; }
 </style>
 </head>
 <body class="font-sans text-ink-900 antialiased">
@@ -221,9 +257,55 @@
             <a href="../index.html" class="transition-colors hover:text-white">返回首页</a>
             <a href="../gallery/" class="transition-colors hover:text-white">截图画廊</a>
             <a href="../index.html#history" class="transition-colors hover:text-white">服务器历史</a>
+            <button id="openUpload" class="transition-colors hover:text-white">腐竹上传</button>
         </div>
     </div>
 </footer>
+
+<!-- ============ 腐竹上传弹窗 ============ -->
+<div id="upModal" class="lb" role="dialog" aria-modal="true" aria-label="上传整合包" aria-hidden="true">
+    <button id="upClose" class="lb-close" aria-label="关闭">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>
+    </button>
+    <div class="lb-panel">
+        <h2 class="text-[20px] font-black tracking-tight text-ink-900">上传整合包</h2>
+        <p class="mt-2.5 text-[13px] leading-relaxed text-ink-500">
+            传完会自动出现在上面的下载列表里，<b class="text-ink-700">不用改任何代码</b>。文件名随便起，中文也行。
+        </p>
+
+        <!-- 未解锁 -->
+        <div id="upLock" class="mt-7">
+            <label class="block text-[12px] font-bold tracking-wide text-ink-500" for="upCode">审核码</label>
+            <p class="mt-1.5 text-[12.5px] text-ink-400">和腐竹审核台用的是同一个码，输入一次就记住了</p>
+            <input id="upCode" type="password" autocomplete="off" placeholder="审核码" class="field mt-2.5 font-mono">
+            <p id="upLockMsg" class="mt-2.5 hidden text-[12.5px] font-semibold text-amber-500"></p>
+            <button id="upUnlock" class="btn btn-green mt-4 w-full px-5 py-3 text-[14px]"><span>进入上传</span></button>
+        </div>
+
+        <!-- 已解锁 -->
+        <div id="upBody" class="mt-7 hidden">
+            <label class="block text-[12px] font-bold tracking-wide text-ink-500" for="upFile">选择整合包</label>
+            <input id="upFile" type="file" accept=".zip,.rar,.7z,.mrpack"
+                   class="mt-2 w-full cursor-pointer rounded-xl border border-dashed border-ink-200 bg-ink-50 px-4 py-3 text-[13px] text-ink-600 file:mr-3 file:rounded-lg file:border-0 file:bg-ink-900 file:px-3.5 file:py-2 file:text-[12.5px] file:font-bold file:text-white">
+            <p class="mt-2 text-[12px] leading-relaxed text-ink-400">
+                大文件会被自动切成若干片分别上传（每片 80 MB），这样就不受网页后台 300 MB 的限制了
+            </p>
+
+            <div id="upProg" class="mt-5 hidden">
+                <div class="bar"><i id="upBar"></i></div>
+                <p id="upStat" class="mt-2.5 font-mono text-[12px] text-ink-500">准备中…</p>
+            </div>
+
+            <p id="upMsg" class="mt-4 hidden text-[13px] font-semibold"></p>
+
+            <div class="mt-6 flex flex-wrap gap-3">
+                <button id="upStart" class="btn btn-green px-6 py-3 text-[13.5px]"><span>开始上传</span></button>
+                <button id="upReset" class="btn btn-ghost px-5 py-3 text-[13.5px]">换个审核码</button>
+            </div>
+            <p class="mt-3 text-[12px] leading-relaxed text-ink-400">上传过程中别关页面、别刷新，传完就好了</p>
+        </div>
+    </div>
+</div>
 
 <script>
     /* ---------- 复制群号（和主页一致的行为） ---------- */
@@ -364,7 +446,176 @@
                 observe(listEl.querySelectorAll('.reveal'));
             })
             .catch(function () { /* 接口不可用时保持静态兜底内容 */ });
+
+        /* 供「上传成功后立刻刷新列表」复用 */
+        window.__packCard = card;
+        window.__packEmpty = emptyCard;
     })();
+
+    /* ============================================================
+       腐竹上传 —— 分片传到 R2，绕过网页后台 300 MB 的上限
+       ============================================================ */
+    (function () {
+        const LS_KEY = 'gd_admin_code';      /* 和画廊页的腐竹审核台共用同一个码 */
+        const PART = 80 * 1024 * 1024;       /* 每片 80 MB：Workers 免费版请求体上限是 100 MB */
+        const modal = document.getElementById('upModal');
+        const lockEl = document.getElementById('upLock');
+        const bodyEl = document.getElementById('upBody');
+        const msgEl = document.getElementById('upMsg');
+        const progEl = document.getElementById('upProg');
+        const barEl = document.getElementById('upBar');
+        const statEl = document.getElementById('upStat');
+        const fileEl = document.getElementById('upFile');
+        let code = '';
+        try { code = localStorage.getItem(LS_KEY) || ''; } catch (e) {}
+        let picked = null, busy = false;
+
+        function say(text, ok) {
+            msgEl.textContent = text;
+            msgEl.classList.remove('hidden', 'text-brand-500', 'text-amber-500');
+            msgEl.classList.add(ok ? 'text-brand-500' : 'text-amber-500');
+        }
+        function fmt(n) {
+            const mb = n / 1048576;
+            return mb >= 1024 ? (mb / 1024).toFixed(2) + ' GB'
+                              : (mb >= 100 ? Math.round(mb) : mb.toFixed(1)) + ' MB';
+        }
+        function show(unlocked) {
+            lockEl.classList.toggle('hidden', unlocked);
+            bodyEl.classList.toggle('hidden', !unlocked);
+        }
+
+        function open() {
+            modal.classList.add('on');
+            modal.setAttribute('aria-hidden', 'false');
+            document.body.style.overflow = 'hidden';
+            if (code) { show(true); }
+            else { show(false); document.getElementById('upCode').focus(); }
+        }
+        function close() {
+            if (busy && !window.confirm('上传还没结束，现在关掉会中断，确定吗？')) return;
+            modal.classList.remove('on');
+            modal.setAttribute('aria-hidden', 'true');
+            document.body.style.overflow = '';
+        }
+
+        document.getElementById('openUpload').addEventListener('click', open);
+        document.getElementById('upClose').addEventListener('click', close);
+        modal.addEventListener('click', function (e) { if (e.target === modal) close(); });
+        document.addEventListener('keydown', function (e) {
+            if (e.key === 'Escape' && modal.classList.contains('on')) close();
+        });
+
+        document.getElementById('upUnlock').addEventListener('click', function () {
+            const v = document.getElementById('upCode').value.trim();
+            if (!v) return;
+            code = v;
+            try { localStorage.setItem(LS_KEY, v); } catch (e) {}
+            show(true);
+        });
+        document.getElementById('upReset').addEventListener('click', function () {
+            code = '';
+            try { localStorage.removeItem(LS_KEY); } catch (e) {}
+            document.getElementById('upCode').value = '';
+            show(false);
+        });
+
+        fileEl.addEventListener('change', function (e) {
+            picked = (e.target.files && e.target.files[0]) || null;
+            progEl.classList.add('hidden');
+            msgEl.classList.add('hidden');
+            if (picked) say('已选：' + picked.name + '（' + fmt(picked.size) + '）', true);
+        });
+
+        function post(action, query, body, json) {
+            const q = Object.keys(query || {}).map(function (k) {
+                return k + '=' + encodeURIComponent(query[k]);
+            }).join('&');
+            const headers = { 'x-admin-code': code };
+            if (json) headers['content-type'] = 'application/json';
+            return fetch('/api/pack-upload?action=' + action + (q ? '&' + q : ''), {
+                method: 'POST', headers: headers, body: body
+            }).then(function (r) { return r.json(); });
+        }
+
+        document.getElementById('upStart').addEventListener('click', async function () {
+            if (!picked) { say('先选一个文件', false); return; }
+            if (!/\.(zip|rar|7z|mrpack)$/i.test(picked.name)) {
+                say('只支持 .zip / .rar / .7z / .mrpack', false); return;
+            }
+
+            const btn = document.getElementById('upStart');
+            const label = btn.querySelector('span') || btn;
+            busy = true; btn.disabled = true; label.innerText = '上传中…';
+            progEl.classList.remove('hidden');
+            barEl.style.width = '0%';
+
+            try {
+                statEl.textContent = '正在建立上传会话…';
+                const init = await post('init', null, JSON.stringify({ file: picked.name }), true);
+                if (!init.ok) {
+                    throw new Error(init.error === 'bad_code'
+                        ? '审核码不对，换个码再试'
+                        : '创建上传失败：' + (init.error || '未知'));
+                }
+
+                const total = Math.ceil(picked.size / PART);
+                const parts = [];
+                for (let i = 0; i < total; i++) {
+                    const n = i + 1;
+                    const sent = Math.min((i + 1) * PART, picked.size);
+                    statEl.textContent = '第 ' + n + ' / ' + total + ' 片 · ' + fmt(sent) + ' / ' + fmt(picked.size);
+                    const r = await fetch('/api/pack-upload?action=part&n=' + n
+                            + '&key=' + encodeURIComponent(init.key)
+                            + '&id=' + encodeURIComponent(init.uploadId), {
+                        method: 'POST',
+                        headers: { 'x-admin-code': code, 'content-type': 'application/octet-stream' },
+                        body: picked.slice(i * PART, sent)
+                    });
+                    const d = await r.json();
+                    if (!d.ok) throw new Error('第 ' + n + ' 片失败了：' + (d.error || '未知'));
+                    parts.push({ partNumber: d.n, etag: d.etag });
+                    barEl.style.width = Math.round((i + 1) / total * 100) + '%';
+                }
+
+                statEl.textContent = '正在合并分片…';
+                const done = await post('complete',
+                    { key: init.key, id: init.uploadId },
+                    JSON.stringify({ parts: parts }), true);
+                if (!done.ok) throw new Error('合并失败：' + (done.error || '未知'));
+
+                barEl.style.width = '100%';
+                statEl.textContent = '上传完成 · ' + fmt(done.size || picked.size);
+                say('上传成功！下面的列表已经刷新', true);
+                picked = null; fileEl.value = '';
+                refreshList();
+            } catch (err) {
+                say(String((err && err.message) || err), false);
+                statEl.textContent = '上传中断';
+            } finally {
+                busy = false; btn.disabled = false; label.innerText = '开始上传';
+            }
+        });
+
+        /* 列表接口有 60 秒缓存，加个时间戳就能立刻看到刚传上去的包 */
+        function refreshList() {
+            fetch('/api/downloads?v=' + Date.now(), { headers: { accept: 'application/json' }, cache: 'no-store' })
+                .then(function (r) { return r.ok ? r.json() : null; })
+                .then(function (d) {
+                    const items = (d && d.downloads) || [];
+                    const listEl = document.getElementById('list');
+                    if (!listEl) return;
+                    listEl.innerHTML = items.length
+                        ? '<div class="grid gap-6">' + items.map(window.__packCard).join('') + '</div>'
+                        : window.__packEmpty();
+                    Array.prototype.forEach.call(listEl.querySelectorAll('.reveal'), function (el) {
+                        el.classList.add('in');
+                    });
+                })
+                .catch(function () {});
+        }
+    })();
+
 </script>
 </body>
 </html>

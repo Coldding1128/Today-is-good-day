@@ -37,8 +37,17 @@ export async function onRequestGet({ params, env, request }) {
        ASCII 兜底名去掉中文后可能只剩版本号，所以留一个保底。 */
     const fileName = key.slice(PACK_PREFIX.length);
     const asciiName = fileName.replace(/[^\x20-\x7E]/g, '').replace(/"/g, '').trim() || 'pack.zip';
+    /* 按扩展名给类型：exe 别报成 zip，否则浏览器下载器的提示会不对 */
+    const ext = (fileName.match(/\.([a-z0-9]+)$/i) || [])[1] || '';
+    const MIME = {
+        zip: 'application/zip',
+        mrpack: 'application/zip',
+        rar: 'application/vnd.rar',
+        '7z': 'application/x-7z-compressed',
+        exe: 'application/octet-stream'
+    };
     const headers = {
-        'content-type': 'application/zip',
+        'content-type': MIME[ext.toLowerCase()] || 'application/octet-stream',
         'content-disposition': 'attachment; filename="' + asciiName + '";'
             + " filename*=UTF-8''" + encodeURIComponent(fileName),
         'cache-control': 'public, max-age=3600',

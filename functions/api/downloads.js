@@ -10,7 +10,7 @@
  */
 import { json, PACK_PREFIX, PACK_META } from '../_lib.js';
 
-/* 只列压缩包，避免把误传的其他文件也摆出来 */
+/* 只列整合包压缩包，避免把误传的其他东西也摆出来 */
 const PACK_EXT = /\.(zip|rar|7z|mrpack)$/i;
 
 /** 从文件名里拆出名称和版本：末尾的 v1.2.3 / 1.2.3 会被当作版本号 */
