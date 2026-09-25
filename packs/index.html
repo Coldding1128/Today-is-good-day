@@ -623,9 +623,26 @@
                         /* 把已成功的片记下来：下次点按钮接着传，不用重来 */
                         session = { key: key, uploadId: uploadId, parts: parts,
                                     name: picked.name, size: picked.size };
+
+                        /* 报错信息有时很笼统，就地做一次分步诊断把结果带出来，
+                           省得来回猜（只用同一片数据再发一次） */
+                        let diagText = '';
+                        try {
+                            statEl.textContent = '正在诊断失败原因…';
+                            const dg = await fetch('/api/pack-upload?action=diag', {
+                                method: 'POST',
+                                headers: { 'x-admin-code': code, 'content-type': 'application/octet-stream' },
+                                body: picked.slice(i * PART, sent)
+                            }).then(function (r) { return r.json(); });
+                            diagText = '［诊断 ' + JSON.stringify(dg) + '］';
+                        } catch (e) {
+                            diagText = '［诊断请求也没发出去］';
+                        }
+
                         throw new Error('第 ' + n + ' 片失败了：' + ((d && d.error) || '未知')
                             + (d && d.detail ? '（' + d.detail + '）' : '')
-                            + (d && d.sentBytes ? '［服务端已收到 ' + d.sentBytes + ' 字节］' : ''));
+                            + (d && d.sentBytes ? '［服务端已收到 ' + d.sentBytes + ' 字节］' : '')
+                            + diagText);
                     }
                     parts.push({ partNumber: d.n, etag: d.etag });
                     barEl.style.width = Math.round((i + 1) / total * 100) + '%';

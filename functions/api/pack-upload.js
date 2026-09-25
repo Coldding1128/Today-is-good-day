@@ -66,6 +66,47 @@ export async function onRequestPost({ request, env }) {
         }
     }
 
+    /* ---------- diag：分步诊断，用来定位 part 为什么失败 ----------
+       收下同样大小的一份数据，依次试「单次 put」「建 multipart」「传一片」，
+       把每一步的结果回给前端。这样失败时能直接看出卡在哪，不用再猜。 */
+    if (action === 'diag') {
+        const out = {};
+        let buf;
+        try {
+            buf = await request.arrayBuffer();
+            out.bodyBytes = buf.byteLength;
+        } catch (e) {
+            out.readBody = 'FAIL ' + String(e).slice(0, 120);
+            return json(out);
+        }
+
+        /* A. 对照：用单次 put 写同样大小的数据 */
+        try {
+            await env.BUCKET.put('packs/.diag-put.tmp', buf);
+            out.put = 'ok';
+        } catch (e) {
+            out.put = 'FAIL ' + String(e).slice(0, 140);
+        }
+        try { await env.BUCKET.delete('packs/.diag-put.tmp'); } catch (e) {}
+
+        /* B. multipart：建会话 + 传一片 */
+        try {
+            const up = await env.BUCKET.createMultipartUpload('packs/.diag-mpu.tmp');
+            out.create = 'ok';
+            try {
+                const p = await up.uploadPart(1, buf);
+                out.uploadPart = 'ok etag=' + String(p.etag || '').slice(0, 24);
+            } catch (e) {
+                out.uploadPart = 'FAIL ' + String(e).slice(0, 140);
+            }
+            try { await up.abort(); } catch (e) {}
+        } catch (e) {
+            out.create = 'FAIL ' + String(e).slice(0, 140);
+        }
+
+        return json(out);
+    }
+
     if (key.indexOf(PACK_PREFIX) !== 0) return json({ error: 'bad_key' }, 400);
     if (!id) return json({ error: 'bad_id' }, 400);
 
