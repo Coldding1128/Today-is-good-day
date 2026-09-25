@@ -284,7 +284,21 @@
 
         <!-- 已解锁 -->
         <div id="upBody" class="mt-7 hidden">
-            <label class="block text-[12px] font-bold tracking-wide text-ink-500" for="upFile">选择整合包</label>
+            <!-- 空间用量 -->
+            <div class="rounded-xl border border-ink-100 bg-ink-50 px-4 py-3">
+                <div class="flex items-center justify-between gap-3">
+                    <span class="text-[12px] font-bold tracking-wide text-ink-500">R2 空间</span>
+                    <span id="quotaText" class="font-mono text-[12px] text-ink-500">读取中…</span>
+                </div>
+                <div class="mt-2 h-2 overflow-hidden rounded-full bg-ink-100">
+                    <i id="quotaBar" style="display:block;height:100%;width:0;border-radius:999px;background:#1E8E4E;transition:width .3s ease"></i>
+                </div>
+                <p class="mt-2 text-[11.5px] leading-relaxed text-ink-400">
+                    免费额度 10 GB，超了会开始计费。装满了先删几个旧包再传。
+                </p>
+            </div>
+
+            <label class="mt-6 block text-[12px] font-bold tracking-wide text-ink-500" for="upFile">选择整合包</label>
             <input id="upFile" type="file" accept=".zip,.rar,.7z,.mrpack"
                    class="mt-2 w-full cursor-pointer rounded-xl border border-dashed border-ink-200 bg-ink-50 px-4 py-3 text-[13px] text-ink-600 file:mr-3 file:rounded-lg file:border-0 file:bg-ink-900 file:px-3.5 file:py-2 file:text-[12.5px] file:font-bold file:text-white">
             <p class="mt-2 text-[12px] leading-relaxed text-ink-400">
@@ -303,6 +317,14 @@
                 <button id="upReset" class="btn btn-ghost px-5 py-3 text-[13.5px]">换个审核码</button>
             </div>
             <p class="mt-3 text-[12px] leading-relaxed text-ink-400">上传过程中别关页面、别刷新，传完就好了</p>
+
+            <!-- 已有的包：可以直接删，腾空间 -->
+            <div class="mt-7 border-t border-ink-100 pt-5">
+                <p class="text-[12px] font-bold tracking-wide text-ink-500">已有的整合包</p>
+                <div id="upFiles" class="mt-3 grid gap-2">
+                    <p class="text-[12.5px] text-ink-400">读取中…</p>
+                </div>
+            </div>
         </div>
     </div>
 </div>
@@ -471,6 +493,13 @@
         const fileEl = document.getElementById('upFile');
         let code = '';
         try { code = localStorage.getItem(LS_KEY) || ''; } catch (e) {}
+
+        /* 转义：文件名会带引号和尖括号，拼进 HTML 前必须处理 */
+        function esc(v) {
+            return String(v == null ? '' : v).replace(/[&<>"]/g, function (c) {
+                return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c];
+            });
+        }
         let picked = null, busy = false;
         /* 中断后保留现场：下次点按钮接着传，已成功的分片不用重来 */
         let session = null;
@@ -494,7 +523,7 @@
             modal.classList.add('on');
             modal.setAttribute('aria-hidden', 'false');
             document.body.style.overflow = 'hidden';
-            if (code) { show(true); }
+            if (code) { show(true); loadFiles(); }
             else { show(false); document.getElementById('upCode').focus(); }
         }
         function close() {
@@ -517,6 +546,7 @@
             code = v;
             try { localStorage.setItem(LS_KEY, v); } catch (e) {}
             show(true);
+            loadFiles();
         });
         document.getElementById('upReset').addEventListener('click', function () {
             code = '';
@@ -532,7 +562,13 @@
             picked = next;
             progEl.classList.add('hidden');
             msgEl.classList.add('hidden');
-            if (picked) say('已选：' + picked.name + '（' + fmt(picked.size) + '）', true);
+            if (!picked) return;
+            if (quota && quota.used + picked.size > quota.limit) {
+                say('已选：' + picked.name + '（' + fmt(picked.size) + '）'
+                    + ' —— 空间不够，先删几个旧包', false);
+            } else {
+                say('已选：' + picked.name + '（' + fmt(picked.size) + '）', true);
+            }
         });
 
         function post(action, query, body, json) {
@@ -545,6 +581,69 @@
                 method: 'POST', headers: headers, body: body
             }).then(function (r) { return r.json(); });
         }
+
+        /* ---------- 空间用量与已有包管理 ---------- */
+        let quota = null;   /* { used, limit } */
+
+        function loadFiles() {
+            statEl.textContent = statEl.textContent;   /* 不动进度文案 */
+            return post('list', null, null, false).then(function (d) {
+                if (!d || !d.ok) {
+                    document.getElementById('quotaText').textContent = '读不到用量';
+                    return;
+                }
+                quota = { used: d.used, limit: d.limit };
+                renderQuota(d.used, d.limit);
+                renderFiles(d.files || []);
+            }).catch(function () {
+                document.getElementById('quotaText').textContent = '读不到用量';
+            });
+        }
+
+        function renderQuota(used, limit) {
+            const pct = limit ? Math.min(100, Math.round(used / limit * 100)) : 0;
+            const bar = document.getElementById('quotaBar');
+            bar.style.width = pct + '%';
+            bar.style.background = pct >= 95 ? '#D9433F' : (pct >= 80 ? '#E0900C' : '#1E8E4E');
+            document.getElementById('quotaText').textContent =
+                fmt(used) + ' / ' + fmt(limit) + '（剩 ' + fmt(Math.max(0, limit - used)) + '）';
+        }
+
+        function renderFiles(files) {
+            const box = document.getElementById('upFiles');
+            if (!files.length) {
+                box.innerHTML = '<p class="text-[12.5px] text-ink-400">还没有上传过整合包</p>';
+                return;
+            }
+            box.innerHTML = files.map(function (f) {
+                return '<div class="flex items-center gap-3 rounded-xl border border-ink-100 bg-white px-3 py-2">'
+                    + '<span class="min-w-0 flex-1 truncate text-[13px] font-semibold text-ink-800" title="' + esc(f.name) + '">' + esc(f.name) + '</span>'
+                    + '<span class="shrink-0 font-mono text-[11.5px] text-ink-400">' + fmt(f.size) + '</span>'
+                    + '<button data-del="' + esc(f.key) + '" class="shrink-0 text-[12px] font-bold text-amber-600 hover:underline">删除</button>'
+                    + '</div>';
+            }).join('');
+        }
+
+        document.getElementById('upFiles').addEventListener('click', function (e) {
+            const b = e.target.closest('button[data-del]');
+            if (!b) return;
+            const key = b.getAttribute('data-del');
+            if (!window.confirm('删掉这个整合包？文件会一起删掉，不可恢复。')) return;
+            b.disabled = true;
+            b.textContent = '删除中…';
+            post('delete', null, JSON.stringify({ key: key }), true).then(function (d) {
+                if (d && d.ok) {
+                    say('已删除 ' + key.replace(/^packs\//, ''), true);
+                    loadFiles();
+                } else {
+                    b.disabled = false; b.textContent = '删除';
+                    say('删除失败：' + ((d && d.error) || '未知'), false);
+                }
+            }).catch(function () {
+                b.disabled = false; b.textContent = '删除';
+                say('删除请求没发出去', false);
+            });
+        });
 
         document.getElementById('upStart').addEventListener('click', function () {
             if (!picked) { say('先选一个文件', false); return; }
@@ -566,9 +665,14 @@
 
             try {
                 statEl.textContent = '正在申请上传授权…';
-                const sign = await post('sign', null, JSON.stringify({ file: picked.name }), true);
+                const sign = await post('sign', null,
+                    JSON.stringify({ file: picked.name, size: picked.size }), true);
                 if (!sign.ok) {
                     if (sign.error === 'bad_code') throw new Error('审核码不对，换个码再试');
+                    if (sign.error === 'quota_exceeded') {
+                        throw new Error('空间不够了：已用 ' + fmt(sign.used) + ' / 上限 ' + fmt(sign.limit)
+                            + '，而这次要传 ' + fmt(sign.incoming) + '。先删掉几个旧包再传。');
+                    }
                     if (sign.error === 'not_configured') {
                         throw new Error('还没配 R2 直传密钥 —— 见「整合包下载-上线步骤」第 1 步');
                     }
@@ -603,6 +707,7 @@
                 say('上传成功！下面的列表已经刷新', true);
                 picked = null; fileEl.value = ''; session = null;
                 refreshList();
+                loadFiles();   /* 刷新用量和已有的包 */
             } catch (err) {
                 say(String((err && err.message) || err), false);
                 statEl.textContent = '上传中断';

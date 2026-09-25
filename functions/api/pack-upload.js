@@ -22,6 +22,21 @@ import { json, clean, PACK_PREFIX, presignPutUrl } from '../_lib.js';
 const MAX_NAME_LEN = 120;   // 文件名截断长度（R2 的 key 上限是 1024 字节，中文够用）
 const MAX_PARTS = 200;      // 每片最少 5 MiB，200 片足够应付 10 GB
 
+/* R2 免费额度是 10 GB，超了要按量计费。默认按 10 GB 卡住不让传，
+   想放宽就配个环境变量 R2_QUOTA_GB（比如 50）。 */
+function quotaBytes(env) {
+    const gb = Number(env.R2_QUOTA_GB);
+    return (gb > 0 ? gb : 10) * 1024 * 1024 * 1024;
+}
+
+/** 扫一遍 packs/ 目录，算出整合包占了多少 */
+async function usedBytes(env) {
+    const res = await env.BUCKET.list({ prefix: PACK_PREFIX, limit: 1000 });
+    return (res.objects || [])
+        .filter(function (o) { return o.key && !/\/$/.test(o.key); })
+        .reduce(function (sum, o) { return sum + (o.size || 0); }, 0);
+}
+
 /** 把用户给的文件名收拾成安全的 R2 key：保留中文和空格，去掉路径分隔符与控制字符 */
 function safeKey(fileName) {
     const base = String(fileName == null ? '' : fileName)
@@ -66,6 +81,46 @@ export async function onRequestPost({ request, env }) {
         }
     }
 
+    /* ---------- list：看现在有哪些包、占了多少空间（腐竹在弹窗里看） ---------- */
+    if (action === 'list') {
+        try {
+            const res = await env.BUCKET.list({ prefix: PACK_PREFIX, limit: 1000 });
+            const files = (res.objects || [])
+                .filter(function (o) { return o.key && !/\/$/.test(o.key); })
+                .map(function (o) {
+                    return {
+                        key: o.key,
+                        name: o.key.slice(PACK_PREFIX.length),
+                        size: o.size || 0,
+                        updated: o.uploaded ? new Date(o.uploaded).toISOString().slice(0, 10) : ''
+                    };
+                })
+                .sort(function (a, b) { return (b.updated > a.updated) ? 1 : -1; });
+            const used = files.reduce(function (s, f) { return s + f.size; }, 0);
+            const limit = quotaBytes(env);
+            return json({ ok: true, files: files, used: used, limit: limit });
+        } catch (e) {
+            return json({ error: 'list_failed', detail: String(e).slice(0, 120) }, 500);
+        }
+    }
+
+    /* ---------- delete：删掉一个包，腾出空间 ---------- */
+    if (action === 'delete') {
+        let body;
+        try { body = await request.json(); } catch (e) { return json({ error: 'bad_json' }, 400); }
+        const target = clean(body.key, 300);
+        /* 只允许删 packs/ 下的东西 —— 截图不在这个前缀里，误删不了 */
+        if (target.indexOf(PACK_PREFIX) !== 0 || target.indexOf('..') !== -1) {
+            return json({ error: 'bad_key' }, 400);
+        }
+        try {
+            await env.BUCKET.delete(target);
+            return json({ ok: true, key: target });
+        } catch (e) {
+            return json({ error: 'delete_failed', detail: String(e).slice(0, 120) }, 500);
+        }
+    }
+
     /* ---------- sign：签发一个直传 R2 的网址（当前前端走的就是这条路） ----------
        浏览器拿到签名后的 URL 之后直接 PUT 到 R2，数据完全不经过 Worker，
        这样就绕开了「大文件经 Worker 中转写 R2 会失败」的问题。
@@ -79,6 +134,22 @@ export async function onRequestPost({ request, env }) {
         const sk = env.R2_SECRET_ACCESS_KEY;
         if (!accountId || !ak || !sk) {
             return json({ error: 'not_configured', detail: '还没配 R2 直传密钥' }, 503);
+        }
+
+        /* 先看看还剩多少空间。配额是按「传完之后」算的，
+           所以要把这次要传的大小一起加进去判断 */
+        const incoming = Number(body.size) || 0;
+        let used = 0;
+        try { used = await usedBytes(env); } catch (e) { /* 查不到就不拦，别把上传卡死 */ }
+        const limit = quotaBytes(env);
+        if (incoming > 0 && used + incoming > limit) {
+            return json({
+                error: 'quota_exceeded',
+                used: used,
+                limit: limit,
+                incoming: incoming,
+                detail: '空间不够了，先删掉几个旧包再传'
+            }, 413);
         }
 
         const target = safeKey(body.file);
