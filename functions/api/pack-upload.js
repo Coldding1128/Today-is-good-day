@@ -17,7 +17,7 @@
  *
  * 鉴权：请求头 x-admin-code，值就是审核台的审核码（ADMIN_CODE）。
  */
-import { json, clean, PACK_PREFIX } from '../_lib.js';
+import { json, clean, PACK_PREFIX, presignPutUrl } from '../_lib.js';
 
 const MAX_NAME_LEN = 120;   // 文件名截断长度（R2 的 key 上限是 1024 字节，中文够用）
 const MAX_PARTS = 200;      // 每片最少 5 MiB，200 片足够应付 10 GB
@@ -63,6 +63,37 @@ export async function onRequestPost({ request, env }) {
             return json({ ok: true, key: target, uploadId: up.uploadId });
         } catch (e) {
             return json({ error: 'r2_error', detail: String(e).slice(0, 120) }, 500);
+        }
+    }
+
+    /* ---------- sign：签发一个直传 R2 的网址（当前前端走的就是这条路） ----------
+       浏览器拿到签名后的 URL 之后直接 PUT 到 R2，数据完全不经过 Worker，
+       这样就绕开了「大文件经 Worker 中转写 R2 会失败」的问题。
+       需要的三个值在 Cloudflare 后台生成后配成环境变量。 */
+    if (action === 'sign') {
+        let body;
+        try { body = await request.json(); } catch (e) { return json({ error: 'bad_json' }, 400); }
+
+        const accountId = env.R2_ACCOUNT_ID;
+        const ak = env.R2_ACCESS_KEY_ID;
+        const sk = env.R2_SECRET_ACCESS_KEY;
+        if (!accountId || !ak || !sk) {
+            return json({ error: 'not_configured', detail: '还没配 R2 直传密钥' }, 503);
+        }
+
+        const target = safeKey(body.file);
+        try {
+            const signed = await presignPutUrl({
+                accountId: accountId,
+                accessKeyId: ak,
+                secretAccessKey: sk,
+                bucket: env.R2_BUCKET_NAME || 'goodday-shots',
+                key: target,
+                expires: 3600
+            });
+            return json({ ok: true, key: target, url: signed.url, expires: signed.expires });
+        } catch (e) {
+            return json({ error: 'sign_failed', detail: String(e).slice(0, 140) }, 500);
         }
     }
 

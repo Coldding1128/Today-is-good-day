@@ -288,7 +288,7 @@
             <input id="upFile" type="file" accept=".zip,.rar,.7z,.mrpack"
                    class="mt-2 w-full cursor-pointer rounded-xl border border-dashed border-ink-200 bg-ink-50 px-4 py-3 text-[13px] text-ink-600 file:mr-3 file:rounded-lg file:border-0 file:bg-ink-900 file:px-3.5 file:py-2 file:text-[12.5px] file:font-bold file:text-white">
             <p class="mt-2 text-[12px] leading-relaxed text-ink-400">
-                大文件会被自动切成若干片分别上传（每片 10 MB），这样就不受网页后台 300 MB 的限制了
+                文件会直接传到 R2 存储（不经过网站服务器），所以多大都能传。单次上限 5 GB，传的时候能看到进度。
             </p>
 
             <div id="upProg" class="mt-5 hidden">
@@ -554,128 +554,61 @@
             runUpload();
         });
 
+        /* 直传 R2：先向自己的后端要一个签名好的网址，然后浏览器直接 PUT 上去。
+           数据一个字节都不经过 Worker —— 之前经 Worker 中转会被 R2 拒掉。 */
         async function runUpload() {
             const btn = document.getElementById('upStart');
             const label = btn.querySelector('span') || btn;
             busy = true; btn.disabled = true; label.innerText = '上传中…';
             progEl.classList.remove('hidden');
             msgEl.classList.add('hidden');
+            barEl.style.width = '0%';
 
             try {
-                let key, uploadId, parts, total;
-
-                /* 上次中断过、且文件没换 → 接着传：已经传成功的片不用重来 */
-                const resume = session && session.name === picked.name && session.size === picked.size;
-                if (resume) {
-                    key = session.key; uploadId = session.uploadId; parts = session.parts.slice();
-                    total = Math.ceil(picked.size / PART);
-                    barEl.style.width = Math.round(parts.length / total * 100) + '%';
-                    statEl.textContent = '继续上传 · 已完成 ' + parts.length + ' / ' + total + ' 片';
-                } else {
-                    session = null;
-                    barEl.style.width = '0%';
-                    statEl.textContent = '正在建立上传会话…';
-                    const init = await post('init', null, JSON.stringify({ file: picked.name }), true);
-                    if (!init.ok) {
-                        throw new Error(init.error === 'bad_code'
-                            ? '审核码不对，换个码再试'
-                            : '创建上传失败：' + (init.error || '未知')
-                              + (init.detail ? '（' + init.detail + '）' : ''));
+                statEl.textContent = '正在申请上传授权…';
+                const sign = await post('sign', null, JSON.stringify({ file: picked.name }), true);
+                if (!sign.ok) {
+                    if (sign.error === 'bad_code') throw new Error('审核码不对，换个码再试');
+                    if (sign.error === 'not_configured') {
+                        throw new Error('还没配 R2 直传密钥 —— 见「整合包下载-上线步骤」第 1 步');
                     }
-                    key = init.key; uploadId = init.uploadId; parts = [];
-                    total = Math.ceil(picked.size / PART);
+                    throw new Error('申请授权失败：' + (sign.error || '未知')
+                        + (sign.detail ? '（' + sign.detail + '）' : ''));
                 }
 
-                for (let i = parts.length; i < total; i++) {
-                    const n = i + 1;
-                    const sent = Math.min((i + 1) * PART, picked.size);
-                    let d = null;
-
-                    /* 同一片最多试 3 次：网络抖动很常见，重试比让用户从头再来划算 */
-                    for (let attempt = 1; attempt <= 3; attempt++) {
-                        if (attempt === 1) {
-                            statEl.textContent = '第 ' + n + ' / ' + total + ' 片 · '
-                                + fmt(sent) + ' / ' + fmt(picked.size);
-                        } else {
-                            statEl.textContent = '第 ' + n + ' / ' + total + ' 片重试中（第 ' + attempt + ' 次）…';
-                            await new Promise(function (res) { setTimeout(res, 700 * attempt); });
-                        }
-                        let resp;
-                        try {
-                            resp = await fetch('/api/pack-upload?action=part&n=' + n
-                                + '&key=' + encodeURIComponent(key)
-                                + '&id=' + encodeURIComponent(uploadId), {
-                                method: 'POST',
-                                headers: { 'x-admin-code': code, 'content-type': 'application/octet-stream' },
-                                body: picked.slice(i * PART, sent)
-                            });
-                        } catch (netErr) {
-                            d = { error: '网络中断' };
-                            continue;
-                        }
-                        try { d = await resp.json(); } catch (e) { d = { error: 'http_' + resp.status }; }
-                        if (d && d.ok) break;
-                        /* 审核码/参数这类问题重试也没用，直接跳出 */
-                        if (d && ['bad_code', 'bad_key', 'bad_id', 'bad_part'].indexOf(d.error) >= 0) break;
-                    }
-
-                    if (!d || !d.ok) {
-                        /* 把已成功的片记下来：下次点按钮接着传，不用重来 */
-                        session = { key: key, uploadId: uploadId, parts: parts,
-                                    name: picked.name, size: picked.size };
-
-                        /* 报错信息有时很笼统，就地做一次分步诊断把结果带出来，
-                           省得来回猜（只用同一片数据再发一次） */
-                        let diagText = '';
-                        try {
-                            statEl.textContent = '正在诊断失败原因…';
-                            const dg = await fetch('/api/pack-upload?action=diag', {
-                                method: 'POST',
-                                headers: { 'x-admin-code': code, 'content-type': 'application/octet-stream' },
-                                body: picked.slice(i * PART, sent)
-                            }).then(function (r) { return r.json(); });
-                            diagText = '［诊断 ' + JSON.stringify(dg) + '］';
-                        } catch (e) {
-                            diagText = '［诊断请求也没发出去］';
-                        }
-
-                        throw new Error('第 ' + n + ' 片失败了：' + ((d && d.error) || '未知')
-                            + (d && d.detail ? '（' + d.detail + '）' : '')
-                            + (d && d.sentBytes ? '［服务端已收到 ' + d.sentBytes + ' 字节］' : '')
-                            + diagText);
-                    }
-                    parts.push({ partNumber: d.n, etag: d.etag });
-                    barEl.style.width = Math.round((i + 1) / total * 100) + '%';
-                }
-
-                statEl.textContent = '正在合并分片…';
-                const done = await post('complete',
-                    { key: key, id: uploadId },
-                    JSON.stringify({ parts: parts }), true);
-                if (!done.ok) {
-                    session = { key: key, uploadId: uploadId, parts: parts,
-                                name: picked.name, size: picked.size };
-                    throw new Error('合并失败：' + (done.error || '未知')
-                        + (done.detail ? '（' + done.detail + '）' : ''));
-                }
+                statEl.textContent = '上传中…';
+                await new Promise(function (resolve, reject) {
+                    /* 用 XHR 而不是 fetch：只有它能给出上传进度 */
+                    const xhr = new XMLHttpRequest();
+                    xhr.open('PUT', sign.url, true);
+                    xhr.upload.onprogress = function (ev) {
+                        if (!ev.lengthComputable) return;
+                        const pct = Math.round(ev.loaded / ev.total * 100);
+                        barEl.style.width = pct + '%';
+                        statEl.textContent = '上传中 · ' + fmt(ev.loaded) + ' / ' + fmt(ev.total) + '（' + pct + '%）';
+                    };
+                    xhr.onload = function () {
+                        if (xhr.status >= 200 && xhr.status < 300) { resolve(); return; }
+                        reject(new Error('R2 返回 ' + xhr.status
+                            + (xhr.responseText ? '：' + String(xhr.responseText).slice(0, 140) : '')));
+                    };
+                    xhr.onerror = function () {
+                        reject(new Error('连不上 R2 —— 最常见的原因是桶的跨域(CORS)还没配'));
+                    };
+                    xhr.send(picked);
+                });
 
                 barEl.style.width = '100%';
-                statEl.textContent = '上传完成 · ' + fmt(done.size || picked.size);
+                statEl.textContent = '上传完成 · ' + fmt(picked.size);
                 say('上传成功！下面的列表已经刷新', true);
-                session = null; picked = null; fileEl.value = '';
+                picked = null; fileEl.value = ''; session = null;
                 refreshList();
             } catch (err) {
                 say(String((err && err.message) || err), false);
-                if (session) {
-                    statEl.textContent = '已中断 · 已完成 ' + session.parts.length
-                        + ' 片，点「继续上传」接着传，已传的部分不用重来';
-                    label.innerText = '继续上传';
-                } else {
-                    statEl.textContent = '上传中断';
-                }
+                statEl.textContent = '上传中断';
+                label.innerText = '重试上传';
             } finally {
                 busy = false; btn.disabled = false;
-                if (!session) label.innerText = '开始上传';
             }
         }
 

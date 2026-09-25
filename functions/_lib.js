@@ -74,3 +74,113 @@ export function toPhoto(row) {
         featured: row.featured ? 1 : 0
     };
 }
+
+/* ============================================================
+   AWS SigV4 —— 给整合包上传签发一个 presigned PUT URL
+   ------------------------------------------------------------
+   为什么需要它：把大文件经 Worker 中转写进 R2 这条路实测走不通
+   （R2 的 uploadPart 在 Pages Functions 里稳定报 Network connection lost）。
+   改成浏览器拿一个签名好的网址，直接 PUT 到 R2，数据完全不经 Worker。
+
+   用的是标准 AWS 签名算法第 4 版，R2 兼容。几个容易写错的点都标了注释。
+   ============================================================ */
+
+/** AWS 要求：除 A-Za-z0-9-_.~ 之外全部百分号编码（斜杠单独处理） */
+function awsEnc(s) {
+    let out = '';
+    for (const ch of String(s)) {
+        out += /[A-Za-z0-9\-_.~]/.test(ch) ? ch : encodeURIComponent(ch);
+    }
+    return out;
+}
+
+/** 路径按段编码，但保留分隔用的斜杠 */
+function awsEncPath(path) {
+    return path.split('/').map(awsEnc).join('/');
+}
+
+function toHex(bytes) {
+    let out = '';
+    for (const b of bytes) out += b.toString(16).padStart(2, '0');
+    return out;
+}
+
+async function sha256Hex(str) {
+    const d = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(str));
+    return toHex(new Uint8Array(d));
+}
+
+async function hmac(keyBytes, str) {
+    const key = await crypto.subtle.importKey(
+        'raw', keyBytes, { name: 'HMAC', hash: 'SHA-256' }, false, ['sign']
+    );
+    const sig = await crypto.subtle.sign('HMAC', key, new TextEncoder().encode(str));
+    return new Uint8Array(sig);
+}
+
+/**
+ * 生成 presigned PUT URL。
+ * @param {{accountId:string, accessKeyId:string, secretAccessKey:string,
+ *          bucket:string, key:string, expires?:number}} o
+ */
+export async function presignPutUrl(o) {
+    /* host / region / date 这三个可以被注入，只为单元测试能对照 AWS 官方示例；
+       正常调用只用 accountId，其余走默认值 */
+    const host = o.host || (o.accountId + '.r2.cloudflarestorage.com');
+    const region = o.region || 'auto';      /* R2 固定用 auto */
+    const service = 's3';
+    const expires = o.expires || 3600;
+
+    /* 时间戳格式：20260925T060000Z（去掉 - 和 : 与毫秒，保留 Z） */
+    const amzDate = (o.date instanceof Date ? o.date : new Date())
+        .toISOString().replace(/[-:]|\.\d{3}/g, '');
+    const dateStamp = amzDate.slice(0, 8);
+    const scope = dateStamp + '/' + region + '/' + service + '/aws4_request';
+
+    /* 路径式寻址：/<桶名>/<key>，注意 key 里有中文时要按段编码。
+       pathStyle:false 是为了对照 AWS 官方示例（那种把桶放进域名的写法），
+       正常调用不需要传，R2 用路径式。 */
+    const canonicalUri = o.pathStyle === false
+        ? awsEncPath('/' + o.key)
+        : awsEncPath('/' + o.bucket + '/' + o.key);
+
+    /* 查询参数必须按参数名排序；值里的 / 也要编码（所以用 awsEnc 而不是 encodeURIComponent） */
+    const params = [
+        ['X-Amz-Algorithm', 'AWS4-HMAC-SHA256'],
+        ['X-Amz-Credential', o.accessKeyId + '/' + scope],
+        ['X-Amz-Date', amzDate],
+        ['X-Amz-Expires', String(expires)],
+        ['X-Amz-SignedHeaders', 'host']
+    ].sort(function (a, b) { return a[0] < b[0] ? -1 : a[0] > b[0] ? 1 : 0; });
+    const canonicalQuery = params.map(function (p) {
+        return awsEnc(p[0]) + '=' + awsEnc(p[1]);
+    }).join('&');
+
+    const signedHeaders = 'host';
+    /* presigned 场景下浏览器算不出正文哈希，标准做法就是用这个固定值 */
+    const payloadHash = 'UNSIGNED-PAYLOAD';
+
+    /* method 默认 PUT；同样只为对照官方示例而可注入 */
+    const method = o.method || 'PUT';
+    const canonicalRequest = [
+        method, canonicalUri, canonicalQuery,
+        'host:' + host + '\n', signedHeaders, payloadHash
+    ].join('\n');
+
+    const stringToSign = [
+        'AWS4-HMAC-SHA256', amzDate, scope, await sha256Hex(canonicalRequest)
+    ].join('\n');
+
+    /* 签名密钥是四层 HMAC 链 */
+    let k = await hmac(new TextEncoder().encode('AWS4' + o.secretAccessKey), dateStamp);
+    k = await hmac(k, region);
+    k = await hmac(k, service);
+    k = await hmac(k, 'aws4_request');
+    const signature = toHex(await hmac(k, stringToSign));
+
+    return {
+        url: 'https://' + host + canonicalUri + '?' + canonicalQuery + '&X-Amz-Signature=' + signature,
+        key: o.key,
+        expires: expires
+    };
+}
