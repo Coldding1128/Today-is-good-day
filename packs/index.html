@@ -277,29 +277,26 @@
             const th = d.theme === 'poke' ? 'tex-theme-poke' : 'tex-theme-vanilla';
             const tile = d.theme === 'poke'
                 ? '<div class="tile"><img src="../assets/textures/pokeball.svg" alt=""></div>'
-                : '<div class="tile" style="background:#EAF6EF;box-shadow:0 0 0 2px #114529,inset -2px -2px 0 rgba(0,0,0,.14),inset 2px 2px 0 rgba(255,255,255,.6)"></div>';
+                : '<div class="tile" style="background:#EAF6EF;box-shadow:0 0 0 2px #114529,inset -2px -2px 0 rgba(0,0,0,.14),inset 2px 2px 0 rgba(255,255,255,.6)">'
+                  + '<img src="../assets/textures/grassblock.svg" alt="" style="width:44px;height:44px;border-radius:3px;image-rendering:pixelated">'
+                  + '</div>';
 
-            const flag = d.ready
-                ? '<span class="flag flag-green"><span class="blink h-1.5 w-1.5 rounded-full bg-white"></span>可下载</span>'
-                : '<span class="flag flag-wait">文件上传中</span>';
+            /* 列出来的就是能下的，不用再判断 ready */
+            const flag = d.latest
+                ? '<span class="flag flag-green"><span class="blink h-1.5 w-1.5 rounded-full bg-white"></span>最新上传</span>'
+                : '';
 
             const meta = [];
             if (d.mc) meta.push('MC ' + d.mc);
             if (d.version) meta.push('整合包 ' + d.version);
-            if (d.ready && d.size) meta.push(sizeText(d.size));
-            if (d.ready && d.updated) meta.push('更新于 ' + d.updated);
+            if (d.size) meta.push(sizeText(d.size));
+            if (d.updated) meta.push('更新于 ' + d.updated);
 
-            const actions = d.ready
-                ? '<a href="' + esc(d.url) + '" class="btn btn-green px-6 py-3 text-[14px]" download>' + DL_ICON + '下载整合包</a>'
-                : '<button class="btn btn-ghost px-6 py-3 text-[14px]" disabled>' + DL_ICON + '暂未就绪</button>';
+            const actions = '<a href="' + esc(d.url) + '" class="btn btn-green px-6 py-3 text-[14px]" download>' + DL_ICON + '下载整合包</a>';
 
             const video = d.video
                 ? '<a href="' + esc(d.video) + '" target="_blank" rel="noopener noreferrer" class="btn btn-dark px-5 py-3 text-[13.5px]">' + PLAY_ICON + '观看介绍视频</a>'
                 : '';
-
-            const waiting = d.ready ? '' :
-                '<p class="mt-4 rounded-xl border border-amber-100 bg-amber-50 px-4 py-3 text-[12.5px] font-semibold leading-relaxed text-amber-600">'
-                + '腐竹还没把文件传上来。可以先在群里拿，文件准备好之后这里会自动变成一个下载按钮。</p>';
 
             return '<div class="dl-card reveal">'
                 + '<div class="dl-topbar bg-gradient-to-r from-[#D9433F] via-[#E4534F] to-[#F4F1EA]"></div>'
@@ -315,9 +312,27 @@
                 + '<div class="dl-meta mt-2.5">' + meta.map(function (t) { return '<span>' + esc(t) + '</span>'; }).join('<span class="dot"></span>') + '</div>'
                 + '</div></div>'
                 + (d.note ? '<p class="mt-6 max-w-3xl text-[14.5px] leading-[1.9] text-ink-600">' + esc(d.note) + '</p>' : '')
-                + waiting
                 + '<div class="mt-7 flex flex-wrap items-center gap-3 border-t border-ink-100 pt-6">'
                 + actions + video
+                + '</div>'
+                + '</div></div>';
+        }
+
+        /* 目录里还没有文件时，给玩家一句说明而不是空白 */
+        function emptyCard() {
+            return '<div class="dl-card reveal in">'
+                + '<div class="dl-topbar bg-gradient-to-r from-[#D9433F] via-[#E4534F] to-[#F4F1EA]"></div>'
+                + '<div class="p-6 sm:p-8 md:p-9">'
+                + '<div class="flex items-center gap-3">'
+                + '<span class="flag flag-wait">准备中</span>'
+                + '<h2 class="text-[20px] font-black tracking-tight text-ink-900">整合包还在整理</h2>'
+                + '</div>'
+                + '<p class="mt-4 max-w-3xl text-[14.5px] leading-[1.9] text-ink-600">'
+                + '腐竹还没把整合包传到网站上来。可以先加群拿，传好之后这里会自动出现下载按钮。'
+                + '</p>'
+                + '<div class="mt-7 border-t border-ink-100 pt-6">'
+                + '<button onclick="copyGroup(this)" data-copy="938289365" class="btn btn-green px-6 py-3 text-[14px]">'
+                + '<span>复制群号 938289365</span></button>'
                 + '</div>'
                 + '</div></div>';
         }
@@ -343,11 +358,12 @@
             .then(function (r) { return r.ok ? r.json() : null; })
             .then(function (d) {
                 const items = (d && d.downloads) || [];
-                if (!items.length) return;      /* 保持兜底卡片，不要开天窗 */
-                listEl.innerHTML = '<div class="grid gap-6">' + items.map(card).join('') + '</div>';
+                listEl.innerHTML = items.length
+                    ? '<div class="grid gap-6">' + items.map(card).join('') + '</div>'
+                    : emptyCard();
                 observe(listEl.querySelectorAll('.reveal'));
             })
-            .catch(function () { /* 接口不可用时保持兜底内容 */ });
+            .catch(function () { /* 接口不可用时保持静态兜底内容 */ });
     })();
 </script>
 </body>

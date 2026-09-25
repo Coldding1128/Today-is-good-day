@@ -3,32 +3,44 @@
  *
  * 为什么不让它读任意 key：R2 桶里还存着玩家投稿的截图，
  * 如果这里不限制，别人就能拿 /dl/xxx-xxx.jpg 把图拖走。
- * 所以只放行 DOWNLOADS 清单里出现过的 key，其余一律 404。
+ * 所以只放行 packs/ 前缀下的文件 —— 截图不在这个前缀里，天然隔离。
  *
  * 支持 Range 请求：整合包动辄几百 MB 到 1 GB+，
  * 断网后能续传，对玩家的下载体验差别很大。
  */
-import { DOWNLOADS } from '../_lib.js';
+import { PACK_PREFIX } from '../_lib.js';
 
 export async function onRequestGet({ params, env, request }) {
     if (!env.BUCKET) return new Response('not configured', { status: 503 });
 
     /* catch-all 参数：单段时是字符串，多段时是数组，两种都兼容 */
     const raw = params.file;
-    const key = (Array.isArray(raw) ? raw.join('/') : String(raw || '')).replace(/^\/+/, '');
+    const joined = (Array.isArray(raw) ? raw.join('/') : String(raw || '')).replace(/^\/+/, '');
 
-    const item = DOWNLOADS.find(function (d) { return d.key === key; });
-    if (!item) return new Response('not found', { status: 404 });
+    /* 文件名带中文或空格时，拿到的可能是百分号编码、也可能已经解码过。
+       解码失败（文件名里本来就有 % ）就退回原样，不要炸。 */
+    let key = joined;
+    try {
+        const decoded = decodeURIComponent(joined);
+        if (decoded) key = decoded;
+    } catch (e) { /* 保持原样 */ }
+
+    if (key.indexOf(PACK_PREFIX) !== 0 || key.indexOf('..') !== -1) {
+        return new Response('not found', { status: 404 });
+    }
 
     const head = await env.BUCKET.head(key);
-    if (!head) return new Response('not uploaded yet', { status: 404 });
+    if (!head) return new Response('not found', { status: 404 });
 
     const total = head.size || 0;
-    const name = item.name + ' ' + item.version + '.zip';
+    /* 下载到本地的文件名就沿用 R2 里的名字（去掉 packs/ 前缀）。
+       ASCII 兜底名去掉中文后可能只剩版本号，所以留一个保底。 */
+    const fileName = key.slice(PACK_PREFIX.length);
+    const asciiName = fileName.replace(/[^\x20-\x7E]/g, '').replace(/"/g, '').trim() || 'pack.zip';
     const headers = {
         'content-type': 'application/zip',
-        'content-disposition': 'attachment; filename="' + item.id + '-' + item.version + '.zip";'
-            + " filename*=UTF-8''" + encodeURIComponent(name),
+        'content-disposition': 'attachment; filename="' + asciiName + '";'
+            + " filename*=UTF-8''" + encodeURIComponent(fileName),
         'cache-control': 'public, max-age=3600',
         'accept-ranges': 'bytes',
         'etag': head.httpEtag
