@@ -230,6 +230,19 @@
         font-size: 11.5px; font-weight: 800; color: #fff; background: #D9433F;
     }
 
+    /* ---------- 下个整合包的主题元素（群峦：岩褐 × 月白） ---------- */
+    .tex-theme-next { background-image: url('assets/textures/stone.svg'); }
+    .mcp-tile.next {
+        background: #F7F2E8;
+        box-shadow: 0 0 0 2px #8A6B3F, inset -2px -2px 0 rgba(0,0,0,.14), inset 2px 2px 0 rgba(255,255,255,.65);
+    }
+    .mcp-tile.next::after { background-image: url('assets/textures/stone.svg'); }
+    .next-flag {
+        display: inline-flex; align-items: center; gap: 6px;
+        padding: 4px 11px; border-radius: 999px;
+        font-size: 11.5px; font-weight: 800; color: #fff; background: #8A6B3F;
+    }
+
     /* ---------- 首屏方块插画 ---------- */
     .voxel { filter: drop-shadow(0 26px 30px rgba(17,69,41,.16)); }
     .voxel .c { animation: bob 6.5s ease-in-out infinite; transform-origin: 250px 210px; }
@@ -502,11 +515,72 @@
     </div>
 </section>
 
+<!-- ============ 下个整合包 ============ -->
+<section id="nextpack" class="relative py-20 md:py-24">
+    <div class="mx-auto max-w-content px-5">
+        <div class="reveal sec-head">
+            <span class="sec-idx">02</span>
+            <div>
+                <h2 class="sec-title">下个整合包</h2>
+                <p class="sec-sub">马上要开的新周目，先把家底摸熟</p>
+            </div>
+            <span class="sec-rule hidden md:block"></span>
+        </div>
+
+        <div class="reveal panel overflow-hidden">
+            <div class="h-[3px] w-full bg-gradient-to-r from-[#8A6B3F] via-[#B9A88A] to-[#E6E2D8]"></div>
+            <div class="p-6 sm:p-8 md:p-10">
+                <div class="flex flex-wrap items-start gap-5">
+                    <div class="mcp-tile next">
+                        <img src="assets/textures/moon.svg" alt="群峦重生2 · 月球">
+                    </div>
+                    <div class="min-w-0 flex-1">
+                        <div class="flex flex-wrap items-center gap-3">
+                            <span class="tex tex-theme-next" aria-hidden="true"></span>
+                            <h3 class="text-[24px] font-black tracking-tight text-ink-900 sm:text-[28px]">群峦重生2 冲向月球</h3>
+                            <span class="next-flag">
+                                <span class="blink h-1.5 w-1.5 rounded-full bg-white"></span>即将上线
+                            </span>
+                        </div>
+                        <div class="mt-2.5 flex flex-wrap items-center gap-x-3 gap-y-1 font-mono text-[12.5px] text-ink-400">
+                            <span>MC 1.20.1</span>
+                            <span class="h-1 w-1 rounded-full bg-ink-200"></span>
+                            <span>群峦传说 TerraFirmaCraft</span>
+                        </div>
+                    </div>
+                </div>
+
+                <p class="mt-7 max-w-3xl text-[14.5px] leading-[1.9] text-ink-600">
+                    基于群峦传说（TerraFirmaCraft）的硬核生存包，玩法从敲石头开始。地层分火成岩、沉积岩、变质岩，矿脉得拿探矿镐分析走向，挖错了会塌方；矿石不能直接烧成锭，铜铁钢都要控温、按配比、走完整套工序；除了血条还要盯水分、饥饿和营养均衡，工具武器得在铁砧上掐着火候锻打。熬过石器与青铜，用机械动力和沉浸工程铺出工业线，再往上造飞艇、开飞机——最终冲出大气层，在月球上插旗。
+                </p>
+
+                <div class="mt-7 flex flex-wrap gap-2">
+                    <span class="tag">群峦传说</span>
+                    <span class="tag">硬核生存</span>
+                    <span class="tag">地质与冶金</span>
+                    <span class="tag">机械动力</span>
+                    <span class="tag">航空载具</span>
+                    <span class="tag tag-amber">新周目预告</span>
+                </div>
+
+                <div class="mt-8 flex flex-wrap items-center gap-3 border-t border-ink-100 pt-7">
+                    <a href="https://www.bilibili.com/video/BV1PfbG6pExz/?spm_id_from=333.337.search-card.all.click&vd_source=2fb96332b77794ac64a215705ab4b817"
+                       target="_blank" rel="noopener noreferrer" class="btn btn-dark px-6 py-3 text-[13.5px]">
+                        <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.5 9.4l4.6 2.9-4.6 2.9V9.4z" fill="currentColor" stroke="none"/><circle cx="12" cy="12" r="9"/></svg>
+                        观看整合包介绍视频
+                    </a>
+                    <span class="text-[12.5px] text-ink-400">跳转至 Bilibili 观看</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
 <!-- ============ 服务器历史 ============ -->
 <section id="history" class="relative py-20 md:py-24">
     <div class="mx-auto max-w-content px-5">
         <div class="reveal sec-head">
-            <span class="sec-idx">02</span>
+            <span class="sec-idx">03</span>
             <div>
                 <h2 class="sec-title">服务器历史</h2>
                 <p class="sec-sub">一路走来的整合包更迭记录</p>
@@ -710,7 +784,7 @@
 <section id="gallery" class="relative py-20 md:py-24">
     <div class="mx-auto max-w-content px-5">
         <div class="reveal sec-head">
-            <span class="sec-idx">03</span>
+            <span class="sec-idx">04</span>
             <div>
                 <h2 class="sec-title">精选截图</h2>
                 <p class="sec-sub">群友投稿的服务器截图，按周目各归各位</p>
@@ -901,7 +975,7 @@
 <section id="players" class="relative py-20 md:py-24">
     <div class="mx-auto max-w-content px-5">
         <div class="reveal sec-head">
-            <span class="sec-idx">04</span>
+            <span class="sec-idx">05</span>
             <div>
                 <h2 class="sec-title">玩家风采</h2>
                 <p class="sec-sub">服务器玩家与专属头衔</p>
@@ -1008,7 +1082,7 @@
 <section id="sponsor" class="relative py-20 md:py-24">
     <div class="mx-auto max-w-content px-5">
         <div class="reveal sec-head">
-            <span class="sec-idx">05</span>
+            <span class="sec-idx">06</span>
             <div>
                 <h2 class="sec-title">赞助支持</h2>
                 <p class="sec-sub">你的支持是服务器持续运营的动力</p>
