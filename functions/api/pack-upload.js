@@ -81,12 +81,29 @@ export async function onRequestPost({ request, env }) {
         const n = Number(url.searchParams.get('n'));
         if (!Number.isInteger(n) || n < 1 || n > MAX_PARTS) return json({ error: 'bad_part' }, 400);
         if (!request.body) return json({ error: 'no_body' }, 400);
+
+        /* 必须先把请求体读成内存里的字节，再交给 R2。
+           直接把 request.body（ReadableStream）交给 uploadPart 会报
+           "Network connection lost" —— R2 要求流必须有「已知长度」，
+           而经 Cloudflare 边缘转发过来的 request.body 不满足这个前提（社区有同款案例，
+           解法同样是先缓冲成 ArrayBuffer）。每片只有 10 MB，读进内存完全安全。 */
+        let buf;
         try {
-            /* request.body 是流，直接交给 R2，不占 Workers 那 128 MB 内存 */
-            const part = await upload.uploadPart(n, request.body);
-            return json({ ok: true, n: part.partNumber, etag: part.etag });
+            buf = await request.arrayBuffer();
         } catch (e) {
-            return json({ error: 'part_failed', detail: String(e).slice(0, 120) }, 500);
+            return json({ error: 'read_body_failed', detail: String(e).slice(0, 120) }, 400);
+        }
+        if (!buf || !buf.byteLength) return json({ error: 'empty_body' }, 400);
+
+        try {
+            const part = await upload.uploadPart(n, buf);
+            return json({ ok: true, n: part.partNumber, etag: part.etag, bytes: buf.byteLength });
+        } catch (e) {
+            return json({
+                error: 'part_failed',
+                detail: String(e).slice(0, 140),
+                sentBytes: buf.byteLength
+            }, 500);
         }
     }
 
