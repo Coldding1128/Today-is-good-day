@@ -288,7 +288,7 @@
             <input id="upFile" type="file" accept=".zip,.rar,.7z,.mrpack"
                    class="mt-2 w-full cursor-pointer rounded-xl border border-dashed border-ink-200 bg-ink-50 px-4 py-3 text-[13px] text-ink-600 file:mr-3 file:rounded-lg file:border-0 file:bg-ink-900 file:px-3.5 file:py-2 file:text-[12.5px] file:font-bold file:text-white">
             <p class="mt-2 text-[12px] leading-relaxed text-ink-400">
-                大文件会被自动切成若干片分别上传（每片 80 MB），这样就不受网页后台 300 MB 的限制了
+                大文件会被自动切成若干片分别上传（每片 10 MB），这样就不受网页后台 300 MB 的限制了
             </p>
 
             <div id="upProg" class="mt-5 hidden">
@@ -457,7 +457,10 @@
        ============================================================ */
     (function () {
         const LS_KEY = 'gd_admin_code';      /* 和画廊页的腐竹审核台共用同一个码 */
-        const PART = 80 * 1024 * 1024;       /* 每片 80 MB：Workers 免费版请求体上限是 100 MB */
+        /* 每片 10 MB。曾用 80 MB（贴着 Workers 100 MB 请求体上限），但实测第一片就报
+           part_failed —— 大请求体在边缘这一层不稳，留足余量更靠谱。
+           代价只是分片数变多（500 MB 约 50 片），对上传总时长影响很小。 */
+        const PART = 10 * 1024 * 1024;
         const modal = document.getElementById('upModal');
         const lockEl = document.getElementById('upLock');
         const bodyEl = document.getElementById('upBody');
@@ -469,6 +472,8 @@
         let code = '';
         try { code = localStorage.getItem(LS_KEY) || ''; } catch (e) {}
         let picked = null, busy = false;
+        /* 中断后保留现场：下次点按钮接着传，已成功的分片不用重来 */
+        let session = null;
 
         function say(text, ok) {
             msgEl.textContent = text;
@@ -521,7 +526,10 @@
         });
 
         fileEl.addEventListener('change', function (e) {
-            picked = (e.target.files && e.target.files[0]) || null;
+            const next = (e.target.files && e.target.files[0]) || null;
+            /* 换了文件就不能接着上次传了 */
+            if (!picked || !next || next.name !== picked.name || next.size !== picked.size) session = null;
+            picked = next;
             progEl.classList.add('hidden');
             msgEl.classList.add('hidden');
             if (picked) say('已选：' + picked.name + '（' + fmt(picked.size) + '）', true);
@@ -538,64 +546,120 @@
             }).then(function (r) { return r.json(); });
         }
 
-        document.getElementById('upStart').addEventListener('click', async function () {
+        document.getElementById('upStart').addEventListener('click', function () {
             if (!picked) { say('先选一个文件', false); return; }
             if (!/\.(zip|rar|7z|mrpack)$/i.test(picked.name)) {
                 say('只支持 .zip / .rar / .7z / .mrpack', false); return;
             }
+            runUpload();
+        });
 
+        async function runUpload() {
             const btn = document.getElementById('upStart');
             const label = btn.querySelector('span') || btn;
             busy = true; btn.disabled = true; label.innerText = '上传中…';
             progEl.classList.remove('hidden');
-            barEl.style.width = '0%';
+            msgEl.classList.add('hidden');
 
             try {
-                statEl.textContent = '正在建立上传会话…';
-                const init = await post('init', null, JSON.stringify({ file: picked.name }), true);
-                if (!init.ok) {
-                    throw new Error(init.error === 'bad_code'
-                        ? '审核码不对，换个码再试'
-                        : '创建上传失败：' + (init.error || '未知'));
+                let key, uploadId, parts, total;
+
+                /* 上次中断过、且文件没换 → 接着传：已经传成功的片不用重来 */
+                const resume = session && session.name === picked.name && session.size === picked.size;
+                if (resume) {
+                    key = session.key; uploadId = session.uploadId; parts = session.parts.slice();
+                    total = Math.ceil(picked.size / PART);
+                    barEl.style.width = Math.round(parts.length / total * 100) + '%';
+                    statEl.textContent = '继续上传 · 已完成 ' + parts.length + ' / ' + total + ' 片';
+                } else {
+                    session = null;
+                    barEl.style.width = '0%';
+                    statEl.textContent = '正在建立上传会话…';
+                    const init = await post('init', null, JSON.stringify({ file: picked.name }), true);
+                    if (!init.ok) {
+                        throw new Error(init.error === 'bad_code'
+                            ? '审核码不对，换个码再试'
+                            : '创建上传失败：' + (init.error || '未知')
+                              + (init.detail ? '（' + init.detail + '）' : ''));
+                    }
+                    key = init.key; uploadId = init.uploadId; parts = [];
+                    total = Math.ceil(picked.size / PART);
                 }
 
-                const total = Math.ceil(picked.size / PART);
-                const parts = [];
-                for (let i = 0; i < total; i++) {
+                for (let i = parts.length; i < total; i++) {
                     const n = i + 1;
                     const sent = Math.min((i + 1) * PART, picked.size);
-                    statEl.textContent = '第 ' + n + ' / ' + total + ' 片 · ' + fmt(sent) + ' / ' + fmt(picked.size);
-                    const r = await fetch('/api/pack-upload?action=part&n=' + n
-                            + '&key=' + encodeURIComponent(init.key)
-                            + '&id=' + encodeURIComponent(init.uploadId), {
-                        method: 'POST',
-                        headers: { 'x-admin-code': code, 'content-type': 'application/octet-stream' },
-                        body: picked.slice(i * PART, sent)
-                    });
-                    const d = await r.json();
-                    if (!d.ok) throw new Error('第 ' + n + ' 片失败了：' + (d.error || '未知'));
+                    let d = null;
+
+                    /* 同一片最多试 3 次：网络抖动很常见，重试比让用户从头再来划算 */
+                    for (let attempt = 1; attempt <= 3; attempt++) {
+                        if (attempt === 1) {
+                            statEl.textContent = '第 ' + n + ' / ' + total + ' 片 · '
+                                + fmt(sent) + ' / ' + fmt(picked.size);
+                        } else {
+                            statEl.textContent = '第 ' + n + ' / ' + total + ' 片重试中（第 ' + attempt + ' 次）…';
+                            await new Promise(function (res) { setTimeout(res, 700 * attempt); });
+                        }
+                        let resp;
+                        try {
+                            resp = await fetch('/api/pack-upload?action=part&n=' + n
+                                + '&key=' + encodeURIComponent(key)
+                                + '&id=' + encodeURIComponent(uploadId), {
+                                method: 'POST',
+                                headers: { 'x-admin-code': code, 'content-type': 'application/octet-stream' },
+                                body: picked.slice(i * PART, sent)
+                            });
+                        } catch (netErr) {
+                            d = { error: '网络中断' };
+                            continue;
+                        }
+                        try { d = await resp.json(); } catch (e) { d = { error: 'http_' + resp.status }; }
+                        if (d && d.ok) break;
+                        /* 审核码/参数这类问题重试也没用，直接跳出 */
+                        if (d && ['bad_code', 'bad_key', 'bad_id', 'bad_part'].indexOf(d.error) >= 0) break;
+                    }
+
+                    if (!d || !d.ok) {
+                        /* 把已成功的片记下来：下次点按钮接着传，不用重来 */
+                        session = { key: key, uploadId: uploadId, parts: parts,
+                                    name: picked.name, size: picked.size };
+                        throw new Error('第 ' + n + ' 片失败了：' + ((d && d.error) || '未知')
+                            + (d && d.detail ? '（' + d.detail + '）' : ''));
+                    }
                     parts.push({ partNumber: d.n, etag: d.etag });
                     barEl.style.width = Math.round((i + 1) / total * 100) + '%';
                 }
 
                 statEl.textContent = '正在合并分片…';
                 const done = await post('complete',
-                    { key: init.key, id: init.uploadId },
+                    { key: key, id: uploadId },
                     JSON.stringify({ parts: parts }), true);
-                if (!done.ok) throw new Error('合并失败：' + (done.error || '未知'));
+                if (!done.ok) {
+                    session = { key: key, uploadId: uploadId, parts: parts,
+                                name: picked.name, size: picked.size };
+                    throw new Error('合并失败：' + (done.error || '未知')
+                        + (done.detail ? '（' + done.detail + '）' : ''));
+                }
 
                 barEl.style.width = '100%';
                 statEl.textContent = '上传完成 · ' + fmt(done.size || picked.size);
                 say('上传成功！下面的列表已经刷新', true);
-                picked = null; fileEl.value = '';
+                session = null; picked = null; fileEl.value = '';
                 refreshList();
             } catch (err) {
                 say(String((err && err.message) || err), false);
-                statEl.textContent = '上传中断';
+                if (session) {
+                    statEl.textContent = '已中断 · 已完成 ' + session.parts.length
+                        + ' 片，点「继续上传」接着传，已传的部分不用重来';
+                    label.innerText = '继续上传';
+                } else {
+                    statEl.textContent = '上传中断';
+                }
             } finally {
-                busy = false; btn.disabled = false; label.innerText = '开始上传';
+                busy = false; btn.disabled = false;
+                if (!session) label.innerText = '开始上传';
             }
-        });
+        }
 
         /* 列表接口有 60 秒缓存，加个时间戳就能立刻看到刚传上去的包 */
         function refreshList() {
