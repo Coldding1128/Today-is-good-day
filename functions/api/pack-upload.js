@@ -29,12 +29,21 @@ function quotaBytes(env) {
     return (gb > 0 ? gb : 10) * 1024 * 1024 * 1024;
 }
 
-/** 扫一遍 packs/ 目录，算出整合包占了多少 */
+/** 统计整个 R2 桶的实际占用（照片 + 整合包都算）。
+    R2 免费额度是按「桶」算的，照片和整合包共用一个 10 GB，
+    只扫 packs/ 会把照片漏掉，导致整合包上传绕过配额。所以这里分页扫全桶。 */
 async function usedBytes(env) {
-    const res = await env.BUCKET.list({ prefix: PACK_PREFIX, limit: 1000 });
-    return (res.objects || [])
-        .filter(function (o) { return o.key && !/\/$/.test(o.key); })
-        .reduce(function (sum, o) { return sum + (o.size || 0); }, 0);
+    let sum = 0;
+    let cursor;
+    do {
+        const res = await env.BUCKET.list(cursor ? { cursor: cursor, limit: 1000 } : { limit: 1000 });
+        const objs = res.objects || [];
+        for (const o of objs) {
+            if (o.key && !/\/$/.test(o.key)) sum += o.size || 0;
+        }
+        cursor = res.truncated ? res.cursor : undefined;
+    } while (cursor);
+    return sum;
 }
 
 /** 把用户给的文件名收拾成安全的 R2 key：保留中文和空格，去掉路径分隔符与控制字符 */
@@ -96,7 +105,8 @@ export async function onRequestPost({ request, env }) {
                     };
                 })
                 .sort(function (a, b) { return (b.updated > a.updated) ? 1 : -1; });
-            const used = files.reduce(function (s, f) { return s + f.size; }, 0);
+            /* 已用 = 整个桶的真实占用（含照片），而不是只算 packs/ 下的整合包 */
+            const used = await usedBytes(env);
             const limit = quotaBytes(env);
             return json({ ok: true, files: files, used: used, limit: limit });
         } catch (e) {
@@ -148,7 +158,7 @@ export async function onRequestPost({ request, env }) {
                 used: used,
                 limit: limit,
                 incoming: incoming,
-                detail: '空间不够了，先删掉几个旧包再传'
+                detail: '空间不够了，先清理一些旧文件（整合包或照片）再传'
             }, 413);
         }
 

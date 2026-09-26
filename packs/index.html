@@ -671,7 +671,7 @@
                     if (sign.error === 'bad_code') throw new Error('审核码不对，换个码再试');
                     if (sign.error === 'quota_exceeded') {
                         throw new Error('空间不够了：已用 ' + fmt(sign.used) + ' / 上限 ' + fmt(sign.limit)
-                            + '，而这次要传 ' + fmt(sign.incoming) + '。先删掉几个旧包再传。');
+                            + '，而这次要传 ' + fmt(sign.incoming) + '。先清理一些旧文件（整合包或照片）再传。');
                     }
                     if (sign.error === 'not_configured') {
                         throw new Error('还没配 R2 直传密钥 —— 见「整合包下载-上线步骤」第 1 步');
