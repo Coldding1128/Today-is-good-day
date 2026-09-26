@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>截图画廊 · 今天是个好日子啊</title>
-<meta name="description" content="今天是个好日子啊服务器截图合集，按整合包分类：去吧方可梦大师、香草纪元、重度机械症、1.21 原版生存等。玩家投稿，持续更新。">
+<meta name="description" content="今天是个好日子啊服务器截图合集，按整合包分类：群峦重生2 冲向月球、香草纪元、重度机械症、1.21 原版生存等。玩家投稿，持续更新。">
 <meta name="theme-color" content="#F7F8F5">
 <link rel="canonical" href="https://today-is-good-day.pages.dev/gallery/">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 48'%3E%3Crect width='48' height='48' rx='10' fill='%230E1311'/%3E%3Cpath d='M24 9L38 17 24 25 10 17Z' fill='%2363D98C'/%3E%3Cpath d='M10 17L24 25v14L10 31Z' fill='%231E8E4E'/%3E%3Cpath d='M38 17L24 25v14l14-8Z' fill='%23114529'/%3E%3C/svg%3E">
@@ -15,7 +15,7 @@
 <meta property="og:locale" content="zh_CN">
 <meta property="og:url" content="https://today-is-good-day.pages.dev/gallery/">
 <meta property="og:title" content="截图画廊 · 今天是个好日子啊">
-<meta property="og:description" content="按整合包分类的服务器截图合集：去吧方可梦大师、香草纪元、重度机械症、1.21 原版生存……玩家投稿，持续更新。">
+<meta property="og:description" content="按整合包分类的服务器截图合集：群峦重生2 冲向月球、香草纪元、重度机械症、1.21 原版生存……玩家投稿，持续更新。">
 <meta property="og:image" content="https://today-is-good-day.pages.dev/assets/og-cover.jpg">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
@@ -582,6 +582,7 @@
 const THEMES = {
     /* ac = 强调色, tint = 浅底。颜色取自各整合包实际核心模组的主视觉 */
     poke:     { tex: 'theme-poke',     ac: '#D9433F', tint: '#FAE8E7' },  // Cobblemon 精灵球 红白
+    tfc:      { tex: 'stone',          ac: '#8A6B3F', tint: '#F7F2E8' },  // 群峦传说 岩褐×月白
     delight:  { tex: 'theme-delight',  ac: '#A5701F', tint: '#F9F0DF' },  // 农夫乐事 麦金
     arcane:   { tex: 'theme-arcane',   ac: '#5B4BA8', tint: '#ECE9F8' },  // 元素觉醒 法术书 紫
     survivor: { tex: 'theme-survivor', ac: '#2F6E7C', tint: '#E5F0F2' },  // 类幸存者 卡牌 深青
@@ -600,6 +601,7 @@ const THEMES = {
 
 const GLYPHS = {
     poke:     '<circle cx="12" cy="12" r="8.4"/><path d="M3.6 12h16.8"/><circle cx="12" cy="12" r="2.6"/>',
+    tfc:      '<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>',
     delight:  '<path d="M3.4 13.4h12.2a6.1 6.1 0 01-6.1 6.1H9.5a6.1 6.1 0 01-6.1-6.1z"/><path d="M15.6 13.4h5"/><path d="M8 9.6V6.4M11.6 9.6V5.2"/>',
     arcane:   '<path d="M6 3.6h9.4a2 2 0 012 2v14.8H8a2 2 0 01-2-2z"/><path d="M6 3.6v14.8a2 2 0 002 2"/><path d="M11.4 8l2.2 3-2.2 3"/>',
     survivor: '<rect x="3.4" y="5.4" width="9.6" height="13.2" rx="1.8"/><rect x="11" y="5.4" width="9.6" height="13.2" rx="1.8"/><path d="M15.8 11.2v4.4M13.6 13.4h4.4"/>',
@@ -620,7 +622,8 @@ const MODPACKS = [
     /* theme 按各整合包查证到的核心模组来定：
        Cobblemon / 农夫乐事 / 法术构筑 / 类幸存者卡牌 / 魂系动作 / 特警CQB /
        机械动力 / 模拟殖民地+百年战争 / 拔刀剑+TACZ / 星露谷 / 僵尸都市 / 风景 / 塔罗 / ATM */
-    { id: 'cobblemon',    name: '去吧，方可梦大师',        period: '9.19 至今',        now: true, theme: 'poke' },
+    { id: 'tfc',          name: '群峦重生2 冲向月球',      period: '9.26 至今',        now: true, theme: 'tfc' },
+    { id: 'cobblemon',    name: '去吧，方可梦大师',        period: '9.19 — 9.26',      theme: 'poke' },
     { id: 'vanilla-food', name: '香草纪元：食旅纪行',      period: '9.11 — 9.19',      theme: 'delight' },
     { id: 'element',      name: '元素觉醒',                period: '9.6 — 9.11',       theme: 'arcane' },
     { id: 'lastone',      name: 'Last One 终末幸存者',     period: '8.31 — 9.6',       theme: 'survivor' },

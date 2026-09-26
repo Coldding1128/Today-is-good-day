@@ -15,7 +15,7 @@
 <meta property="og:locale" content="zh_CN">
 <meta property="og:url" content="https://today-is-good-day.pages.dev/">
 <meta property="og:title" content="今天是个好日子啊 · 私人 Minecraft 服务器">
-<meta property="og:description" content="私人 Minecraft 服务器，超多整合包随心切换，随时开服，随时组队。宝可梦 / 机械 / 生存，单人与多人联机，全天 24 小时开放。">
+<meta property="og:description" content="私人 Minecraft 服务器，超多整合包随心切换，随时开服，随时组队。群峦 / 机械 / 生存，单人与多人联机，全天 24 小时开放。">
 <meta property="og:image" content="https://today-is-good-day.pages.dev/assets/og-cover.jpg">
 <meta property="og:image:secure_url" content="https://today-is-good-day.pages.dev/assets/og-cover.jpg">
 <meta property="og:image:type" content="image/jpeg">
@@ -29,7 +29,7 @@
 <!-- 部分较早的抓取器只认下面这两种 -->
 <link rel="image_src" href="https://today-is-good-day.pages.dev/assets/og-cover.jpg">
 <meta itemprop="image" content="https://today-is-good-day.pages.dev/assets/og-cover.jpg">
-<meta name="keywords" content="Minecraft服务器,我的世界服务器,私人服务器,整合包,宝可梦服务器,Cobblemon,多人联机,今天是个好日子啊">
+<meta name="keywords" content="Minecraft服务器,我的世界服务器,私人服务器,整合包,群峦传说,TerraFirmaCraft,硬核生存,多人联机,今天是个好日子啊">
 <meta name="author" content="今天是个好日子啊">
 <script>document.documentElement.classList.add('js');</script>
 <script src="https://cdn.tailwindcss.com"></script>
@@ -202,42 +202,29 @@
         border: 1px solid #D2EBDB; color: #1E8E4E;
     }
 
-    /* ---------- 当前周目的主题元素（Cobblemon 精灵球红白） ---------- */
+    /* ---------- 当前周目的主题元素（群峦重生2：岩褐 × 月白） ---------- */
     .tex {
         width: 26px; height: 26px; flex: none; border-radius: 3px;
         background-size: 26px 26px; background-repeat: repeat;
         image-rendering: pixelated;
         box-shadow: 0 0 0 2px #39433D, 0 2px 6px -2px rgba(14,19,17,.5);
     }
-    .tex-theme-poke { background-image: url('assets/textures/theme-poke.svg'); }
-    /* 物品栏槽位里放着的精灵球 */
+    .tex-theme-now { background-image: url('assets/textures/stone.svg'); }
+    /* 物品栏槽位里放着的月球 */
     .mcp-tile {
         position: relative; display: grid; place-items: center;
         width: 64px; height: 64px; flex: none; overflow: hidden;
-        border-radius: 14px; background: #FAE8E7;
-        box-shadow: 0 0 0 2px #8A2622, inset -2px -2px 0 rgba(0,0,0,.14), inset 2px 2px 0 rgba(255,255,255,.6);
+        border-radius: 14px; background: #F7F2E8;
+        box-shadow: 0 0 0 2px #8A6B3F, inset -2px -2px 0 rgba(0,0,0,.14), inset 2px 2px 0 rgba(255,255,255,.65);
     }
     /* 底部压一条主题材质，交代这个槽位属于哪个周目 */
     .mcp-tile::after {
         content: ''; position: absolute; inset: auto 0 0 0; height: 13px;
-        background-image: url('assets/textures/theme-poke.svg');
+        background-image: url('assets/textures/stone.svg');
         background-size: 13px 13px; image-rendering: pixelated;
     }
     .mcp-tile img { position: relative; z-index: 1; width: 40px; height: 40px; margin-bottom: 6px; image-rendering: pixelated; }
     .mcp-flag {
-        display: inline-flex; align-items: center; gap: 6px;
-        padding: 4px 11px; border-radius: 999px;
-        font-size: 11.5px; font-weight: 800; color: #fff; background: #D9433F;
-    }
-
-    /* ---------- 下个整合包的主题元素（群峦：岩褐 × 月白） ---------- */
-    .tex-theme-next { background-image: url('assets/textures/stone.svg'); }
-    .mcp-tile.next {
-        background: #F7F2E8;
-        box-shadow: 0 0 0 2px #8A6B3F, inset -2px -2px 0 rgba(0,0,0,.14), inset 2px 2px 0 rgba(255,255,255,.65);
-    }
-    .mcp-tile.next::after { background-image: url('assets/textures/stone.svg'); }
-    .next-flag {
         display: inline-flex; align-items: center; gap: 6px;
         padding: 4px 11px; border-radius: 999px;
         font-size: 11.5px; font-weight: 800; color: #fff; background: #8A6B3F;
@@ -411,7 +398,7 @@
 
                 <div class="reveal mt-8 flex flex-wrap items-center gap-2.5">
                     <span class="tag">丰富整合包</span>
-                    <span class="tag">宝可梦 / 机械 / 生存</span>
+                    <span class="tag">群峦 / 机械 / 生存</span>
                     <span class="tag">单人与多人联机</span>
                 </div>
             </div>
@@ -464,82 +451,18 @@
         </div>
 
         <div class="reveal panel overflow-hidden">
-            <div class="h-[3px] w-full bg-gradient-to-r from-[#D9433F] via-[#E4534F] to-[#F4F1EA]"></div>
-            <div class="p-6 sm:p-8 md:p-10">
-                <div class="flex flex-wrap items-start gap-5">
-                    <div class="mcp-tile">
-                        <img src="assets/textures/pokeball.svg" alt="Cobblemon 精灵球">
-                    </div>
-                    <div class="min-w-0 flex-1">
-                        <div class="flex flex-wrap items-center gap-3">
-                            <span class="tex tex-theme-poke" aria-hidden="true"></span>
-                            <h3 class="text-[24px] font-black tracking-tight text-ink-900 sm:text-[28px]">去吧，方可梦大师</h3>
-                            <span class="mcp-flag">
-                                <span class="blink h-1.5 w-1.5 rounded-full bg-white"></span>当前运行中
-                            </span>
-                        </div>
-                        <div class="mt-2.5 flex flex-wrap items-center gap-x-3 gap-y-1 font-mono text-[12.5px] text-ink-400">
-                            <span>MC 1.21.1</span>
-                            <span class="h-1 w-1 rounded-full bg-ink-200"></span>
-                            <span>整合包 v5.9.2</span>
-                        </div>
-                    </div>
-                </div>
-
-                <p class="mt-7 max-w-3xl text-[14.5px] leading-[1.9] text-ink-600">
-                    基于 Cobblemon 方块宝可梦模组的高版本整合包，收录全世代 1077+ 只宝可梦，第九世代朱紫内容 1:1 还原。支持 Mega 进化、Z 招式、钛晶化、极巨化完整对战系统。配备万字详细任务引导，从新手教程到神兽召唤一应俱全；新增投球小游戏、宝可梦骑乘、皮肤装备、跟随等趣味模组，支持单人与多人联机。
-                </p>
-
-                <div class="mt-7 flex flex-wrap gap-2">
-                    <span class="tag">宝可梦</span>
-                    <span class="tag">Cobblemon</span>
-                    <span class="tag">全世代</span>
-                    <span class="tag">冒险 RPG</span>
-                    <span class="tag tag-amber">新人友好</span>
-                </div>
-
-                <div class="mt-8 flex flex-wrap items-center gap-3 border-t border-ink-100 pt-7">
-                    <a href="packs/" class="btn btn-green px-6 py-3 text-[13.5px]">
-                        <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4.5v11M7.2 10.8L12 15.6l4.8-4.8"/><path d="M4.5 19.5h15"/></svg>
-                        直接下载整合包
-                    </a>
-                    <a href="https://www.bilibili.com/video/BV1QU8X6LEYP/?spm_id_from=333.337.search-card.all.click&vd_source=2fb96332b77794ac64a215705ab4b817"
-                       target="_blank" rel="noopener noreferrer" class="btn btn-dark px-6 py-3 text-[13.5px]">
-                        <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.5 9.4l4.6 2.9-4.6 2.9V9.4z" fill="currentColor" stroke="none"/><circle cx="12" cy="12" r="9"/></svg>
-                        观看整合包介绍视频
-                    </a>
-                    <span class="text-[12.5px] text-ink-400">免加群 · 下载走站内，视频跳 Bilibili</span>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
-
-<!-- ============ 下个整合包 ============ -->
-<section id="nextpack" class="relative py-20 md:py-24">
-    <div class="mx-auto max-w-content px-5">
-        <div class="reveal sec-head">
-            <span class="sec-idx">02</span>
-            <div>
-                <h2 class="sec-title">下个整合包</h2>
-                <p class="sec-sub">马上要开的新周目，先把家底摸熟</p>
-            </div>
-            <span class="sec-rule hidden md:block"></span>
-        </div>
-
-        <div class="reveal panel overflow-hidden">
             <div class="h-[3px] w-full bg-gradient-to-r from-[#8A6B3F] via-[#B9A88A] to-[#E6E2D8]"></div>
             <div class="p-6 sm:p-8 md:p-10">
                 <div class="flex flex-wrap items-start gap-5">
-                    <div class="mcp-tile next">
+                    <div class="mcp-tile">
                         <img src="assets/textures/moon.svg" alt="群峦重生2 · 月球">
                     </div>
                     <div class="min-w-0 flex-1">
                         <div class="flex flex-wrap items-center gap-3">
-                            <span class="tex tex-theme-next" aria-hidden="true"></span>
+                            <span class="tex tex-theme-now" aria-hidden="true"></span>
                             <h3 class="text-[24px] font-black tracking-tight text-ink-900 sm:text-[28px]">群峦重生2 冲向月球</h3>
-                            <span class="next-flag">
-                                <span class="blink h-1.5 w-1.5 rounded-full bg-white"></span>即将上线
+                            <span class="mcp-flag">
+                                <span class="blink h-1.5 w-1.5 rounded-full bg-white"></span>当前运行中
                             </span>
                         </div>
                         <div class="mt-2.5 flex flex-wrap items-center gap-x-3 gap-y-1 font-mono text-[12.5px] text-ink-400">
@@ -560,17 +483,48 @@
                     <span class="tag">地质与冶金</span>
                     <span class="tag">机械动力</span>
                     <span class="tag">航空载具</span>
-                    <span class="tag tag-amber">新周目预告</span>
+                    <span class="tag tag-green">当前周目</span>
                 </div>
 
                 <div class="mt-8 flex flex-wrap items-center gap-3 border-t border-ink-100 pt-7">
+                    <a href="packs/" class="btn btn-green px-6 py-3 text-[13.5px]">
+                        <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4.5v11M7.2 10.8L12 15.6l4.8-4.8"/><path d="M4.5 19.5h15"/></svg>
+                        直接下载整合包
+                    </a>
                     <a href="https://www.bilibili.com/video/BV1PfbG6pExz/?spm_id_from=333.337.search-card.all.click&vd_source=2fb96332b77794ac64a215705ab4b817"
                        target="_blank" rel="noopener noreferrer" class="btn btn-dark px-6 py-3 text-[13.5px]">
                         <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.5 9.4l4.6 2.9-4.6 2.9V9.4z" fill="currentColor" stroke="none"/><circle cx="12" cy="12" r="9"/></svg>
                         观看整合包介绍视频
                     </a>
-                    <span class="text-[12.5px] text-ink-400">跳转至 Bilibili 观看</span>
+                    <span class="text-[12.5px] text-ink-400">免加群 · 下载走站内，视频跳 Bilibili</span>
                 </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ============ 下个整合包 ============ -->
+<section id="nextpack" class="relative py-20 md:py-24">
+    <div class="mx-auto max-w-content px-5">
+        <div class="reveal sec-head">
+            <span class="sec-idx">02</span>
+            <div>
+                <h2 class="sec-title">下个整合包</h2>
+                <p class="sec-sub">新周目规划中，确定后在这里公布</p>
+            </div>
+            <span class="sec-rule hidden md:block"></span>
+        </div>
+
+        <div class="reveal panel overflow-hidden">
+            <div class="h-[3px] w-full bg-gradient-to-r from-[#9AA39D] via-[#C6CBC7] to-[#E9ECE8]"></div>
+            <div class="p-8 sm:p-10 md:p-12 text-center">
+                <div class="mx-auto grid h-16 w-16 place-items-center rounded-2xl border-2 border-dashed border-ink-200 bg-ink-50">
+                    <span class="font-mono text-[30px] font-black leading-none text-ink-300">?</span>
+                </div>
+                <h3 class="mt-5 text-[22px] font-black tracking-tight text-ink-900">下个整合包待定</h3>
+                <p class="mx-auto mt-3 max-w-xl text-[14.5px] leading-[1.9] text-ink-600">
+                    下一周目还在规划中，确定要开哪个整合包后会第一时间在这里公布。记得留意群公告，别错过新周目开荒。
+                </p>
             </div>
         </div>
     </div>
@@ -630,7 +584,7 @@
             <div class="grid gap-5 md:grid-cols-[132px_1fr] md:gap-8">
                 <div>
                     <p class="font-mono text-[28px] font-black leading-none tracking-tight text-ink-900">2026</p>
-                    <p class="mt-2 font-mono text-[11.5px] tracking-[.1em] text-ink-400">14 个整合包</p>
+                    <p class="mt-2 font-mono text-[11.5px] tracking-[.1em] text-ink-400">15 个整合包</p>
                 </div>
                 <ul>
                     <li class="row">
@@ -685,10 +639,14 @@
                         <span class="row-date">9.11 — 9.19</span>
                         <a class="row-name row-link" href="https://www.bilibili.com/video/BV18C9PYBE67/" target="_blank" rel="noopener" title="在 B 站观看介绍视频：香草纪元 1.5.0 大更新（新标签页打开）">香草纪元：食旅纪行<svg class="row-play" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8.5 5.6l10.2 6.4-10.2 6.4z"/></svg></a>
                     </li>
-                    <li class="row row-now">
-                        <span class="row-date">9.19 至今</span>
-                        <img class="row-ball" src="assets/textures/pokeball.svg" alt="" width="21" height="21">
+                    <li class="row">
+                        <span class="row-date">9.19 — 9.26</span>
                         <a class="row-name row-link" href="https://www.bilibili.com/video/BV1VNLRzYERC/" target="_blank" rel="noopener" title="在 B 站观看介绍视频：方可梦大师 4.0 发布（新标签页打开）">去吧，方可梦大师<svg class="row-play" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8.5 5.6l10.2 6.4-10.2 6.4z"/></svg></a>
+                    </li>
+                    <li class="row row-now">
+                        <span class="row-date">9.26 至今</span>
+                        <img class="row-ball" src="assets/textures/moon.svg" alt="" width="21" height="21">
+                        <a class="row-name row-link" href="https://www.bilibili.com/video/BV1PfbG6pExz/" target="_blank" rel="noopener" title="在 B 站观看介绍视频：群峦重生2 冲向月球（新标签页打开）">群峦重生2 冲向月球<svg class="row-play" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8.5 5.6l10.2 6.4-10.2 6.4z"/></svg></a>
                         <span class="row-badge"><span class="blink h-1.5 w-1.5 rounded-full bg-white"></span>当前运行</span>
                     </li>
                 </ul>
@@ -718,9 +676,9 @@
        换周目时只改这三个值（对应 gallery/index.html 里 THEMES 中该周目的 ac / tint）：
        --now-ac 主题色，--now-rgb 同一个色的 rgb 分量，--now-tint 浅底 */
     .row-now {
-        --now-ac: #D9433F;          /* 去吧，方可梦大师 · Cobblemon 精灵球红 */
-        --now-rgb: 217, 67, 63;
-        --now-tint: #FAE8E7;
+        --now-ac: #8A6B3F;          /* 群峦重生2 冲向月球 · 岩褐 × 月白 */
+        --now-rgb: 138, 107, 63;
+        --now-tint: #F7F2E8;
 
         position: relative; gap: 12px;
         background: var(--now-tint);
@@ -1352,6 +1310,7 @@
 
     /* 整合包 id → 名称。要和 gallery/index.html 里的 MODPACKS 保持一致 */
     const PACK_NAMES = {
+        'tfc':            '群峦重生2 冲向月球',
         'cobblemon':      '去吧，方可梦大师',
         'vanilla-food':   '香草纪元：食旅纪行',
         'element':        '元素觉醒',
