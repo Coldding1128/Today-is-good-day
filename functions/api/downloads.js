@@ -22,6 +22,16 @@ function splitName(base) {
     return { name: base.trim(), version: '' };
 }
 
+/** 上传时间 → 北京时间「YYYY-MM-DD HH:mm」，精确到分钟 */
+function fmtMin(iso) {
+    const d = new Date(iso);
+    if (isNaN(d.getTime())) return '';
+    const t = new Date(d.getTime() + 8 * 3600 * 1000); /* UTC → 北京时间 */
+    const p = function (n) { return (n < 10 ? '0' : '') + n; };
+    return t.getUTCFullYear() + '-' + p(t.getUTCMonth() + 1) + '-' + p(t.getUTCDate())
+        + ' ' + p(t.getUTCHours()) + ':' + p(t.getUTCMinutes());
+}
+
 export async function onRequestGet({ env }) {
     if (!env.BUCKET) return json({ downloads: [], configured: false });
 
@@ -59,7 +69,7 @@ export async function onRequestGet({ env }) {
                 video: meta.video || '',
                 theme: meta.theme || 'vanilla',
                 size: o.size || 0,
-                updated: o.uploaded ? new Date(o.uploaded).toISOString().slice(0, 10) : '',
+                updated: o.uploaded ? fmtMin(o.uploaded) : '',
                 /* 最新传的那个，给一枚「最新」小标 —— 只是客观事实，不猜哪个在运行 */
                 latest: i === 0,
                 /* 路径段逐个编码，中文 / 空格文件名在 URL 里才不会坏事 */
