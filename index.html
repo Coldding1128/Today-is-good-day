@@ -503,11 +503,61 @@
     </div>
 </section>
 
+<!-- ============ 群公告 ============ -->
+<section id="notice" class="relative py-20 md:py-24">
+    <div class="mx-auto max-w-content px-5">
+        <div class="reveal sec-head">
+            <span class="sec-idx">02</span>
+            <div>
+                <h2 class="sec-title">群公告</h2>
+                <p class="sec-sub">服务器群里的重要通知，都在这里</p>
+            </div>
+            <span class="sec-rule hidden md:block"></span>
+        </div>
+
+        <div class="reveal panel overflow-hidden">
+            <div class="h-[3px] w-full bg-gradient-to-r from-[#1E8E4E] via-[#63D98C] to-[#EAF6EF]"></div>
+            <div class="p-6 sm:p-8 md:p-10">
+                <!-- 公告列表（公开） -->
+                <div id="noticeList" class="grid gap-3"></div>
+
+                <!-- 管理区 -->
+                <div class="mt-6 border-t border-ink-100 pt-5">
+                    <!-- 未解锁：输审核码 -->
+                    <div id="noticeLock" class="hidden">
+                        <p class="text-[12px] font-bold tracking-wide text-ink-500">管理公告需要审核码（和审核台同一个码）</p>
+                        <div class="mt-3 flex flex-wrap items-center gap-3">
+                            <input id="noticeCode" type="password" autocomplete="off" placeholder="审核码"
+                                   class="w-full max-w-[260px] rounded-xl border border-ink-100 bg-ink-50 px-4 py-3 text-[14px] text-ink-900 outline-none transition-colors focus:border-brand-300">
+                            <button id="noticeUnlock" class="btn btn-dark px-5 py-3 text-[13px]">解锁管理</button>
+                        </div>
+                    </div>
+
+                    <!-- 已解锁：编辑面板 -->
+                    <div id="noticeBody" class="hidden">
+                        <p class="text-[12px] font-bold tracking-wide text-ink-500">发布新公告</p>
+                        <textarea id="noticeNew" rows="3" maxlength="500" placeholder="写一条群公告，支持换行…"
+                                  class="mt-3 w-full resize-y rounded-xl border border-ink-100 bg-ink-50 px-4 py-3 text-[14px] leading-[1.7] text-ink-900 outline-none transition-colors focus:border-brand-300"></textarea>
+                        <div class="mt-3 flex flex-wrap items-center gap-3">
+                            <button id="noticeAdd" class="btn btn-green px-5 py-2.5 text-[13px]">发布公告</button>
+                            <button id="noticeExit" class="text-[12.5px] font-bold text-ink-400 transition-colors hover:text-ink-700">退出管理</button>
+                        </div>
+                    </div>
+
+                    <!-- 管理入口 -->
+                    <button id="noticeManage" class="mt-1 text-[12.5px] font-bold text-ink-400 transition-colors hover:text-ink-700">管理公告</button>
+                    <p id="noticeMsg" class="mt-3 hidden text-[12.5px] font-semibold text-amber-600"></p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
 <!-- ============ 下个整合包 ============ -->
 <section id="nextpack" class="relative py-20 md:py-24">
     <div class="mx-auto max-w-content px-5">
         <div class="reveal sec-head">
-            <span class="sec-idx">02</span>
+            <span class="sec-idx">03</span>
             <div>
                 <h2 class="sec-title">下个整合包</h2>
                 <p class="sec-sub">新周目规划中，确定后在这里公布</p>
@@ -534,7 +584,7 @@
 <section id="history" class="relative py-20 md:py-24">
     <div class="mx-auto max-w-content px-5">
         <div class="reveal sec-head">
-            <span class="sec-idx">03</span>
+            <span class="sec-idx">04</span>
             <div>
                 <h2 class="sec-title">服务器历史</h2>
                 <p class="sec-sub">一路走来的整合包更迭记录</p>
@@ -742,7 +792,7 @@
 <section id="gallery" class="relative py-20 md:py-24">
     <div class="mx-auto max-w-content px-5">
         <div class="reveal sec-head">
-            <span class="sec-idx">04</span>
+            <span class="sec-idx">05</span>
             <div>
                 <h2 class="sec-title">精选截图</h2>
                 <p class="sec-sub">群友投稿的服务器截图，按周目各归各位</p>
@@ -933,7 +983,7 @@
 <section id="players" class="relative py-20 md:py-24">
     <div class="mx-auto max-w-content px-5">
         <div class="reveal sec-head">
-            <span class="sec-idx">05</span>
+            <span class="sec-idx">06</span>
             <div>
                 <h2 class="sec-title">玩家风采</h2>
                 <p class="sec-sub">服务器玩家与专属头衔</p>
@@ -1045,7 +1095,7 @@
 <section id="sponsor" class="relative py-20 md:py-24">
     <div class="mx-auto max-w-content px-5">
         <div class="reveal sec-head">
-            <span class="sec-idx">06</span>
+            <span class="sec-idx">07</span>
             <div>
                 <h2 class="sec-title">赞助支持</h2>
                 <p class="sec-sub">你的支持是服务器持续运营的动力</p>
@@ -1403,6 +1453,172 @@
                 empty.style.display = 'none';
             })
             .catch(function () { /* 拉不到就保持空状态，不算错误 */ });
+    })();
+
+    /* ============================================================
+       群公告：主页读取 + 腐竹在线编辑 / 删除
+       ============================================================ */
+    (function () {
+        const listEl = document.getElementById('noticeList');
+        if (!listEl) return;
+
+        const LS = 'gd_admin_code';   // 和画廊审核台、下载上传台共用同一个码
+        const lockEl = document.getElementById('noticeLock');
+        const bodyEl = document.getElementById('noticeBody');
+        const msgEl = document.getElementById('noticeMsg');
+        const codeEl = document.getElementById('noticeCode');
+        const newEl = document.getElementById('noticeNew');
+        const manageBtn = document.getElementById('noticeManage');
+
+        let code = '';
+        try { code = localStorage.getItem(LS) || ''; } catch (e) {}
+        let rows = [];
+        let editing = 0;
+
+        function esc(v) {
+            return String(v == null ? '' : v).replace(/[&<>"]/g, function (c) {
+                return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c];
+            });
+        }
+        function fmtDate(sec) {
+            if (!sec) return '';
+            const d = new Date(sec * 1000);
+            const p = function (n) { return (n < 10 ? '0' : '') + n; };
+            return d.getFullYear() + '-' + p(d.getMonth() + 1) + '-' + p(d.getDate())
+                + ' ' + p(d.getHours()) + ':' + p(d.getMinutes());
+        }
+        function say(text, ok) {
+            msgEl.textContent = text;
+            msgEl.classList.remove('hidden');
+            msgEl.classList.toggle('text-amber-600', !ok);
+            msgEl.classList.toggle('text-brand-500', !!ok);
+        }
+        function clearMsg() { msgEl.classList.add('hidden'); }
+        function unlocked() { return !bodyEl.classList.contains('hidden'); }
+
+        function render() {
+            if (!rows.length) {
+                listEl.innerHTML = '<p class="rounded-xl border border-dashed border-ink-200 bg-white/60 px-4 py-8 text-center text-[13.5px] text-ink-400">'
+                    + (unlocked() ? '还没有公告，用上面的输入框发布第一条' : '暂无公告') + '</p>';
+                return;
+            }
+            listEl.innerHTML = rows.map(function (r) {
+                const isEdit = editing === r.id;
+                let main;
+                if (isEdit) {
+                    main = '<textarea data-nedittext rows="3" maxlength="500" class="mt-2 w-full resize-y rounded-xl border border-brand-300 bg-white px-4 py-3 text-[14px] leading-[1.7] text-ink-900 outline-none">'
+                        + esc(r.content) + '</textarea>'
+                        + '<div class="mt-2 flex flex-wrap gap-2">'
+                        + '<button data-nsave="' + r.id + '" class="btn btn-green px-4 py-2 text-[12.5px]">保存</button>'
+                        + '<button data-ncancel class="btn btn-ghost px-4 py-2 text-[12.5px]">取消</button>'
+                        + '</div>';
+                } else {
+                    main = '<p class="whitespace-pre-wrap text-[14.5px] leading-[1.85] text-ink-800">' + esc(r.content) + '</p>';
+                }
+                const meta = '<div class="mt-2 flex flex-wrap items-center gap-3">'
+                    + '<span class="font-mono text-[11.5px] text-ink-400">' + fmtDate(r.created_at) + '</span>'
+                    + (unlocked() && !isEdit
+                        ? '<button data-nedit="' + r.id + '" class="text-[12px] font-bold text-ink-400 transition-colors hover:text-ink-700">编辑</button>'
+                          + '<button data-ndel="' + r.id + '" class="text-[12px] font-bold text-amber-600 transition-colors hover:text-amber-700">删除</button>'
+                        : '')
+                    + '</div>';
+                return '<div class="rounded-xl border border-ink-100 bg-white px-4 py-3">' + main + meta + '</div>';
+            }).join('');
+        }
+
+        function load() {
+            fetch('/api/announcements', { headers: { accept: 'application/json' }, cache: 'no-store' })
+                .then(function (r) { return r.ok ? r.json() : null; })
+                .then(function (d) { rows = (d && d.announcements) || []; render(); })
+                .catch(function () { render(); });
+        }
+        function call(payload) {
+            return fetch('/api/announcements', {
+                method: 'POST',
+                headers: { 'content-type': 'application/json' },
+                body: JSON.stringify(payload)
+            }).then(function (r) { return r.json(); });
+        }
+
+        function unlock(v) {
+            code = v;
+            try { localStorage.setItem(LS, v); } catch (e) {}
+            lockEl.classList.add('hidden');
+            bodyEl.classList.remove('hidden');
+            manageBtn.classList.add('hidden');
+            clearMsg();
+            render();
+            newEl.focus();
+        }
+        function exit() {
+            editing = 0;
+            lockEl.classList.add('hidden');
+            bodyEl.classList.add('hidden');
+            manageBtn.classList.remove('hidden');
+            clearMsg();
+            newEl.value = '';
+            render();
+        }
+
+        manageBtn.addEventListener('click', function () {
+            if (code) { unlock(code); return; }
+            manageBtn.classList.add('hidden');
+            lockEl.classList.remove('hidden');
+            codeEl.focus();
+        });
+        document.getElementById('noticeUnlock').addEventListener('click', function () {
+            const v = codeEl.value.trim();
+            if (!v) { say('先填审核码', false); return; }
+            call({ code: v, action: 'ping' }).then(function (d) {
+                if (d && d.ok) { unlock(v); return; }
+                if (d && d.error === 'bad_code') { say('审核码不对', false); return; }
+                say('后端没配置或连不上', false);
+            }).catch(function () { say('网络不通', false); });
+        });
+        codeEl.addEventListener('keydown', function (e) {
+            if (e.key === 'Enter') document.getElementById('noticeUnlock').click();
+        });
+        document.getElementById('noticeAdd').addEventListener('click', function () {
+            const v = newEl.value.trim();
+            if (!v) { say('先写点内容', false); return; }
+            call({ code: code, action: 'create', content: v }).then(function (d) {
+                if (d && d.error === 'bad_code') { say('审核码已失效，请重新解锁', false); exit(); return; }
+                if (d && d.ok) { newEl.value = ''; clearMsg(); load(); return; }
+                say((d && d.error) || '发布失败', false);
+            }).catch(function () { say('网络不通', false); });
+        });
+        document.getElementById('noticeExit').addEventListener('click', exit);
+
+        listEl.addEventListener('click', function (e) {
+            const ed = e.target.closest('button[data-nedit]');
+            const del = e.target.closest('button[data-ndel]');
+            const save = e.target.closest('button[data-nsave]');
+            const cancel = e.target.closest('button[data-ncancel]');
+            if (ed) { editing = Number(ed.dataset.nedit); render(); return; }
+            if (cancel) { editing = 0; render(); return; }
+            if (del) {
+                if (!window.confirm('确定删除这条公告？不可恢复。')) return;
+                call({ code: code, action: 'delete', id: Number(del.dataset.ndel) }).then(function (d) {
+                    if (d && d.error === 'bad_code') { say('审核码已失效，请重新解锁', false); exit(); return; }
+                    if (d && d.ok) { load(); return; }
+                    say('删除失败', false);
+                }).catch(function () { say('网络不通', false); });
+                return;
+            }
+            if (save) {
+                const ta = listEl.querySelector('textarea[data-nedittext]');
+                const v = ta ? ta.value.trim() : '';
+                if (!v) { say('内容不能为空', false); return; }
+                call({ code: code, action: 'update', id: Number(save.dataset.nsave), content: v }).then(function (d) {
+                    if (d && d.error === 'bad_code') { say('审核码已失效，请重新解锁', false); exit(); return; }
+                    if (d && d.ok) { editing = 0; load(); return; }
+                    say('保存失败', false);
+                }).catch(function () { say('网络不通', false); });
+                return;
+            }
+        });
+
+        load();
     })();
 </script>
 </body>
