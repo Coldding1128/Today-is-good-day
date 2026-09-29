@@ -15,7 +15,13 @@ CREATE INDEX IF NOT EXISTS idx_photos_status ON photos (status, created_at DESC)
 CREATE INDEX IF NOT EXISTS idx_photos_pack ON photos (pack_id, status, created_at DESC);
 
 -- ---------- 2. 群公告表（主页「群公告」栏目） ----------
-CREATE TABLE IF NOT EXISTS announcements (id INTEGER PRIMARY KEY AUTOINCREMENT, content TEXT NOT NULL DEFAULT '', created_at INTEGER NOT NULL DEFAULT (strftime('%s','now')));
+CREATE TABLE IF NOT EXISTS announcements (id INTEGER PRIMARY KEY AUTOINCREMENT, title TEXT NOT NULL DEFAULT '', content TEXT NOT NULL DEFAULT '', pack_id TEXT NOT NULL DEFAULT '', created_at INTEGER NOT NULL DEFAULT (strftime('%s','now')));
+-- title 标题；content 正文；pack_id 归属的整合包 id（对应 gallery 的 MODPACKS），留空 = 通用公告
+
+-- ---------- 2.1 已经建过 announcements 表、要补 title / pack_id 列的 ----------
+-- 把下面两行各去掉开头的 "-- " 后，分别执行一次
+-- ALTER TABLE announcements ADD COLUMN title TEXT NOT NULL DEFAULT '';
+-- ALTER TABLE announcements ADD COLUMN pack_id TEXT NOT NULL DEFAULT '';
 
 -- ---------- 3. 已经建过 photos 表、后来才补 featured 列时用这一句 ----------
 -- 把下一行开头的 "-- " 去掉再执行一次即可（重复执行报 duplicate column name 属正常）

@@ -536,8 +536,12 @@
                     <!-- 已解锁：编辑面板 -->
                     <div id="noticeBody" class="hidden">
                         <p class="text-[12px] font-bold tracking-wide text-ink-500">发布新公告</p>
-                        <textarea id="noticeNew" rows="3" maxlength="500" placeholder="写一条群公告，支持换行…"
-                                  class="mt-3 w-full resize-y rounded-xl border border-ink-100 bg-ink-50 px-4 py-3 text-[14px] leading-[1.7] text-ink-900 outline-none transition-colors focus:border-brand-300"></textarea>
+                        <input id="noticeTitle" type="text" maxlength="60" placeholder="公告标题"
+                               class="mt-3 w-full rounded-xl border border-ink-100 bg-ink-50 px-4 py-3 text-[14px] font-semibold text-ink-900 outline-none transition-colors focus:border-brand-300">
+                        <select id="noticePack" aria-label="归属整合包"
+                                class="mt-2 w-full rounded-xl border border-ink-100 bg-ink-50 px-4 py-3 text-[14px] text-ink-900 outline-none transition-colors focus:border-brand-300"></select>
+                        <textarea id="noticeNew" rows="3" maxlength="500" placeholder="公告正文，支持换行…"
+                                  class="mt-2 w-full resize-y rounded-xl border border-ink-100 bg-ink-50 px-4 py-3 text-[14px] leading-[1.7] text-ink-900 outline-none transition-colors focus:border-brand-300"></textarea>
                         <div class="mt-3 flex flex-wrap items-center gap-3">
                             <button id="noticeAdd" class="btn btn-green px-5 py-2.5 text-[13px]">发布公告</button>
                             <button id="noticeExit" class="text-[12.5px] font-bold text-ink-400 transition-colors hover:text-ink-700">退出管理</button>
@@ -1467,6 +1471,8 @@
         const bodyEl = document.getElementById('noticeBody');
         const msgEl = document.getElementById('noticeMsg');
         const codeEl = document.getElementById('noticeCode');
+        const titleEl = document.getElementById('noticeTitle');
+        const packEl = document.getElementById('noticePack');
         const newEl = document.getElementById('noticeNew');
         const manageBtn = document.getElementById('noticeManage');
 
@@ -1496,33 +1502,66 @@
         function clearMsg() { msgEl.classList.add('hidden'); }
         function unlocked() { return !bodyEl.classList.contains('hidden'); }
 
+        function packLabel(pid) { return pid ? (PACK_NAMES[pid] || pid) : ''; }
+        function packOptions(sel) {
+            let out = '<option value="">通用（不属于某个整合包）</option>';
+            Object.keys(PACK_NAMES).forEach(function (id) {
+                out += '<option value="' + esc(id) + '"' + (id === sel ? ' selected' : '') + '>'
+                    + esc(PACK_NAMES[id]) + '</option>';
+            });
+            return out;
+        }
+
+        function itemHtml(r) {
+            if (editing === r.id) {
+                return '<div class="rounded-xl border border-brand-300 bg-white px-4 py-3">'
+                    + '<input data-etitle type="text" maxlength="60" value="' + esc(r.title) + '" placeholder="公告标题"'
+                    + ' class="w-full rounded-lg border border-ink-100 bg-ink-50 px-3 py-2 text-[14px] font-semibold text-ink-900 outline-none focus:border-brand-300">'
+                    + '<select data-epack class="mt-2 w-full rounded-lg border border-ink-100 bg-ink-50 px-3 py-2 text-[13.5px] text-ink-900 outline-none focus:border-brand-300">'
+                    + packOptions(r.pack) + '</select>'
+                    + '<textarea data-econtent rows="3" maxlength="500" placeholder="公告正文"'
+                    + ' class="mt-2 w-full resize-y rounded-lg border border-ink-100 bg-ink-50 px-3 py-2 text-[14px] leading-[1.7] text-ink-900 outline-none focus:border-brand-300">'
+                    + esc(r.content) + '</textarea>'
+                    + '<div class="mt-2 flex flex-wrap gap-2">'
+                    + '<button data-nsave="' + r.id + '" class="btn btn-green px-4 py-2 text-[12.5px]">保存</button>'
+                    + '<button data-ncancel class="btn btn-ghost px-4 py-2 text-[12.5px]">取消</button>'
+                    + '</div></div>';
+            }
+            const head = r.title
+                ? '<p class="text-[15.5px] font-black tracking-tight text-ink-900">' + esc(r.title) + '</p>'
+                : '';
+            const body = '<p class="mt-1.5 whitespace-pre-wrap text-[14.5px] leading-[1.85] text-ink-700">' + esc(r.content) + '</p>';
+            const meta = '<div class="mt-2 flex flex-wrap items-center gap-3">'
+                + (r.pack ? '<span class="tag">' + esc(packLabel(r.pack)) + '</span>' : '')
+                + '<span class="font-mono text-[11.5px] text-ink-400">' + fmtDate(r.created_at) + '</span>'
+                + (unlocked()
+                    ? '<button data-nedit="' + r.id + '" class="text-[12px] font-bold text-ink-400 transition-colors hover:text-ink-700">编辑</button>'
+                      + '<button data-ndel="' + r.id + '" class="text-[12px] font-bold text-amber-600 transition-colors hover:text-amber-700">删除</button>'
+                    : '')
+                + '</div>';
+            return '<div class="rounded-xl border border-ink-100 bg-white px-4 py-3">' + head + body + meta + '</div>';
+        }
+
         function render() {
             if (!rows.length) {
                 listEl.innerHTML = '<p class="rounded-xl border border-dashed border-ink-200 bg-white/60 px-4 py-8 text-center text-[13.5px] text-ink-400">'
-                    + (unlocked() ? '还没有公告，用上面的输入框发布第一条' : '暂无公告') + '</p>';
+                    + (unlocked() ? '还没有公告，用上面的表单发布第一条' : '暂无公告') + '</p>';
                 return;
             }
-            listEl.innerHTML = rows.map(function (r) {
-                const isEdit = editing === r.id;
-                let main;
-                if (isEdit) {
-                    main = '<textarea data-nedittext rows="3" maxlength="500" class="mt-2 w-full resize-y rounded-xl border border-brand-300 bg-white px-4 py-3 text-[14px] leading-[1.7] text-ink-900 outline-none">'
-                        + esc(r.content) + '</textarea>'
-                        + '<div class="mt-2 flex flex-wrap gap-2">'
-                        + '<button data-nsave="' + r.id + '" class="btn btn-green px-4 py-2 text-[12.5px]">保存</button>'
-                        + '<button data-ncancel class="btn btn-ghost px-4 py-2 text-[12.5px]">取消</button>'
-                        + '</div>';
-                } else {
-                    main = '<p class="whitespace-pre-wrap text-[14.5px] leading-[1.85] text-ink-800">' + esc(r.content) + '</p>';
-                }
-                const meta = '<div class="mt-2 flex flex-wrap items-center gap-3">'
-                    + '<span class="font-mono text-[11.5px] text-ink-400">' + fmtDate(r.created_at) + '</span>'
-                    + (unlocked() && !isEdit
-                        ? '<button data-nedit="' + r.id + '" class="text-[12px] font-bold text-ink-400 transition-colors hover:text-ink-700">编辑</button>'
-                          + '<button data-ndel="' + r.id + '" class="text-[12px] font-bold text-amber-600 transition-colors hover:text-amber-700">删除</button>'
-                        : '')
-                    + '</div>';
-                return '<div class="rounded-xl border border-ink-100 bg-white px-4 py-3">' + main + meta + '</div>';
+            /* 按归属整合包分组：通用公告排最前，其余保持接口返回的先后 */
+            const order = [];
+            const map = {};
+            rows.forEach(function (r) {
+                const k = r.pack || '';
+                if (!map[k]) { map[k] = []; order.push(k); }
+                map[k].push(r);
+            });
+            order.sort(function (a, b) { return (a === '' ? -1 : 0) - (b === '' ? -1 : 0); });
+
+            listEl.innerHTML = order.map(function (k) {
+                const head = '<p class="mt-1 font-mono text-[11px] font-bold tracking-[.12em] text-ink-400">'
+                    + (k ? esc(packLabel(k)) : '通用公告') + '</p>';
+                return '<div class="grid gap-3">' + head + map[k].map(itemHtml).join('') + '</div>';
             }).join('');
         }
 
@@ -1543,6 +1582,7 @@
         function unlock(v) {
             code = v;
             try { localStorage.setItem(LS, v); } catch (e) {}
+            if (!packEl.options.length) packEl.innerHTML = packOptions('');
             lockEl.classList.add('hidden');
             bodyEl.classList.remove('hidden');
             manageBtn.classList.add('hidden');
@@ -1556,6 +1596,7 @@
             bodyEl.classList.add('hidden');
             manageBtn.classList.remove('hidden');
             clearMsg();
+            titleEl.value = '';
             newEl.value = '';
             render();
         }
@@ -1579,12 +1620,16 @@
             if (e.key === 'Enter') document.getElementById('noticeUnlock').click();
         });
         document.getElementById('noticeAdd').addEventListener('click', function () {
+            const title = titleEl.value.trim();
             const v = newEl.value.trim();
-            if (!v) { say('先写点内容', false); return; }
-            call({ code: code, action: 'create', content: v }).then(function (d) {
+            const pack = packEl.value;
+            if (!title) { say('先填标题', false); return; }
+            if (!v) { say('先写正文', false); return; }
+            call({ code: code, action: 'create', title: title, content: v, pack: pack }).then(function (d) {
                 if (d && d.error === 'bad_code') { say('审核码已失效，请重新解锁', false); exit(); return; }
-                if (d && d.ok) { newEl.value = ''; clearMsg(); load(); return; }
-                say((d && d.error) || '发布失败', false);
+                if (d && d.ok) { titleEl.value = ''; newEl.value = ''; packEl.value = ''; clearMsg(); load(); return; }
+                say(d && d.error === 'empty_title' ? '标题不能为空'
+                    : (d && d.error === 'empty_content' ? '正文不能为空' : '发布失败'), false);
             }).catch(function () { say('网络不通', false); });
         });
         document.getElementById('noticeExit').addEventListener('click', exit);
@@ -1606,14 +1651,20 @@
                 return;
             }
             if (save) {
-                const ta = listEl.querySelector('textarea[data-nedittext]');
-                const v = ta ? ta.value.trim() : '';
-                if (!v) { say('内容不能为空', false); return; }
-                call({ code: code, action: 'update', id: Number(save.dataset.nsave), content: v }).then(function (d) {
-                    if (d && d.error === 'bad_code') { say('审核码已失效，请重新解锁', false); exit(); return; }
-                    if (d && d.ok) { editing = 0; load(); return; }
-                    say('保存失败', false);
-                }).catch(function () { say('网络不通', false); });
+                const ti = listEl.querySelector('input[data-etitle]');
+                const pk = listEl.querySelector('select[data-epack]');
+                const ta = listEl.querySelector('textarea[data-econtent]');
+                const title = ti ? ti.value.trim() : '';
+                const content = ta ? ta.value.trim() : '';
+                const pack = pk ? pk.value : '';
+                if (!title) { say('标题不能为空', false); return; }
+                if (!content) { say('正文不能为空', false); return; }
+                call({ code: code, action: 'update', id: Number(save.dataset.nsave), title: title, content: content, pack: pack })
+                    .then(function (d) {
+                        if (d && d.error === 'bad_code') { say('审核码已失效，请重新解锁', false); exit(); return; }
+                        if (d && d.ok) { editing = 0; load(); return; }
+                        say('保存失败', false);
+                    }).catch(function () { say('网络不通', false); });
                 return;
             }
         });
