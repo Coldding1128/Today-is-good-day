@@ -4,9 +4,10 @@
  */
 
 /* 与 gallery/index.html 里 MODPACKS 的 id 一一对应。
-   服务端单独存一份，是为了不信任前端传来的 pack_id —— 投稿只能落到这 20 个周目里。 */
+   服务端单独存一份，是为了不信任前端传来的 pack_id —— 投稿只能落到这些周目里。
+   ⚠️ 开新周目加了 id 时，这里必须同步加，否则该周目的投稿/公告会被当成非法值丢弃。 */
 export const PACK_IDS = [
-    'cobblemon', 'vanilla-food', 'element', 'lastone', 'combat', 'alert',
+    'tfc', 'cobblemon', 'vanilla-food', 'element', 'lastone', 'combat', 'alert',
     'mech2', 'newsteam', 'atm10', 'newgen', 'swordking', 'curtain',
     'farm', 'deadworld', 'mech', 'fool', 'swordking-beta', 'utopia-fix',
     'utopia', 'vanilla'
