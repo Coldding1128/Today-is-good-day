@@ -634,28 +634,29 @@ const GLYPHS = {
 const MODPACKS = [
     /* theme 按各整合包查证到的核心模组来定：
        Cobblemon / 农夫乐事 / 法术构筑 / 类幸存者卡牌 / 魂系动作 / 特警CQB /
-       机械动力 / 模拟殖民地+百年战争 / 拔刀剑+TACZ / 星露谷 / 僵尸都市 / 风景 / 塔罗 / ATM */
-    { id: 'tfc',          name: '群峦重生2 冲向月球',      period: '9.26 至今',        now: true, theme: 'tfc' },
-    { id: 'cobblemon',    name: '去吧，方可梦大师',        period: '9.19 — 9.26',      theme: 'poke' },
-    { id: 'vanilla-food', name: '香草纪元：食旅纪行',      period: '9.11 — 9.19',      theme: 'delight' },
-    { id: 'element',      name: '元素觉醒',                period: '9.6 — 9.11',       theme: 'arcane' },
-    { id: 'lastone',      name: 'Last One 终末幸存者',     period: '8.31 — 9.6',       theme: 'survivor' },
-    { id: 'combat',       name: '沉浸式战斗',              period: '7.31 — 8.31',      theme: 'souls' },
-    { id: 'alert',        name: '严阵以待',                period: '7.21 — 7.31',      theme: 'swat' },
-    { id: 'mech2',        name: '重度机械症回归 · 航空学', period: '5.5 — 7.21',       theme: 'create' },
-    { id: 'newsteam',     name: '你好，新蒸程！v1.10',      period: '5.2 — 5.5',        theme: 'create' },
-    { id: 'atm10',        name: 'All The Mods 10 v5.6',    period: '4.13 — 5.1',       theme: 'atm' },
-    { id: 'newgen',       name: '你好，新世代！',           period: '4.12 — 4.12',      theme: 'vanilla' },
-    { id: 'swordking',    name: '剑与王国 正式版',          period: '3.12 — 4.11',      theme: 'colony' },
-    { id: 'curtain',      name: '落幕曲',                  period: '2.19 — 3.12',      theme: 'blade' },
-    { id: 'farm',         name: '农场物语',                period: '1.16 — 2.19',      theme: 'stardew' },
-    { id: 'deadworld',    name: '亡者世界',                period: '1.10 — 1.16',      theme: 'urban' },
-    { id: 'mech',         name: '重度机械症',              period: '12.18 — 2026.01.10', theme: 'create' },
-    { id: 'fool',         name: '愚者',                    period: '12.2 — 12.18',     theme: 'tarot' },
-    { id: 'swordking-beta', name: '剑与王国 测试版',        period: '10.30 — 12.2',     theme: 'colony' },
-    { id: 'utopia-fix',   name: '乌托邦 3.5 fix',          period: '9.25 — 10.30',     theme: 'scenery' },
-    { id: 'utopia',       name: '乌托邦 3.5',              period: '7.12 — 9.25',      theme: 'scenery' },
-    { id: 'vanilla',      name: '1.21 原版生存',           period: '3.8 — 7.12',       theme: 'vanilla' }
+       机械动力 / 模拟殖民地+百年战争 / 拔刀剑+TACZ / 星露谷 / 僵尸都市 / 风景 / 塔罗 / ATM
+       blurb 是该周目核心玩法的一句话标签，会显示在分组标题旁 */
+    { id: 'tfc',          name: '群峦重生2 冲向月球',      period: '9.26 至今',        now: true, theme: 'tfc',     blurb: '群峦传说 · 地质冶金 · 硬核登月' },
+    { id: 'cobblemon',    name: '去吧，方可梦大师',        period: '9.19 — 9.26',      theme: 'poke',     blurb: 'Cobblemon · 全世代宝可梦收集' },
+    { id: 'vanilla-food', name: '香草纪元：食旅纪行',      period: '9.11 — 9.19',      theme: 'delight',  blurb: '农夫乐事 · 种田烹饪美食' },
+    { id: 'element',      name: '元素觉醒',                period: '9.6 — 9.11',       theme: 'arcane',   blurb: '元素魔法 · 法术构筑' },
+    { id: 'lastone',      name: 'Last One 终末幸存者',     period: '8.31 — 9.6',       theme: 'survivor', blurb: '类幸存者 · 割草生存' },
+    { id: 'combat',       name: '沉浸式战斗',              period: '7.31 — 8.31',      theme: 'souls',    blurb: '史诗战斗 · 动作连招' },
+    { id: 'alert',        name: '严阵以待',                period: '7.21 — 7.31',      theme: 'swat',     blurb: '特警 CQB · 近距离作战' },
+    { id: 'mech2',        name: '重度机械症回归 · 航空学', period: '5.5 — 7.21',       theme: 'create',   blurb: '机械动力 + 航空学 · 飞艇火箭' },
+    { id: 'newsteam',     name: '你好，新蒸程！v1.10',      period: '5.2 — 5.5',        theme: 'create',   blurb: '机械动力 · 蒸汽朋克' },
+    { id: 'atm10',        name: 'All The Mods 10 v5.6',    period: '4.13 — 5.1',       theme: 'atm',      blurb: '科技魔法 · 全家桶' },
+    { id: 'newgen',       name: '你好，新世代！',           period: '4.12 — 4.12',      theme: 'vanilla',  blurb: '原版新世代 · 探索更新' },
+    { id: 'swordking',    name: '剑与王国 正式版',          period: '3.12 — 4.11',      theme: 'colony',   blurb: '模拟殖民地 · 建国征战' },
+    { id: 'curtain',      name: '落幕曲',                  period: '2.19 — 3.12',      theme: 'blade',    blurb: '拔刀剑 + TaCZ 枪械 · 塔罗收集' },
+    { id: 'farm',         name: '农场物语',                period: '1.16 — 2.19',      theme: 'stardew',  blurb: '星露谷 · 种田养殖' },
+    { id: 'deadworld',    name: '亡者世界',                period: '1.10 — 1.16',      theme: 'urban',    blurb: '僵尸末日 · 都市求生' },
+    { id: 'mech',         name: '重度机械症',              period: '12.18 — 2026.01.10', theme: 'create', blurb: '机械动力 · 工业革命' },
+    { id: 'fool',         name: '愚者',                    period: '12.2 — 12.18',     theme: 'tarot',    blurb: '愚者 · 塔罗冒险' },
+    { id: 'swordking-beta', name: '剑与王国 测试版',        period: '10.30 — 12.2',     theme: 'colony',   blurb: '模拟殖民地 · 建国征战' },
+    { id: 'utopia-fix',   name: '乌托邦 3.5 fix',          period: '9.25 — 10.30',     theme: 'scenery',  blurb: '乌托邦 · 风景探索' },
+    { id: 'utopia',       name: '乌托邦 3.5',              period: '7.12 — 9.25',      theme: 'scenery',  blurb: '乌托邦 · 风景探索' },
+    { id: 'vanilla',      name: '1.21 原版生存',           period: '3.8 — 7.12',       theme: 'vanilla',  blurb: '原版 · 纯净生存' }
 ];
 
 const PHOTOS = [

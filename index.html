@@ -249,7 +249,131 @@
         html { scroll-behavior: auto; }
         .reveal { opacity: 1 !important; transform: none !important; }
         .voxel .c, .blink { animation: none !important; }
+        .dust i, .voxel .c5, .voxel .c6, .voxel .c7 { animation: none !important; }
     }
+
+    /* ============ 花里胡哨 · Minecraft 原版强化 ============ */
+    /* 像素尘埃粒子：首屏漂浮的经验点 / 火星点，错落分布 */
+    .dust { position: absolute; inset: 0; pointer-events: none; overflow: hidden; }
+    .dust i {
+        position: absolute; display: block; image-rendering: pixelated;
+        width: 6px; height: 6px; background: var(--dc, #63D98C);
+        opacity: 0; animation: dustFloat 9s ease-in-out infinite;
+    }
+    @keyframes dustFloat {
+        0%, 100% { transform: translateY(0) rotate(0deg); opacity: 0; }
+        12% { opacity: .95; }
+        88% { opacity: .95; }
+        50% { transform: translateY(-48px) rotate(180deg); }
+    }
+    .dust i:nth-child(1)  { left: 5%;  top: 74%; --dc:#63D98C; animation-delay: 0s; }
+    .dust i:nth-child(2)  { left: 13%; top: 34%; width: 4px; height: 4px; --dc:#35B96A; animation-delay: 1.4s; }
+    .dust i:nth-child(3)  { left: 22%; top: 60%; --dc:#F5C463; animation-delay: 2.6s; }
+    .dust i:nth-child(4)  { left: 31%; top: 20%; width: 4px; height: 4px; --dc:#63D98C; animation-delay: .8s; }
+    .dust i:nth-child(5)  { left: 40%; top: 52%; --dc:#35B96A; animation-delay: 3.2s; }
+    .dust i:nth-child(6)  { left: 48%; top: 12%; --dc:#F5C463; animation-delay: 1.8s; }
+    .dust i:nth-child(7)  { left: 57%; top: 66%; width: 4px; height: 4px; --dc:#63D98C; animation-delay: 2.2s; }
+    .dust i:nth-child(8)  { left: 66%; top: 28%; --dc:#35B96A; animation-delay: .5s; }
+    .dust i:nth-child(9)  { left: 74%; top: 54%; --dc:#F5C463; animation-delay: 2.9s; }
+    .dust i:nth-child(10) { left: 83%; top: 40%; width: 4px; height: 4px; --dc:#63D98C; animation-delay: 1.1s; }
+    .dust i:nth-child(11) { left: 90%; top: 72%; --dc:#35B96A; animation-delay: 3.8s; }
+    .dust i:nth-child(12) { left: 95%; top: 18%; --dc:#F5C463; animation-delay: 2s; }
+
+    /* 首屏背景：撒几片彩色像素块，像 MC 世界里散落的方块 */
+    .blobs { position: absolute; inset: 0; pointer-events: none; overflow: hidden; }
+    .blobs span { position: absolute; display: block; image-rendering: pixelated; opacity: .07; }
+    .blobs .b1 { width: 64px; height: 64px; left: 4%;  top: 18%; background: #1E8E4E; }
+    .blobs .b2 { width: 40px; height: 40px; left: 12%; top: 70%; background: #F5C463; }
+    .blobs .b3 { width: 52px; height: 52px; right: 8%; top: 24%; background: #63D98C; }
+    .blobs .b4 { width: 36px; height: 36px; right: 16%; top: 62%; background: #35B96A; }
+    .blobs .b5 { width: 46px; height: 46px; left: 44%; top: 8%;  background: #E0900C; }
+
+    /* MC logo 式立体标题：主题绿 + 多层深色底影，像方块一样凸起来 */
+    .mc-title {
+        color: #2EBB5F;
+        text-shadow:
+            0 2px 0 #0A2A19,
+            0 4px 0 rgba(10,42,25,.42),
+            0 8px 16px rgba(17,69,41,.30);
+    }
+    .mc-title-dim { text-shadow: 0 2px 0 rgba(14,19,17,.14); }
+
+    /* 方块场景新增三组方块（泥土 / 圆石 / 苔石），沿用 bob 节奏 */
+    .voxel .c5 { animation: bob 6.5s ease-in-out infinite; animation-delay: .5s;  transform-origin: 130px 372px; }
+    .voxel .c6 { animation: bob 6.5s ease-in-out infinite; animation-delay: 1.9s; transform-origin: 420px 352px; }
+    .voxel .c7 { animation: bob 6.5s ease-in-out infinite; animation-delay: 2.8s; transform-origin: 262px 388px; }
+
+    /* ============================================================
+       Minecraft 原版 · 花里胡哨重做（覆盖式主题，后定义覆盖前面）
+       ============================================================ */
+    /* 背景：干净清晰的淡色——顶部一点点天空蓝，很快落到浅绿白，不晃眼 */
+    body {
+        background-color: #EDF1EA;
+        background-image: linear-gradient(180deg,
+            #C9DCEA 0%, #E0EBDD 30%, #EDF1EA 56%, #EDF1EA 100%);
+        background-attachment: fixed;
+    }
+
+    /* 卡片 / 面板：MC 物品栏面板——深描边 + 内斜角，直角方块感 */
+    .panel, .card {
+        background: #FCFBF4;
+        border: 3px solid #1E2320 !important;
+        border-radius: 8px;
+        box-shadow:
+            inset -3px -3px 0 rgba(14,19,17,.14),
+            inset 3px 3px 0 rgba(255,255,255,.7),
+            0 16px 34px -20px rgba(14,19,17,.42);
+    }
+
+    /* 栏目标题：像素立体字 + 深绿描边感 */
+    .sec-title {
+        color: #12321D;
+        text-shadow: 0 2px 0 rgba(18,50,29,.20), 0 4px 0 rgba(18,50,29,.07);
+    }
+    .sec-idx {
+        color: #fff; background: #12321D; border: 2px solid #0A1F12;
+        border-radius: 6px;
+        box-shadow: inset -2px -2px 0 rgba(0,0,0,.4), inset 2px 2px 0 rgba(255,255,255,.18);
+    }
+    .sec-rule { height: 2px; background: repeating-linear-gradient(90deg, #12321D 0 8px, transparent 8px 16px); }
+
+    /* 标签：MC 方块标签 */
+    .tag {
+        border: 2px solid #1E2320; border-radius: 6px;
+        background: #E6E8DF; color: #1E2320; font-weight: 700;
+        box-shadow: inset -2px -2px 0 rgba(14,19,17,.14), inset 2px 2px 0 rgba(255,255,255,.8);
+    }
+    .tag-green { background: #B7E39A; color: #1E5A12; }
+    .tag-amber { background: #F8DE9A; color: #8A5A00; }
+
+    /* 按钮再强化：更方的 MC 按钮 + 更明显的按下阴影 */
+    .btn { border-radius: 6px; }
+
+    /* 首屏 MC 天空：方块太阳 + 漂移的像素云 */
+    .mc-sky { position: absolute; inset: 0; pointer-events: none; overflow: hidden; }
+    .mc-sun {
+        position: absolute; top: 9%; right: 9%; width: 60px; height: 60px;
+        background: #F7DC6F; image-rendering: pixelated;
+        box-shadow: 0 0 0 6px rgba(247,220,111,.35), 0 0 44px rgba(247,220,111,.55);
+        animation: sunGlow 4s ease-in-out infinite;
+    }
+    @keyframes sunGlow { 0%,100% { transform: scale(1); } 50% { transform: scale(1.07); } }
+    .mc-cloud {
+        position: absolute; width: 22px; height: 22px; background: #fff;
+        image-rendering: pixelated; opacity: .92;
+        box-shadow: 18px 0 0 #fff, 36px 0 0 #fff, -18px 0 0 #fff,
+                    0 -18px 0 #fff, 18px -18px 0 #fff, -18px -18px 0 #fff,
+                    8px 18px 0 rgba(255,255,255,.85), 26px 18px 0 rgba(255,255,255,.85);
+        animation: cloudDrift 46s linear infinite;
+    }
+    .mc-cloud.mc-c1 { top: 15%; left: -6%; }
+    .mc-cloud.mc-c2 { top: 28%; left: 32%; width: 16px; height: 16px; animation-duration: 62s; animation-delay: -22s; }
+    .mc-cloud.mc-c3 { top: 7%;  left: 62%; width: 19px; height: 19px; animation-duration: 54s; animation-delay: -40s; }
+    @keyframes cloudDrift { from { transform: translateX(0); } to { transform: translateX(120px); } }
+    @media (prefers-reduced-motion: reduce) {
+        .mc-sun, .mc-cloud { animation: none !important; }
+    }
+
 </style>
 
 <!-- ============ 结构化数据 ============ -->
@@ -357,6 +481,13 @@
 <!-- ============ 首屏 ============ -->
 <section id="top" class="relative overflow-hidden pt-32 md:pt-40">
     <div class="canvas-grid"></div>
+    <div class="dust" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+    <div class="mc-sky" aria-hidden="true">
+        <div class="mc-sun"></div>
+        <div class="mc-cloud mc-c1"></div>
+        <div class="mc-cloud mc-c2"></div>
+        <div class="mc-cloud mc-c3"></div>
+    </div>
 
     <div class="relative mx-auto max-w-content px-5 pb-20 md:pb-24">
         <div class="grid items-center gap-14 lg:grid-cols-[1.05fr_.95fr] lg:gap-10">
@@ -370,14 +501,9 @@
                     <span class="text-[12.5px] font-bold text-ink-600">私人服务器 · Java 版 · 全天 24 小时开服</span>
                 </div>
 
-                <h1 class="reveal mt-7 text-[clamp(2.4rem,6.2vw,4.6rem)] font-black leading-[1.04] tracking-[-.035em] text-ink-900">
-                    今天是个<br>
-                    <span class="relative inline-block">
-                        好日子啊
-                        <svg class="absolute -bottom-1 left-0 h-[9px] w-full text-brand-300" viewBox="0 0 300 10" preserveAspectRatio="none" aria-hidden="true">
-                            <rect x="0" y="0" width="300" height="10" rx="3" fill="currentColor" opacity=".2"/>
-                        </svg>
-                    </span>
+                <h1 class="reveal mt-7 text-[clamp(2.4rem,6.2vw,4.6rem)] font-black leading-[1.04] tracking-[-.035em]">
+                    <span class="mc-title-dim text-ink-900">今天是个</span><br>
+                    <span class="mc-title">好日子啊</span>
                 </h1>
 
                 <p class="reveal mt-8 max-w-lg text-[15.5px] leading-[1.8] text-ink-500">
@@ -429,6 +555,24 @@
                         <path d="M300 28L334 45 300 62 266 45Z" fill="#F5C463"/>
                         <path d="M266 45L300 62V88L266 71Z" fill="#E0900C"/>
                         <path d="M300 62L334 45V71L300 88Z" fill="#B87208"/>
+                    </g>
+                    <!-- 左下：泥土 -->
+                    <g class="c c5">
+                        <path d="M130 325L190 355 130 385 70 355Z" fill="#B98A5E"/>
+                        <path d="M70 355L130 385V433L70 403Z" fill="#8A5A33"/>
+                        <path d="M130 385L190 355V403L130 433Z" fill="#5E3A1D"/>
+                    </g>
+                    <!-- 右下：圆石 -->
+                    <g class="c c6">
+                        <path d="M420 322.5L465 345 420 367.5 375 345Z" fill="#A8AFA8"/>
+                        <path d="M375 345L420 367.5V407.5L375 385Z" fill="#7A847E"/>
+                        <path d="M420 367.5L465 345V385L420 407.5Z" fill="#47504B"/>
+                    </g>
+                    <!-- 中下：苔石 -->
+                    <g class="c c7">
+                        <path d="M262 367.5L297 385 262 402.5 227 385Z" fill="#6FA26A"/>
+                        <path d="M227 385L262 402.5V434.5L227 417Z" fill="#4F7A4A"/>
+                        <path d="M262 402.5L297 385V417L262 434.5Z" fill="#2F5230"/>
                     </g>
                 </svg>
             </div>
