@@ -589,20 +589,14 @@
         animation: sunGlow 4s ease-in-out infinite;
     }
     /* 星空（夜晚） */
-    .sky-stars {
-        position: absolute; inset: 0;
-        background-image: radial-gradient(#ffffff 1px, transparent 1.6px);
-        background-size: 92px 92px; opacity: .5;
+    .sky-stars { position: absolute; inset: 0; }
+    .sky-stars i {
+        position: absolute; display: block; background: #fff; image-rendering: pixelated;
         animation: starTwinkle 3.6s ease-in-out infinite;
     }
-    @keyframes starTwinkle { 0%, 100% { opacity: .3; } 50% { opacity: .65; } }
-    /* 夜晚云朵偏灰 */
-    body.night .mc-cloud {
-        background: #8A96AE; opacity: .5;
-        box-shadow: 18px 0 0 #8A96AE, 36px 0 0 #8A96AE, -18px 0 0 #8A96AE,
-                    0 -18px 0 #8A96AE, 18px -18px 0 #8A96AE, -18px -18px 0 #8A96AE,
-                    8px 18px 0 rgba(138,150,174,.85), 26px 18px 0 rgba(138,150,174,.85);
-    }
+    @keyframes starTwinkle { 0%, 100% { opacity: .28; } 50% { opacity: 1; } }
+    /* 夜晚云朵偏灰（滤镜染色，保留各自形状） */
+    body.night .mc-cloud { filter: brightness(.62) saturate(.35); opacity: .55; }
     /* 把云分散到整个视口，滚动时各处都有云 */
     .mc-cloud.mc-c4 { top: 46%; left: -14%; width: 20px; height: 20px; animation-duration: 52s; animation-delay: -28s; }
     .mc-cloud.mc-c5 { top: 66%; left: 44%; width: 17px; height: 17px; animation-duration: 62s; animation-delay: -56s; }
@@ -610,6 +604,32 @@
     /* 云朵由 JS 驱动运动（从左侧飘到右侧，再从左侧随机位置 / 速度重现） */
     .cloud-wrap { position: absolute; top: 0; left: 0; will-change: transform; }
     .cloud-wrap .mc-cloud { position: relative; animation: none; }
+    /* 个别云大小略不同，更自然 */
+    .cloud-wrap.cw6 .mc-cloud { transform: scale(.82); }
+    .cloud-wrap.cw7 .mc-cloud { transform: scale(1.18); }
+
+    /* 每朵云形状不同（不同的方块组合） */
+    .cloud-wrap.cw2 .mc-cloud {
+        box-shadow: 18px 0 0 #fff, 36px 0 0 #fff, 54px 0 0 #fff, -18px 0 0 #fff, -36px 0 0 #fff,
+                    0 -18px 0 #fff, 18px -18px 0 #fff, 36px -18px 0 #fff;
+    }
+    .cloud-wrap.cw3 .mc-cloud {
+        box-shadow: 16px 0 0 #fff, -16px 0 0 #fff,
+                    0 -16px 0 #fff, 16px -16px 0 #fff, -16px -16px 0 #fff,
+                    0 -32px 0 #fff, 16px -32px 0 #fff;
+    }
+    .cloud-wrap.cw4 .mc-cloud {
+        box-shadow: 14px 0 0 #fff, -14px 0 0 #fff, 0 -14px 0 #fff, 14px -14px 0 #fff, 0 14px 0 #fff;
+    }
+    .cloud-wrap.cw5 .mc-cloud {
+        box-shadow: 20px 0 0 #fff, 40px 0 0 #fff, -20px 0 0 #fff, -40px 0 0 #fff, 0 -20px 0 #fff;
+    }
+    .cloud-wrap.cw6 .mc-cloud {
+        box-shadow: 15px 0 0 #fff, -15px 0 0 #fff, 0 -15px 0 #fff, 15px -15px 0 #fff, -15px -15px 0 #fff, 0 15px 0 #fff;
+    }
+    .cloud-wrap.cw7 .mc-cloud {
+        box-shadow: 18px 0 0 #fff, 36px 0 0 #fff, 18px -18px 0 #fff, 36px -18px 0 #fff, 54px -18px 0 #fff;
+    }
 
     /* 首屏 MC 天空：方块太阳 + 漂移的像素云 */
     .mc-sky { position: absolute; inset: 0; pointer-events: none; overflow: hidden; }
@@ -693,6 +713,8 @@
     <div class="cloud-wrap cw3" data-sp="0.10"><div class="mc-cloud"></div></div>
     <div class="cloud-wrap cw4" data-sp="0.38"><div class="mc-cloud"></div></div>
     <div class="cloud-wrap cw5" data-sp="0.22"><div class="mc-cloud"></div></div>
+    <div class="cloud-wrap cw6" data-sp="0.26"><div class="mc-cloud"></div></div>
+    <div class="cloud-wrap cw7" data-sp="0.13"><div class="mc-cloud"></div></div>
 </div>
 
 <!-- ============ 顶部滚动经验条 ============ -->
@@ -2303,6 +2325,25 @@
         window.addEventListener('resize', function () {
             clouds.forEach(function (c) { c.y = Math.min(c.y, window.innerHeight * 0.75); place(c); });
         });
+    })();
+
+    /* 星空：随机生成大小 / 亮度 / 位置 / 闪烁节奏各异的星星（仅夜晚显示） */
+    (function () {
+        const box = document.querySelector('.bg-sky .sky-stars');
+        if (!box) return;
+        const n = 140, out = [];
+        for (let i = 0; i < n; i++) {
+            const x = +(Math.random() * 100).toFixed(2);
+            const y = +(Math.random() * 100).toFixed(2);
+            const s = +(Math.random() < 0.72 ? 1 : 1.6 + Math.random() * 1.6).toFixed(1);      /* 多数小星，少数大星 */
+            const a = +(0.35 + Math.random() * 0.65).toFixed(2);                                /* 亮度不一 */
+            const dur = +(2.4 + Math.random() * 3.4).toFixed(2);                                /* 闪烁快慢不一 */
+            const del = +(Math.random() * 5).toFixed(2);
+            out.push('<i style="left:' + x + '%;top:' + y + '%;width:' + s + 'px;height:' + s + 'px;'
+                + 'background:rgba(255,255,255,' + a + ');'
+                + 'animation-duration:' + dur + 's;animation-delay:-' + del + 's"></i>');
+        }
+        box.innerHTML = out.join('');
     })();
 
     /* 背景音乐（需要在 assets/bgm.mp3 放音频文件；不存在时按钮置灰） */
