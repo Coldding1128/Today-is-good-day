@@ -175,6 +175,47 @@
     .field:focus { border-color: #A6D7B8; }
     .bar { height: 8px; border-radius: 999px; background: #E1E5DE; overflow: hidden; }
     .bar i { display: block; height: 100%; width: 0; border-radius: 999px; background: #1E8E4E; transition: width .3s ease; }
+    /* ====== 与主页统一的 MC 视觉 ====== */
+    body {
+        background-color: #DCEBD0;
+        background-image:
+            linear-gradient(180deg, #BEE2F7 0%, #D3EFC8 20%, #C6E4AE 40%, #BCDD9E 62%, #B2D592 100%),
+            url('../assets/textures/grass.svg');
+        background-size: 100% 100%, 64px 64px;
+        background-attachment: fixed, scroll;
+        background-blend-mode: normal, soft-light;
+    }
+    /* 下载卡片：MC 物品栏面板 + 木质底纹 */
+    .dl-card {
+        background-color: #FCFBF4;
+        background-image: url('../assets/textures/planks.svg');
+        background-size: 44px 44px;
+        background-blend-mode: soft-light;
+        border: 3px solid #1E2320;
+        border-radius: 8px;
+        box-shadow: inset -3px -3px 0 rgba(14,19,17,.16), inset 3px 3px 0 rgba(255,255,255,.78),
+                    0 18px 36px -20px rgba(14,19,17,.45);
+    }
+    /* ====== UI 花纹（按钮斜纹 / 标签点阵 / 卡片内框） ====== */
+    .btn-green, .btn-dark {
+        background-image: repeating-linear-gradient(45deg,
+            rgba(255,255,255,.07) 0 4px, rgba(0,0,0,.05) 4px 8px);
+    }
+    .tag {
+        background-image: radial-gradient(rgba(30,35,32,.13) 1px, transparent 1.5px);
+        background-size: 6px 6px;
+    }
+    .dl-card::after {
+        content: ''; position: absolute; inset: 6px; pointer-events: none;
+        border: 2px dashed rgba(30,35,32,.13); border-radius: 5px;
+    }
+
+    /* ====== 钻石剑光标 + 火焰弹尾焰拖尾 ====== */
+    html { cursor: url('../assets/cursor-pickaxe.png') 6 20, auto; }
+    body, body * { cursor: inherit; }
+    input, textarea, select { cursor: text; }
+
+    .fire-trail { position: fixed; inset: 0; z-index: 9998; pointer-events: none; }
 </style>
 </head>
 <body class="font-sans text-ink-900 antialiased">
@@ -736,6 +777,87 @@
         }
     })();
 
+    /* 樱花花瓣拖尾：canvas 逐帧绘制粉色花瓣，飘落 + 左右摇摆 + 旋转 */
+    (function () {
+        if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+        const cvs = document.createElement('canvas');
+        cvs.className = 'fire-trail';
+        document.body.appendChild(cvs);
+        const ctx = cvs.getContext('2d');
+        const dpr = Math.min(window.devicePixelRatio || 1, 2);
+        let W = 0, H = 0;
+        function resize() {
+            W = cvs.width = Math.floor(innerWidth * dpr);
+            H = cvs.height = Math.floor(innerHeight * dpr);
+            cvs.style.width = innerWidth + 'px';
+            cvs.style.height = innerHeight + 'px';
+        }
+        resize();
+        window.addEventListener('resize', resize);
+        const parts = [];
+        let mx = 0, my = 0, pmx = 0, pmy = 0, moved = false;
+        document.addEventListener('mousemove', function (e) {
+            mx = e.clientX; my = e.clientY;
+            if (!moved) { pmx = mx; pmy = my; moved = true; }
+        }, { passive: true });
+        function spawn(x, y) {
+            parts.push({
+                x: x * dpr, y: y * dpr,
+                vx: (Math.random() - 0.5) * 0.9 * dpr,
+                vy: (0.15 + Math.random() * 0.5) * dpr,
+                life: 1, decay: 0.007 + Math.random() * 0.007,
+                size: (5 + Math.random() * 5) * dpr,
+                rot: Math.random() * 6.2832,
+                vr: (Math.random() - 0.5) * 0.14,
+                sway: Math.random() * 6.2832,
+                sw: 0.02 + Math.random() * 0.03
+            });
+        }
+        function draw(p) {
+            ctx.save();
+            ctx.translate(p.x, p.y);
+            ctx.rotate(p.rot);
+            const r = p.size * (0.55 + p.life * 0.45), a = Math.min(1, p.life * 1.6);
+            const g = ctx.createLinearGradient(-r, -r, r, r);
+            g.addColorStop(0,    'rgba(255,228,240,' + (0.95 * a).toFixed(3) + ')');
+            g.addColorStop(0.55, 'rgba(248,172,208,' + (0.90 * a).toFixed(3) + ')');
+            g.addColorStop(1,    'rgba(228,116,172,' + (0.82 * a).toFixed(3) + ')');
+            ctx.fillStyle = g;
+            ctx.beginPath(); ctx.ellipse(0, 0, r, r * 0.6, 0, 0, 6.2832); ctx.fill();
+            ctx.restore();
+        }
+        function frame() {
+            if (moved) {
+                const dx = mx - pmx, dy = my - pmy;
+                const dist = Math.sqrt(dx * dx + dy * dy);
+                /* 鼠标静止（位移很小）时不生成新花瓣，让已有的自然飘散掉 */
+                if (dist > 1.4) {
+                    const steps = Math.min(10, Math.max(1, Math.ceil(dist / 7)));
+                    for (let i = 1; i <= steps; i++) {
+                        const k = i / steps;
+                        spawn(pmx + dx * k, pmy + dy * k);
+                    }
+                }
+                pmx = mx; pmy = my;
+            }
+            if (parts.length > 500) parts.splice(0, parts.length - 500);
+            ctx.clearRect(0, 0, W, H);
+            for (let i = parts.length - 1; i >= 0; i--) {
+                const p = parts[i];
+                p.sway += p.sw;
+                p.x += p.vx + Math.sin(p.sway) * 0.5 * dpr;
+                p.y += p.vy;
+                p.vy += 0.012 * dpr;
+                p.vx *= 0.98; p.vy *= 0.99;
+                p.rot += p.vr;
+                p.life -= p.decay;
+                if (p.life <= 0 || p.y > H + 40) { parts.splice(i, 1); continue; }
+                draw(p);
+            }
+            requestAnimationFrame(frame);
+        }
+        requestAnimationFrame(frame);
+    })();
 </script>
 </body>
 </html>

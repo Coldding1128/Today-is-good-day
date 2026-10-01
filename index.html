@@ -258,7 +258,7 @@
     .dust i {
         position: absolute; display: block; image-rendering: pixelated;
         width: 6px; height: 6px; background: var(--dc, #63D98C);
-        opacity: 0; animation: dustFloat 9s ease-in-out infinite;
+        opacity: 0; animation: dustFloat 5.5s ease-in-out infinite;
     }
     @keyframes dustFloat {
         0%, 100% { transform: translateY(0) rotate(0deg); opacity: 0; }
@@ -306,48 +306,112 @@
     /* ============================================================
        Minecraft 原版 · 花里胡哨重做（覆盖式主题，后定义覆盖前面）
        ============================================================ */
-    /* 背景：干净清晰的淡色——顶部一点点天空蓝，很快落到浅绿白，不晃眼 */
+    /* ====== 花哨版：MC 世界背景 + 材质面板 ====== */
+    /* 背景：天空蓝 → 草地绿，再叠一层 MC 草地材质，有世界感但不刺眼 */
     body {
-        background-color: #EDF1EA;
-        background-image: linear-gradient(180deg,
-            #C9DCEA 0%, #E0EBDD 30%, #EDF1EA 56%, #EDF1EA 100%);
-        background-attachment: fixed;
+        background-color: #DCEBD0;
+        background-image:
+            linear-gradient(180deg, #BEE2F7 0%, #D3EFC8 20%, #C6E4AE 40%, #BCDD9E 62%, #B2D592 100%),
+            url('assets/textures/grass.svg');
+        background-size: 100% 100%, 64px 64px;
+        background-attachment: fixed, scroll;
+        background-blend-mode: normal, soft-light;
     }
 
-    /* 卡片 / 面板：MC 物品栏面板——深描边 + 内斜角，直角方块感 */
+    /* 面板 / 卡片：MC 物品栏 + 木质底纹 */
     .panel, .card {
-        background: #FCFBF4;
+        background-color: #FCFBF4;
+        background-image: url('assets/textures/planks.svg');
+        background-size: 44px 44px;
+        background-blend-mode: soft-light;
         border: 3px solid #1E2320 !important;
         border-radius: 8px;
         box-shadow:
-            inset -3px -3px 0 rgba(14,19,17,.14),
-            inset 3px 3px 0 rgba(255,255,255,.7),
-            0 16px 34px -20px rgba(14,19,17,.42);
+            inset -3px -3px 0 rgba(14,19,17,.16),
+            inset 3px 3px 0 rgba(255,255,255,.78),
+            0 18px 36px -20px rgba(14,19,17,.45);
     }
 
-    /* 栏目标题：像素立体字 + 深绿描边感 */
+    /* 栏目标题：更夸张的像素立体 */
     .sec-title {
-        color: #12321D;
-        text-shadow: 0 2px 0 rgba(18,50,29,.20), 0 4px 0 rgba(18,50,29,.07);
+        color: #0F3A1E;
+        text-shadow: 0 2px 0 rgba(15,58,30,.24), 0 4px 0 rgba(15,58,30,.10), 0 7px 14px rgba(15,58,30,.14);
     }
     .sec-idx {
-        color: #fff; background: #12321D; border: 2px solid #0A1F12;
+        color: #fff; background: linear-gradient(160deg, #35C066, #188344); border: 2px solid #0A1F12;
         border-radius: 6px;
-        box-shadow: inset -2px -2px 0 rgba(0,0,0,.4), inset 2px 2px 0 rgba(255,255,255,.18);
+        box-shadow: inset -2px -2px 0 rgba(0,0,0,.42), inset 2px 2px 0 rgba(255,255,255,.26);
     }
-    .sec-rule { height: 2px; background: repeating-linear-gradient(90deg, #12321D 0 8px, transparent 8px 16px); }
+    .sec-rule { height: 3px; background: repeating-linear-gradient(90deg, #1E8E4E 0 10px, #63D98C 10px 14px, transparent 14px 24px); }
 
-    /* 标签：MC 方块标签 */
+    /* 标签：更鲜艳的 MC 方块标签 */
     .tag {
         border: 2px solid #1E2320; border-radius: 6px;
-        background: #E6E8DF; color: #1E2320; font-weight: 700;
-        box-shadow: inset -2px -2px 0 rgba(14,19,17,.14), inset 2px 2px 0 rgba(255,255,255,.8);
+        background: #E9EBD9; color: #1E2320; font-weight: 700;
+        box-shadow: inset -2px -2px 0 rgba(14,19,17,.14), inset 2px 2px 0 rgba(255,255,255,.85);
     }
-    .tag-green { background: #B7E39A; color: #1E5A12; }
-    .tag-amber { background: #F8DE9A; color: #8A5A00; }
+    .tag-green { background: #A6E08A; color: #14500A; }
+    .tag-amber { background: #FAD97E; color: #7A4E00; }
 
-    /* 按钮再强化：更方的 MC 按钮 + 更明显的按下阴影 */
+    /* 按钮：更明显的 MC 立体斜角 */
     .btn { border-radius: 6px; }
+    .btn-green {
+        box-shadow: inset -3px -3px 0 rgba(0,0,0,.30), inset 3px 3px 0 rgba(255,255,255,.42),
+                    0 12px 26px -14px rgba(30,142,78,.8);
+    }
+    .btn-green:hover {
+        box-shadow: inset -3px -3px 0 rgba(0,0,0,.30), inset 3px 3px 0 rgba(255,255,255,.5),
+                    0 18px 34px -14px rgba(30,142,78,.9);
+    }
+    .btn-dark {
+        box-shadow: inset -3px -3px 0 rgba(0,0,0,.5), inset 3px 3px 0 rgba(255,255,255,.2),
+                    0 10px 22px -12px rgba(14,19,17,.65);
+    }
+
+    /* ====== UI 花纹（不止纯色） ====== */
+    /* 面板 / 卡片：叠加内层虚线装饰边框 */
+    .panel, .card { position: relative; }
+    .panel::after, .card::after {
+        content: ''; position: absolute; inset: 6px; pointer-events: none;
+        border: 2px dashed rgba(30,35,32,.13); border-radius: 5px;
+    }
+    /* 按钮：斜纹底纹（深色与绿色） */
+    .btn-dark, .btn-green {
+        background-image: repeating-linear-gradient(45deg,
+            rgba(255,255,255,.07) 0 4px, rgba(0,0,0,.05) 4px 8px);
+    }
+    .btn-ghost {
+        background-image: repeating-linear-gradient(45deg,
+            rgba(30,35,32,.05) 0 4px, rgba(255,255,255,.5) 4px 8px);
+    }
+    /* 标签：点阵花纹 */
+    .tag {
+        background-image: radial-gradient(rgba(30,35,32,.13) 1px, transparent 1.5px);
+        background-size: 6px 6px;
+    }
+    /* 栏目序号徽章：绿色渐变 + 斜纹 */
+    .sec-idx {
+        background-image:
+            repeating-linear-gradient(45deg, rgba(255,255,255,.14) 0 4px, transparent 4px 8px),
+            linear-gradient(160deg, #35C066, #188344);
+    }
+
+    /* ====== 钻石剑光标 + 火焰弹尾焰拖尾 ====== */
+    html { cursor: url('assets/cursor-pickaxe.png') 6 20, auto; }
+    body, body * { cursor: inherit; }
+    input, textarea, select { cursor: text; }
+
+    .fire-trail { position: fixed; inset: 0; z-index: 9998; pointer-events: none; }
+
+    /* 首屏 MC 像素风景卡片 */
+    .mc-shot {
+        position: relative; overflow: hidden;
+        border: 4px solid #1E2320; border-radius: 12px;
+        background: #0E1311;
+        box-shadow: 0 24px 48px -22px rgba(14,19,17,.5), inset 0 0 0 2px rgba(255,255,255,.14);
+        image-rendering: pixelated;
+    }
+    .mc-shot img { display: block; width: 100%; aspect-ratio: 1 / .84; object-fit: cover; object-position: center top; }
 
     /* 首屏 MC 天空：方块太阳 + 漂移的像素云 */
     .mc-sky { position: absolute; inset: 0; pointer-events: none; overflow: hidden; }
@@ -355,7 +419,7 @@
         position: absolute; top: 9%; right: 9%; width: 60px; height: 60px;
         background: #F7DC6F; image-rendering: pixelated;
         box-shadow: 0 0 0 6px rgba(247,220,111,.35), 0 0 44px rgba(247,220,111,.55);
-        animation: sunGlow 4s ease-in-out infinite;
+        animation: sunGlow 2.6s ease-in-out infinite;
     }
     @keyframes sunGlow { 0%,100% { transform: scale(1); } 50% { transform: scale(1.07); } }
     .mc-cloud {
@@ -364,11 +428,11 @@
         box-shadow: 18px 0 0 #fff, 36px 0 0 #fff, -18px 0 0 #fff,
                     0 -18px 0 #fff, 18px -18px 0 #fff, -18px -18px 0 #fff,
                     8px 18px 0 rgba(255,255,255,.85), 26px 18px 0 rgba(255,255,255,.85);
-        animation: cloudDrift 46s linear infinite;
+        animation: cloudDrift 28s linear infinite;
     }
     .mc-cloud.mc-c1 { top: 15%; left: -6%; }
-    .mc-cloud.mc-c2 { top: 28%; left: 32%; width: 16px; height: 16px; animation-duration: 62s; animation-delay: -22s; }
-    .mc-cloud.mc-c3 { top: 7%;  left: 62%; width: 19px; height: 19px; animation-duration: 54s; animation-delay: -40s; }
+    .mc-cloud.mc-c2 { top: 28%; left: 32%; width: 16px; height: 16px; animation-duration: 38s; animation-delay: -22s; }
+    .mc-cloud.mc-c3 { top: 7%;  left: 62%; width: 19px; height: 19px; animation-duration: 32s; animation-delay: -40s; }
     @keyframes cloudDrift { from { transform: translateX(0); } to { transform: translateX(120px); } }
     @media (prefers-reduced-motion: reduce) {
         .mc-sun, .mc-cloud { animation: none !important; }
@@ -529,52 +593,11 @@
                 </div>
             </div>
 
-            <!-- 右：方块插画 -->
+            <!-- 右：MC 世界（像素风景） -->
             <div class="reveal mx-auto w-full max-w-[460px] lg:max-w-none">
-                <svg class="voxel h-auto w-full" viewBox="0 0 520 440" fill="none" aria-hidden="true">
-                    <!-- 主方块 -->
-                    <g class="c">
-                        <path d="M250 147.5L355 200 250 252.5 145 200Z" fill="#63D98C"/>
-                        <path d="M145 200L250 252.5V338.5L145 286Z" fill="#1E8E4E"/>
-                        <path d="M250 252.5L355 200V286L250 338.5Z" fill="#114529"/>
-                    </g>
-                    <!-- 右上 -->
-                    <g class="c c2">
-                        <path d="M395 79L457 110 395 141 333 110Z" fill="#63D98C"/>
-                        <path d="M333 110L395 141V191L333 160Z" fill="#1E8E4E"/>
-                        <path d="M395 141L457 110V160L395 191Z" fill="#114529"/>
-                    </g>
-                    <!-- 左上 -->
-                    <g class="c c3">
-                        <path d="M105 81L153 105 105 129 57 105Z" fill="#63D98C"/>
-                        <path d="M57 105L105 129V167L57 143Z" fill="#1E8E4E"/>
-                        <path d="M105 129L153 105V143L105 167Z" fill="#114529"/>
-                    </g>
-                    <!-- 顶部小方块（点缀色） -->
-                    <g class="c c4">
-                        <path d="M300 28L334 45 300 62 266 45Z" fill="#F5C463"/>
-                        <path d="M266 45L300 62V88L266 71Z" fill="#E0900C"/>
-                        <path d="M300 62L334 45V71L300 88Z" fill="#B87208"/>
-                    </g>
-                    <!-- 左下：泥土 -->
-                    <g class="c c5">
-                        <path d="M130 325L190 355 130 385 70 355Z" fill="#B98A5E"/>
-                        <path d="M70 355L130 385V433L70 403Z" fill="#8A5A33"/>
-                        <path d="M130 385L190 355V403L130 433Z" fill="#5E3A1D"/>
-                    </g>
-                    <!-- 右下：圆石 -->
-                    <g class="c c6">
-                        <path d="M420 322.5L465 345 420 367.5 375 345Z" fill="#A8AFA8"/>
-                        <path d="M375 345L420 367.5V407.5L375 385Z" fill="#7A847E"/>
-                        <path d="M420 367.5L465 345V385L420 407.5Z" fill="#47504B"/>
-                    </g>
-                    <!-- 中下：苔石 -->
-                    <g class="c c7">
-                        <path d="M262 367.5L297 385 262 402.5 227 385Z" fill="#6FA26A"/>
-                        <path d="M227 385L262 402.5V434.5L227 417Z" fill="#4F7A4A"/>
-                        <path d="M262 402.5L297 385V417L262 434.5Z" fill="#2F5230"/>
-                    </g>
-                </svg>
+                <div class="mc-shot">
+                    <img src="assets/mc-scene.png" alt="Minecraft 世界">
+                </div>
             </div>
         </div>
     </div>
@@ -1814,6 +1837,94 @@
         });
 
         load();
+    })();
+
+    /* 樱花花瓣拖尾：canvas 逐帧绘制粉色花瓣，飘落 + 左右摇摆 + 旋转 */
+    (function () {
+        if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+        const cvs = document.createElement('canvas');
+        cvs.className = 'fire-trail';
+        document.body.appendChild(cvs);
+        const ctx = cvs.getContext('2d');
+        const dpr = Math.min(window.devicePixelRatio || 1, 2);
+        let W = 0, H = 0;
+        function resize() {
+            W = cvs.width = Math.floor(innerWidth * dpr);
+            H = cvs.height = Math.floor(innerHeight * dpr);
+            cvs.style.width = innerWidth + 'px';
+            cvs.style.height = innerHeight + 'px';
+        }
+        resize();
+        window.addEventListener('resize', resize);
+
+        const parts = [];
+        let mx = 0, my = 0, pmx = 0, pmy = 0, moved = false;
+        document.addEventListener('mousemove', function (e) {
+            mx = e.clientX; my = e.clientY;
+            if (!moved) { pmx = mx; pmy = my; moved = true; }
+        }, { passive: true });
+
+        function spawn(x, y) {
+            parts.push({
+                x: x * dpr, y: y * dpr,
+                vx: (Math.random() - 0.5) * 0.9 * dpr,
+                vy: (0.15 + Math.random() * 0.5) * dpr,
+                life: 1,
+                decay: 0.007 + Math.random() * 0.007,
+                size: (5 + Math.random() * 5) * dpr,
+                rot: Math.random() * 6.2832,
+                vr: (Math.random() - 0.5) * 0.14,
+                sway: Math.random() * 6.2832,
+                sw: 0.02 + Math.random() * 0.03
+            });
+        }
+        function draw(p) {
+            ctx.save();
+            ctx.translate(p.x, p.y);
+            ctx.rotate(p.rot);
+            const r = p.size * (0.55 + p.life * 0.45);
+            const a = Math.min(1, p.life * 1.6);
+            const g = ctx.createLinearGradient(-r, -r, r, r);
+            g.addColorStop(0,    'rgba(255,228,240,' + (0.95 * a).toFixed(3) + ')');
+            g.addColorStop(0.55, 'rgba(248,172,208,' + (0.90 * a).toFixed(3) + ')');
+            g.addColorStop(1,    'rgba(228,116,172,' + (0.82 * a).toFixed(3) + ')');
+            ctx.fillStyle = g;
+            ctx.beginPath();
+            ctx.ellipse(0, 0, r, r * 0.6, 0, 0, 6.2832);
+            ctx.fill();
+            ctx.restore();
+        }
+        function frame() {
+            if (moved) {
+                const dx = mx - pmx, dy = my - pmy;
+                const dist = Math.sqrt(dx * dx + dy * dy);
+                /* 鼠标静止（位移很小）时不生成新花瓣，让已有的自然飘散掉 */
+                if (dist > 1.4) {
+                    const steps = Math.min(10, Math.max(1, Math.ceil(dist / 7)));
+                    for (let i = 1; i <= steps; i++) {
+                        const k = i / steps;
+                        spawn(pmx + dx * k, pmy + dy * k);
+                    }
+                }
+                pmx = mx; pmy = my;
+            }
+            if (parts.length > 500) parts.splice(0, parts.length - 500);
+            ctx.clearRect(0, 0, W, H);
+            for (let i = parts.length - 1; i >= 0; i--) {
+                const p = parts[i];
+                p.sway += p.sw;
+                p.x += p.vx + Math.sin(p.sway) * 0.5 * dpr;
+                p.y += p.vy;
+                p.vy += 0.012 * dpr;
+                p.vx *= 0.98; p.vy *= 0.99;
+                p.rot += p.vr;
+                p.life -= p.decay;
+                if (p.life <= 0 || p.y > H + 40) { parts.splice(i, 1); continue; }
+                draw(p);
+            }
+            requestAnimationFrame(frame);
+        }
+        requestAnimationFrame(frame);
     })();
 </script>
 </body>

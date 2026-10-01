@@ -251,9 +251,19 @@
     .grp-head {
         display: flex; align-items: center; flex-wrap: wrap; gap: 10px 14px;
         padding-bottom: 16px; margin-bottom: 22px;
-        border-bottom: 2px solid var(--tint, #E1E5DE);
+        border-bottom: 2px solid transparent;
+        background-image: linear-gradient(90deg, var(--ac, #1E8E4E), var(--tint, #E1E5DE) 46%, transparent 92%);
+        background-repeat: no-repeat; background-position: 0 100%; background-size: 100% 2px;
     }
     .grp-name { font-size: clamp(1.15rem, 2.2vw, 1.45rem); font-weight: 900; letter-spacing: -.02em; color: #0E1311; }
+    .grp-blurb {
+        display: inline-flex; align-items: center;
+        padding: 3px 10px; border-radius: 999px;
+        font-size: 11.5px; font-weight: 600;
+        color: var(--ac, #47504B);
+        background: var(--tint, #F1F3EF);
+        box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--ac, #1E8E4E) 24%, transparent);
+    }
     .grp-meta { font-family: ui-monospace, Consolas, monospace; font-size: 12px; color: #7A847E; }
     .grp-count { margin-left: auto; font-family: ui-monospace, Consolas, monospace; font-size: 12px; color: #9AA39D; }
 
@@ -351,6 +361,32 @@
         html { scroll-behavior: auto; }
         .reveal { opacity: 1 !important; transform: none !important; }
     }
+    /* ====== 与主页统一的 MC 世界背景 ====== */
+    body {
+        background-color: #DCEBD0;
+        background-image:
+            linear-gradient(180deg, #BEE2F7 0%, #D3EFC8 20%, #C6E4AE 40%, #BCDD9E 62%, #B2D592 100%),
+            url('../assets/textures/grass.svg');
+        background-size: 100% 100%, 64px 64px;
+        background-attachment: fixed, scroll;
+        background-blend-mode: normal, soft-light;
+    }
+    /* ====== UI 花纹（按钮斜纹 / 标签点阵） ====== */
+    .btn-green, .btn-dark {
+        background-image: repeating-linear-gradient(45deg,
+            rgba(255,255,255,.07) 0 4px, rgba(0,0,0,.05) 4px 8px);
+    }
+    .tag {
+        background-image: radial-gradient(rgba(30,35,32,.13) 1px, transparent 1.5px);
+        background-size: 6px 6px;
+    }
+
+    /* ====== 钻石剑光标 + 火焰弹尾焰拖尾 ====== */
+    html { cursor: url('../assets/cursor-pickaxe.png') 6 20, auto; }
+    body, body * { cursor: inherit; }
+    input, textarea, select { cursor: text; }
+
+    .fire-trail { position: fixed; inset: 0; z-index: 9998; pointer-events: none; }
 </style>
 </head>
 <body class="font-sans text-ink-900 antialiased">
@@ -734,6 +770,7 @@ const PHOTOS = [
                 + '<div class="grp-head">'
                 + '<span class="tex tex-' + esc(th.tex) + '" aria-hidden="true"></span>'
                 + '<h2 class="grp-name">' + esc(pk.name) + '</h2>'
+                + (pk.blurb ? '<span class="grp-blurb">' + esc(pk.blurb) + '</span>' : '')
                 + (pk.now ? '<span class="grp-flag"><span class="h-1.5 w-1.5 rounded-full" style="background:currentColor"></span>当前运行</span>' : '')
                 + '<span class="grp-meta">' + esc(pk.period) + '</span>'
                 + '<span class="grp-count" style="color:' + th.ac + ';opacity:.85">' + pk.photos.length + ' 张</span>'
@@ -1323,6 +1360,88 @@ const PHOTOS = [
     const hash = decodeURIComponent(location.hash.replace('#', ''));
     if (hash && filled.some(function (p) { return p.id === hash; })) applyFilter(hash, false);
 })();
+
+    /* 樱花花瓣拖尾：canvas 逐帧绘制粉色花瓣，飘落 + 左右摇摆 + 旋转 */
+    (function () {
+        if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+        const cvs = document.createElement('canvas');
+        cvs.className = 'fire-trail';
+        document.body.appendChild(cvs);
+        const ctx = cvs.getContext('2d');
+        const dpr = Math.min(window.devicePixelRatio || 1, 2);
+        let W = 0, H = 0;
+        function resize() {
+            W = cvs.width = Math.floor(innerWidth * dpr);
+            H = cvs.height = Math.floor(innerHeight * dpr);
+            cvs.style.width = innerWidth + 'px';
+            cvs.style.height = innerHeight + 'px';
+        }
+        resize();
+        window.addEventListener('resize', resize);
+        const parts = [];
+        let mx = 0, my = 0, pmx = 0, pmy = 0, moved = false;
+        document.addEventListener('mousemove', function (e) {
+            mx = e.clientX; my = e.clientY;
+            if (!moved) { pmx = mx; pmy = my; moved = true; }
+        }, { passive: true });
+        function spawn(x, y) {
+            parts.push({
+                x: x * dpr, y: y * dpr,
+                vx: (Math.random() - 0.5) * 0.9 * dpr,
+                vy: (0.15 + Math.random() * 0.5) * dpr,
+                life: 1, decay: 0.007 + Math.random() * 0.007,
+                size: (5 + Math.random() * 5) * dpr,
+                rot: Math.random() * 6.2832,
+                vr: (Math.random() - 0.5) * 0.14,
+                sway: Math.random() * 6.2832,
+                sw: 0.02 + Math.random() * 0.03
+            });
+        }
+        function draw(p) {
+            ctx.save();
+            ctx.translate(p.x, p.y);
+            ctx.rotate(p.rot);
+            const r = p.size * (0.55 + p.life * 0.45), a = Math.min(1, p.life * 1.6);
+            const g = ctx.createLinearGradient(-r, -r, r, r);
+            g.addColorStop(0,    'rgba(255,228,240,' + (0.95 * a).toFixed(3) + ')');
+            g.addColorStop(0.55, 'rgba(248,172,208,' + (0.90 * a).toFixed(3) + ')');
+            g.addColorStop(1,    'rgba(228,116,172,' + (0.82 * a).toFixed(3) + ')');
+            ctx.fillStyle = g;
+            ctx.beginPath(); ctx.ellipse(0, 0, r, r * 0.6, 0, 0, 6.2832); ctx.fill();
+            ctx.restore();
+        }
+        function frame() {
+            if (moved) {
+                const dx = mx - pmx, dy = my - pmy;
+                const dist = Math.sqrt(dx * dx + dy * dy);
+                /* 鼠标静止（位移很小）时不生成新花瓣，让已有的自然飘散掉 */
+                if (dist > 1.4) {
+                    const steps = Math.min(10, Math.max(1, Math.ceil(dist / 7)));
+                    for (let i = 1; i <= steps; i++) {
+                        const k = i / steps;
+                        spawn(pmx + dx * k, pmy + dy * k);
+                    }
+                }
+                pmx = mx; pmy = my;
+            }
+            if (parts.length > 500) parts.splice(0, parts.length - 500);
+            ctx.clearRect(0, 0, W, H);
+            for (let i = parts.length - 1; i >= 0; i--) {
+                const p = parts[i];
+                p.sway += p.sw;
+                p.x += p.vx + Math.sin(p.sway) * 0.5 * dpr;
+                p.y += p.vy;
+                p.vy += 0.012 * dpr;
+                p.vx *= 0.98; p.vy *= 0.99;
+                p.rot += p.vr;
+                p.life -= p.decay;
+                if (p.life <= 0 || p.y > H + 40) { parts.splice(i, 1); continue; }
+                draw(p);
+            }
+            requestAnimationFrame(frame);
+        }
+        requestAnimationFrame(frame);
+    })();
 </script>
 
 </body>
