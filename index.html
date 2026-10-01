@@ -375,15 +375,8 @@
         content: ''; position: absolute; inset: 6px; pointer-events: none;
         border: 2px dashed rgba(30,35,32,.13); border-radius: 5px;
     }
-    /* 按钮：斜纹底纹（深色与绿色） */
-    .btn-dark, .btn-green {
-        background-image: repeating-linear-gradient(45deg,
-            rgba(255,255,255,.07) 0 4px, rgba(0,0,0,.05) 4px 8px);
-    }
-    .btn-ghost {
-        background-image: repeating-linear-gradient(45deg,
-            rgba(30,35,32,.05) 0 4px, rgba(255,255,255,.5) 4px 8px);
-    }
+    /* 按钮：纯色（已去掉斜纹底纹） */
+    .btn-dark, .btn-green, .btn-ghost { background-image: none; }
     /* 标签：点阵花纹 */
     .tag {
         background-image: radial-gradient(rgba(30,35,32,.13) 1px, transparent 1.5px);
@@ -413,13 +406,218 @@
     }
     .mc-shot img { display: block; width: 100%; aspect-ratio: 1 / .84; object-fit: cover; object-position: center top; }
 
+    /* ====== MC 加载界面 ====== */
+    #mcLoader {
+        position: fixed; inset: 0; z-index: 10000;
+        display: grid; place-items: center;
+        background-color: #2E2A26;
+        background-image: url('assets/textures/dirt.svg');
+        background-size: 64px 64px;
+        background-blend-mode: multiply;
+        transition: opacity .6s ease, visibility .6s ease;
+    }
+    #mcLoader.done { opacity: 0; visibility: hidden; }
+    .mc-load-title {
+        font-size: clamp(1.6rem, 5vw, 2.6rem); font-weight: 900; letter-spacing: -.02em;
+        color: #E6E8DF; text-shadow: 0 3px 0 #000, 0 7px 12px rgba(0,0,0,.6);
+    }
+    .mc-load-bar {
+        position: relative; width: min(420px, 72vw); height: 18px; margin: 24px auto 0;
+        border: 2px solid #14110E; border-radius: 3px; background: #8B8B8B; overflow: hidden;
+        box-shadow: inset 2px 2px 0 rgba(0,0,0,.35), inset -2px -2px 0 rgba(255,255,255,.22);
+    }
+    .mc-load-bar i {
+        display: block; height: 100%; width: 0; background: #63D98C;
+        background-image: repeating-linear-gradient(90deg, rgba(255,255,255,.34) 0 1px, transparent 1px 4px);
+        box-shadow: inset 0 5px 0 rgba(255,255,255,.3), inset 0 -4px 0 rgba(0,0,0,.22);
+        transition: width .18s linear;
+    }
+    .mc-load-text { margin-top: 12px; font-family: ui-monospace, Consolas, monospace; font-size: 12.5px; color: #C9CFC7; }
+
+    /* ====== 顶部滚动经验条 ====== */
+    #xpScroll {
+        position: fixed; top: 0; left: 0; right: 0; height: 5px; z-index: 70;
+        background: rgba(20,17,14,.35); pointer-events: none;
+    }
+    #xpScroll i {
+        display: block; height: 100%; width: 0; background: #63D98C;
+        background-image: repeating-linear-gradient(90deg, rgba(255,255,255,.34) 0 1px, transparent 1px 4px);
+        box-shadow: 0 0 8px rgba(99,217,140,.75);
+    }
+
+    /* ====== 栏目标题 MC 方块图标 ====== */
+    .sec-ico {
+        flex: none; width: 32px; height: 32px; margin-top: 2px;
+        image-rendering: pixelated;
+        filter: drop-shadow(0 3px 4px rgba(14,19,17,.35));
+    }
+    .sec-ico svg { width: 100%; height: 100%; display: block; }
+
+    /* ====== 栏目间的 MC 材质分隔带 ====== */
+    section[id]:not(#top)::before {
+        content: ''; position: absolute; left: 0; right: 0; top: 0; height: 26px;
+        background-image: url('assets/textures/strip-grass.svg');
+        background-repeat: repeat-x; background-size: auto 26px;
+        image-rendering: pixelated; opacity: .5; pointer-events: none;
+    }
+    /* 栏目标题右侧分隔线 → MC 材质条 */
+    .sec-rule {
+        flex: 1; height: 10px; margin-top: 16px; border: none;
+        background-image: url('assets/textures/strip-grass.svg');
+        background-repeat: repeat-x; background-size: auto 10px;
+        image-rendering: pixelated; opacity: .7;
+    }
+    /* 区块加载式进场（方块放大浮现） */
+    .reveal { transition: opacity .6s ease, transform .6s cubic-bezier(.2,.75,.3,1); }
+    html.js .reveal { opacity: 0; transform: translateY(24px) scale(.94); }
+    html.js .reveal.in { opacity: 1; transform: none; }
+
+    /* ====== 方块字标题（3D 挤压） ====== */
+    .mc-title {
+        color: #2EBB5F;
+        text-shadow:
+            2px 0 0 #0A2A19, -2px 0 0 #0A2A19, 0 2px 0 #0A2A19, 0 -2px 0 #0A2A19,
+            0 4px 0 #07200F, 0 6px 0 #051A0C,
+            0 10px 18px rgba(10,42,25,.45);
+    }
+
+    /* ====== 昼夜切换按钮 ====== */
+    .dn-btn {
+        position: fixed; right: 20px; bottom: 20px; z-index: 80;
+        width: 46px; height: 46px; cursor: pointer;
+        display: grid; place-items: center;
+        background: #FCFBF4; border: 3px solid #1E2320; border-radius: 8px;
+        box-shadow: inset -3px -3px 0 rgba(14,19,17,.14), inset 3px 3px 0 rgba(255,255,255,.7),
+                    0 10px 22px -12px rgba(14,19,17,.55);
+        transition: transform .2s ease, background .3s ease, border-color .3s ease;
+    }
+    .dn-btn:hover { transform: translateY(-2px); }
+    .dn-btn svg { width: 24px; height: 24px; display: block; }
+
+    /* ====== 夜晚模式 ====== */
+    body.night {
+        background-color: #1C2338;
+        background-image: linear-gradient(180deg, #0B1030 0%, #16203C 22%, #1E2A44 44%, #232E44 66%, #1A2233 100%);
+        background-blend-mode: normal;
+    }
+    body.night .panel, body.night .card {
+        background-color: #232B3C; border-color: #0A0E18;
+        box-shadow: inset -3px -3px 0 rgba(0,0,0,.32), inset 3px 3px 0 rgba(255,255,255,.06),
+                    0 18px 36px -20px rgba(0,0,0,.7);
+    }
+    body.night .panel::after, body.night .card::after { border-color: rgba(255,255,255,.10); }
+    body.night header { background: rgba(16,22,36,.9); border-color: #0A0E18; }
+    body.night #mcLoader { background-color: #11162A; }
+
+    /* 文字：整体提亮，保证深底可读 */
+    body.night .sec-title { color: #DCE8F4; }
+    body.night .sec-sub { color: #93A3B8; }
+    body.night .text-ink-900, body.night #ip, body.night code { color: #EDF4FB; }
+    body.night .text-ink-800, body.night .text-ink-700 { color: #C7D4E4; }
+    body.night .text-ink-600, body.night .text-ink-500 { color: #AEBED2; }
+    body.night .text-ink-400, body.night .text-ink-300 { color: #93A3B8; }
+
+    /* 控件 */
+    body.night .tag { background: #2A3448; color: #D2DEEC; border-color: #10151F; }
+    body.night .nav-link, body.night .mobile-link { color: #B4C2D4; }
+    body.night .btn-ghost { color: #D2DEEC; border-color: #3A4658; background-color: #2A3448; }
+    body.night .btn-ghost:hover { background-color: #33405A; color: #ffffff; }
+    body.night .dn-btn, body.night .bgm-btn { background: #2A3448; border-color: #0A0E18; color: #CFE0EE; }
+    body.night .sec-rule { opacity: .45; }
+
+    /* 当前整合包 / 图标 */
+    body.night .mcp-tile { box-shadow: 0 0 0 2px #4A6484, inset -2px -2px 0 rgba(0,0,0,.3), inset 2px 2px 0 rgba(255,255,255,.08); }
+    body.night .tex { box-shadow: 0 0 0 2px #6A7A90, 0 2px 6px -2px rgba(0,0,0,.6); }
+
+    /* 历史区 */
+    body.night .row-name { color: #CFDCEC; }
+    body.night .row-date { color: #8FA0B6; }
+    body.night .row:hover { background: rgba(255,255,255,.05); }
+    body.night .row-now { --now-tint: #1D2A3E; --now-ac: #7BE0A0; --now-rgb: 123,224,160; }
+    body.night .row-now .row-name { color: #EDF4FB; }
+
+    /* 玩家区 */
+    body.night .prow-name { color: #EDF4FB; }
+    body.night .prow-title { color: #93A3B8; }
+    body.night .prow:hover { background: rgba(255,255,255,.05); }
+    body.night .prow-owner { background: #1B3A2A; border-color: #2E5A40; }
+    body.night .prow-owner:hover { background: #1B3A2A; }
+    body.night .prow-owner .prow-name { color: #C2EBCF; }
+    body.night .prow-owner .prow-idx { color: #63D98C; }
+
+    /* 群公告卡片 */
+    body.night #noticeList > div { background: #232B3C; border-color: #33405A; }
+
+    /* ====== 首屏远山视差 ====== */
+    .hero-parallax { position: absolute; left: 0; right: 0; bottom: 0; height: 140px; overflow: hidden; pointer-events: none; }
+    .hero-parallax svg { position: absolute; left: 0; bottom: 0; width: 100%; height: 140px; will-change: transform; }
+
+    /* ====== 背景音乐按钮 ====== */
+    .bgm-btn {
+        position: fixed; left: 20px; bottom: 20px; z-index: 80;
+        width: 46px; height: 46px; cursor: pointer; color: #1E2320;
+        display: grid; place-items: center;
+        background: #FCFBF4; border: 3px solid #1E2320; border-radius: 8px;
+        box-shadow: inset -3px -3px 0 rgba(14,19,17,.14), inset 3px 3px 0 rgba(255,255,255,.7),
+                    0 10px 22px -12px rgba(14,19,17,.55);
+        transition: transform .2s ease, background .3s ease, border-color .3s ease;
+    }
+    .bgm-btn:hover { transform: translateY(-2px); }
+    .bgm-btn svg { width: 24px; height: 24px; display: block; }
+    .bgm-btn.on { background: #63D98C; animation: bgmPulse 1.8s ease-out infinite; }
+    .bgm-btn.off { opacity: .45; }
+    @keyframes bgmPulse {
+        0%   { box-shadow: inset -3px -3px 0 rgba(14,19,17,.14), inset 3px 3px 0 rgba(255,255,255,.7), 0 0 0 0 rgba(99,217,140,.55); }
+        100% { box-shadow: inset -3px -3px 0 rgba(14,19,17,.14), inset 3px 3px 0 rgba(255,255,255,.7), 0 0 0 12px rgba(99,217,140,0); }
+    }
+    body.night .bgm-btn { background: #2A3448; border-color: #0A0E18; color: #CFE0EE; }
+
+    /* ====== 全屏天空背景（固定：滚动时云/天体始终在） ====== */
+    .bg-sky { position: fixed; inset: 0; z-index: -1; pointer-events: none; overflow: hidden; }
+    .bg-sky .mc-sun { display: block; }
+    .bg-sky .mc-moon { display: none; }
+    .bg-sky .sky-stars { display: none; }
+    body.night .bg-sky .mc-sun { display: none; }
+    body.night .bg-sky .mc-moon { display: block; }
+    body.night .bg-sky .sky-stars { display: block; }
+
+    /* 方块月亮（夜晚） */
+    .mc-moon {
+        position: absolute; top: 9%; right: 9%; width: 56px; height: 56px;
+        background: #EAF2FF; image-rendering: pixelated;
+        box-shadow: 0 0 0 5px rgba(190,210,240,.22), 0 0 42px rgba(200,220,255,.5);
+        animation: sunGlow 4s ease-in-out infinite;
+    }
+    /* 星空（夜晚） */
+    .sky-stars {
+        position: absolute; inset: 0;
+        background-image: radial-gradient(#ffffff 1px, transparent 1.6px);
+        background-size: 92px 92px; opacity: .5;
+        animation: starTwinkle 3.6s ease-in-out infinite;
+    }
+    @keyframes starTwinkle { 0%, 100% { opacity: .3; } 50% { opacity: .65; } }
+    /* 夜晚云朵偏灰 */
+    body.night .mc-cloud {
+        background: #8A96AE; opacity: .5;
+        box-shadow: 18px 0 0 #8A96AE, 36px 0 0 #8A96AE, -18px 0 0 #8A96AE,
+                    0 -18px 0 #8A96AE, 18px -18px 0 #8A96AE, -18px -18px 0 #8A96AE,
+                    8px 18px 0 rgba(138,150,174,.85), 26px 18px 0 rgba(138,150,174,.85);
+    }
+    /* 把云分散到整个视口，滚动时各处都有云 */
+    .mc-cloud.mc-c4 { top: 46%; left: -14%; width: 20px; height: 20px; animation-duration: 52s; animation-delay: -28s; }
+    .mc-cloud.mc-c5 { top: 66%; left: 44%; width: 17px; height: 17px; animation-duration: 62s; animation-delay: -56s; }
+
+    /* 云朵由 JS 驱动运动（从左侧飘到右侧，再从左侧随机位置 / 速度重现） */
+    .cloud-wrap { position: absolute; top: 0; left: 0; will-change: transform; }
+    .cloud-wrap .mc-cloud { position: relative; animation: none; }
+
     /* 首屏 MC 天空：方块太阳 + 漂移的像素云 */
     .mc-sky { position: absolute; inset: 0; pointer-events: none; overflow: hidden; }
     .mc-sun {
         position: absolute; top: 9%; right: 9%; width: 60px; height: 60px;
         background: #F7DC6F; image-rendering: pixelated;
         box-shadow: 0 0 0 6px rgba(247,220,111,.35), 0 0 44px rgba(247,220,111,.55);
-        animation: sunGlow 2.6s ease-in-out infinite;
+        animation: sunGlow 2.1s ease-in-out infinite;
     }
     @keyframes sunGlow { 0%,100% { transform: scale(1); } 50% { transform: scale(1.07); } }
     .mc-cloud {
@@ -428,12 +626,12 @@
         box-shadow: 18px 0 0 #fff, 36px 0 0 #fff, -18px 0 0 #fff,
                     0 -18px 0 #fff, 18px -18px 0 #fff, -18px -18px 0 #fff,
                     8px 18px 0 rgba(255,255,255,.85), 26px 18px 0 rgba(255,255,255,.85);
-        animation: cloudDrift 28s linear infinite;
+        will-change: transform;
     }
     .mc-cloud.mc-c1 { top: 15%; left: -6%; }
-    .mc-cloud.mc-c2 { top: 28%; left: 32%; width: 16px; height: 16px; animation-duration: 38s; animation-delay: -22s; }
-    .mc-cloud.mc-c3 { top: 7%;  left: 62%; width: 19px; height: 19px; animation-duration: 32s; animation-delay: -40s; }
-    @keyframes cloudDrift { from { transform: translateX(0); } to { transform: translateX(120px); } }
+    .mc-cloud.mc-c2 { top: 28%; left: 32%; width: 16px; height: 16px; animation-duration: 30s; animation-delay: -22s; }
+    .mc-cloud.mc-c3 { top: 7%;  left: 62%; width: 19px; height: 19px; animation-duration: 25s; animation-delay: -40s; }
+    @keyframes cloudDrift { from { transform: translateX(-22vw); } to { transform: translateX(122vw); } }
     @media (prefers-reduced-motion: reduce) {
         .mc-sun, .mc-cloud { animation: none !important; }
     }
@@ -475,6 +673,42 @@
 </script>
 </head>
 <body class="font-sans text-ink-900 antialiased">
+
+<!-- ============ MC 加载界面 ============ -->
+<div id="mcLoader" aria-hidden="true">
+    <div class="mc-load-inner">
+        <p class="mc-load-title">今天是个好日子啊</p>
+        <div class="mc-load-bar"><i></i></div>
+        <p class="mc-load-text">正在加载世界…</p>
+    </div>
+</div>
+
+<!-- ============ 全屏天空背景（固定，滚动时常显） ============ -->
+<div class="bg-sky" aria-hidden="true">
+    <div class="sky-stars"></div>
+    <div class="mc-sun"></div>
+    <div class="mc-moon"></div>
+    <div class="cloud-wrap cw1" data-sp="0.16"><div class="mc-cloud"></div></div>
+    <div class="cloud-wrap cw2" data-sp="0.30"><div class="mc-cloud"></div></div>
+    <div class="cloud-wrap cw3" data-sp="0.10"><div class="mc-cloud"></div></div>
+    <div class="cloud-wrap cw4" data-sp="0.38"><div class="mc-cloud"></div></div>
+    <div class="cloud-wrap cw5" data-sp="0.22"><div class="mc-cloud"></div></div>
+</div>
+
+<!-- ============ 顶部滚动经验条 ============ -->
+<div id="xpScroll" aria-hidden="true"><i></i></div>
+
+<!-- 昼夜切换 -->
+<button id="dayNight" class="dn-btn" aria-label="切换白天 / 夜晚" title="白天 / 夜晚">
+    <svg class="ico-sun" viewBox="0 0 24 24" fill="none" stroke="#E0900C" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4.4" fill="#F5C463"/><path d="M12 2.4v2.4M12 19.2v2.4M2.4 12h2.4M19.2 12h2.4M5.2 5.2l1.7 1.7M17.1 17.1l1.7 1.7M18.8 5.2l-1.7 1.7M6.9 17.1l-1.7 1.7"/></svg>
+    <svg class="ico-moon" viewBox="0 0 24 24" fill="#CFE0EE" style="display:none"><path d="M21 12.8A8.6 8.6 0 1111.2 3a6.8 6.8 0 009.8 9.8z"/></svg>
+</button>
+
+<!-- 背景音乐 -->
+<button id="bgmBtn" class="bgm-btn" aria-label="背景音乐开关" title="背景音乐">
+    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M20 4.6v10.2a3 3 0 11-2-2.83V7.1l-7 1.6v8.1a3 3 0 11-2-2.83V5.6z"/></svg>
+</button>
+<audio id="bgmAudio" loop preload="none"><source src="assets/bgm.mp3" type="audio/mpeg"></audio>
 
 <!-- ============ 顶部导航 ============ -->
 <header id="siteHeader" class="fixed inset-x-0 top-0 z-50 transition-all duration-300">
@@ -546,12 +780,6 @@
 <section id="top" class="relative overflow-hidden pt-32 md:pt-40">
     <div class="canvas-grid"></div>
     <div class="dust" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
-    <div class="mc-sky" aria-hidden="true">
-        <div class="mc-sun"></div>
-        <div class="mc-cloud mc-c1"></div>
-        <div class="mc-cloud mc-c2"></div>
-        <div class="mc-cloud mc-c3"></div>
-    </div>
 
     <div class="relative mx-auto max-w-content px-5 pb-20 md:pb-24">
         <div class="grid items-center gap-14 lg:grid-cols-[1.05fr_.95fr] lg:gap-10">
@@ -602,6 +830,12 @@
         </div>
     </div>
 
+    <div class="hero-parallax" aria-hidden="true">
+        <svg viewBox="0 0 1200 140" preserveAspectRatio="none">
+            <path d="M0 140 L0 74 Q150 30 300 64 T600 60 Q750 26 900 62 T1200 54 L1200 140 Z" fill="#3E8E3A" opacity=".6"/>
+            <path d="M0 140 L0 96 Q180 62 360 90 T720 86 Q900 60 1200 88 L1200 140 Z" fill="#357C33" opacity=".85"/>
+        </svg>
+    </div>
     <div class="terrain" aria-hidden="true"></div>
 </section>
 
@@ -610,6 +844,7 @@
     <div class="mx-auto max-w-content px-5">
         <div class="reveal sec-head">
             <span class="sec-idx">01</span>
+            <span class="sec-ico" aria-hidden="true"><svg viewBox="0 0 16 16"><rect width="16" height="16" fill="#8B6B3D"/><rect width="16" height="5" fill="#5BBA55"/><rect y="5" width="16" height="1" fill="#3E8E3A"/></svg></span>
             <div>
                 <h2 class="sec-title">当前整合包</h2>
                 <p class="sec-sub">服务器正在运行的整合包，随时可切换</p>
@@ -675,6 +910,7 @@
     <div class="mx-auto max-w-content px-5">
         <div class="reveal sec-head">
             <span class="sec-idx">02</span>
+            <span class="sec-ico" aria-hidden="true"><svg viewBox="0 0 16 16"><rect x="2" y="3" width="12" height="8" fill="#B98A5E"/><rect x="7" y="11" width="2" height="4" fill="#8A5A33"/><rect x="4" y="5" width="8" height="1" fill="#5E3A1D"/><rect x="4" y="7" width="6" height="1" fill="#5E3A1D"/></svg></span>
             <div>
                 <h2 class="sec-title">群公告</h2>
                 <p class="sec-sub">服务器群里的重要通知，都在这里</p>
@@ -729,6 +965,7 @@
     <div class="mx-auto max-w-content px-5">
         <div class="reveal sec-head">
             <span class="sec-idx">03</span>
+            <span class="sec-ico" aria-hidden="true"><svg viewBox="0 0 16 16"><rect x="2" y="4" width="12" height="10" fill="#B98A5E"/><rect x="2" y="4" width="12" height="2" fill="#8A5A33"/><rect x="7" y="8" width="2" height="3" fill="#5E3A1D"/></svg></span>
             <div>
                 <h2 class="sec-title">下个整合包</h2>
                 <p class="sec-sub">新周目规划中，确定后在这里公布</p>
@@ -756,6 +993,7 @@
     <div class="mx-auto max-w-content px-5">
         <div class="reveal sec-head">
             <span class="sec-idx">04</span>
+            <span class="sec-ico" aria-hidden="true"><svg viewBox="0 0 16 16"><circle cx="8" cy="8" r="6.2" fill="#E6E8DF" stroke="#47504B" stroke-width="2"/><path d="M8 4.6v3.6l2.4 2" stroke="#47504B" stroke-width="1.6" fill="none" stroke-linecap="round"/></svg></span>
             <div>
                 <h2 class="sec-title">服务器历史</h2>
                 <p class="sec-sub">一路走来的整合包更迭记录</p>
@@ -964,6 +1202,7 @@
     <div class="mx-auto max-w-content px-5">
         <div class="reveal sec-head">
             <span class="sec-idx">05</span>
+            <span class="sec-ico" aria-hidden="true"><svg viewBox="0 0 16 16"><rect x="1" y="5" width="14" height="9" rx="1" fill="#39433D"/><rect x="5" y="3" width="6" height="2" fill="#39433D"/><circle cx="8" cy="9.5" r="3" fill="#9AA39D"/><circle cx="8" cy="9.5" r="1.3" fill="#2C3631"/></svg></span>
             <div>
                 <h2 class="sec-title">精选截图</h2>
                 <p class="sec-sub">群友投稿的服务器截图，按周目各归各位</p>
@@ -1155,6 +1394,7 @@
     <div class="mx-auto max-w-content px-5">
         <div class="reveal sec-head">
             <span class="sec-idx">06</span>
+            <span class="sec-ico" aria-hidden="true"><svg viewBox="0 0 16 16"><rect width="16" height="16" fill="#8B6B42"/><rect x="2" y="1" width="12" height="5" fill="#4A3520"/><rect x="3" y="6" width="3" height="2" fill="#EDEDED"/><rect x="10" y="6" width="3" height="2" fill="#EDEDED"/><rect x="4" y="6" width="1.4" height="2" fill="#3B2A18"/><rect x="10.6" y="6" width="1.4" height="2" fill="#3B2A18"/><rect x="6" y="11" width="4" height="1.4" fill="#5E4222"/></svg></span>
             <div>
                 <h2 class="sec-title">玩家风采</h2>
                 <p class="sec-sub">服务器玩家与专属头衔</p>
@@ -1267,6 +1507,7 @@
     <div class="mx-auto max-w-content px-5">
         <div class="reveal sec-head">
             <span class="sec-idx">07</span>
+            <span class="sec-ico" aria-hidden="true"><svg viewBox="0 0 16 16"><path d="M4 5h8l3 7H1z" fill="#E0900C"/><path d="M4 5h8l1.5 3.5H2.5z" fill="#F5C463"/></svg></span>
             <div>
                 <h2 class="sec-title">赞助支持</h2>
                 <p class="sec-sub">你的支持是服务器持续运营的动力</p>
@@ -1863,6 +2104,24 @@
             mx = e.clientX; my = e.clientY;
             if (!moved) { pmx = mx; pmy = my; moved = true; }
         }, { passive: true });
+        /* 点击：从光标处爆出一簇花瓣 */
+        document.addEventListener('click', function (e) {
+            for (let i = 0; i < 14; i++) {
+                const ang = Math.random() * 6.2832;
+                const sp = (1.5 + Math.random() * 3) * dpr;
+                parts.push({
+                    x: e.clientX * dpr, y: e.clientY * dpr,
+                    vx: Math.cos(ang) * sp,
+                    vy: Math.sin(ang) * sp - 0.5 * dpr,
+                    life: 1, decay: 0.012 + Math.random() * 0.01,
+                    size: (5 + Math.random() * 5) * dpr,
+                    rot: Math.random() * 6.2832,
+                    vr: (Math.random() - 0.5) * 0.3,
+                    sway: Math.random() * 6.2832,
+                    sw: 0.02 + Math.random() * 0.03
+                });
+            }
+        });
 
         function spawn(x, y) {
             parts.push({
@@ -1925,6 +2184,152 @@
             requestAnimationFrame(frame);
         }
         requestAnimationFrame(frame);
+    })();
+
+    /* MC 加载界面：进度条走到 100% 后淡出（带兜底，避免卡住） */
+    (function () {
+        const el = document.getElementById('mcLoader');
+        if (!el) return;
+        const bar = el.querySelector('.mc-load-bar i');
+        if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+            el.classList.add('done'); return;
+        }
+        let p = 0, done = false;
+        function finish() { if (done) return; done = true; el.classList.add('done'); }
+        const t = setInterval(function () {
+            p += Math.random() * 16 + 7;
+            if (p >= 100) { p = 100; clearInterval(t); setTimeout(finish, 320); }
+            bar.style.width = p + '%';
+        }, 110);
+        setTimeout(finish, 3000);   /* 兜底 */
+    })();
+
+    /* 顶部滚动经验条 */
+    (function () {
+        const bar = document.querySelector('#xpScroll i');
+        if (!bar) return;
+        function upd() {
+            const max = document.documentElement.scrollHeight - window.innerHeight;
+            bar.style.width = (max > 0 ? Math.min(100, scrollY / max * 100) : 0) + '%';
+        }
+        window.addEventListener('scroll', upd, { passive: true });
+        window.addEventListener('resize', upd);
+        upd();
+    })();
+
+    /* MC 音效：点击「哒」（Web Audio 合成，零文件） */
+    (function () {
+        let ac = null;
+        function actx() {
+            if (!ac) { try { ac = new (window.AudioContext || window.webkitAudioContext)(); } catch (e) { return null; } }
+            return ac;
+        }
+        function blip(freq, dur, type, vol) {
+            const a = actx(); if (!a) return;
+            if (a.state === 'suspended') a.resume();
+            const o = a.createOscillator(), g = a.createGain();
+            o.type = type || 'square'; o.frequency.value = freq;
+            g.gain.setValueAtTime(vol, a.currentTime);
+            g.gain.exponentialRampToValueAtTime(0.0001, a.currentTime + dur);
+            o.connect(g); g.connect(a.destination);
+            o.start(); o.stop(a.currentTime + dur);
+        }
+        document.addEventListener('click', function () { blip(680, 0.09, 'square', 0.045); }, { passive: true });
+    })();
+
+    /* 昼夜切换（记忆选择） */
+    (function () {
+        const btn = document.getElementById('dayNight');
+        if (!btn) return;
+        const sun = btn.querySelector('.ico-sun'), moon = btn.querySelector('.ico-moon');
+        let night = false;
+        try { night = localStorage.getItem('gd_night') === '1'; } catch (e) {}
+        function apply() {
+            document.body.classList.toggle('night', night);
+            if (sun) sun.style.display = night ? 'none' : '';
+            if (moon) moon.style.display = night ? '' : 'none';
+        }
+        apply();
+        btn.addEventListener('click', function () {
+            night = !night;
+            try { localStorage.setItem('gd_night', night ? '1' : '0'); } catch (e) {}
+            apply();
+        });
+    })();
+
+    /* 首屏远山视差 */
+    (function () {
+        const h = document.querySelector('.hero-parallax svg');
+        if (!h) return;
+        let raf = 0;
+        function upd() {
+            raf = 0;
+            const y = Math.min(window.scrollY, 700);
+            h.style.transform = 'translateY(' + (y * 0.28) + 'px)';
+        }
+        window.addEventListener('scroll', function () { if (!raf) raf = requestAnimationFrame(upd); }, { passive: true });
+        upd();
+    })();
+
+    /* 云朵：JS 驱动 —— 从左侧飘到右侧后消失，再从左侧随机位置 / 随机速度再现；含滚动视差 */
+    (function () {
+        const wraps = Array.prototype.slice.call(document.querySelectorAll('.bg-sky .cloud-wrap'));
+        if (!wraps.length) return;
+        function rndY() { return (0.05 + Math.random() * 0.7) * window.innerHeight; }
+        function rndV() { return 14 + Math.random() * 30; }   /* px/s */
+        const clouds = wraps.map(function (w) {
+            return { el: w, x: Math.random() * window.innerWidth, y: rndY(), v: rndV(),
+                     par: parseFloat(w.getAttribute('data-sp')) || 0.2 };
+        });
+        function place(c) {
+            c.el.style.transform = 'translate(' + c.x.toFixed(1) + 'px,' + (c.y + window.scrollY * c.par).toFixed(1) + 'px)';
+        }
+        clouds.forEach(place);
+        let last = 0;
+        function frame(t) {
+            if (!last) last = t;
+            const dt = Math.min(0.05, (t - last) / 1000);
+            last = t;
+            const W = window.innerWidth;
+            for (let i = 0; i < clouds.length; i++) {
+                const c = clouds[i];
+                c.x += c.v * dt;
+                if (c.x > W + 60) { c.x = -90; c.y = rndY(); c.v = rndV(); }   /* 出右侧 → 左侧随机重现 */
+                place(c);
+            }
+            requestAnimationFrame(frame);
+        }
+        requestAnimationFrame(frame);
+        window.addEventListener('resize', function () {
+            clouds.forEach(function (c) { c.y = Math.min(c.y, window.innerHeight * 0.75); place(c); });
+        });
+    })();
+
+    /* 背景音乐（需要在 assets/bgm.mp3 放音频文件；不存在时按钮置灰） */
+    (function () {
+        const btn = document.getElementById('bgmBtn');
+        const audio = document.getElementById('bgmAudio');
+        if (!btn || !audio) return;
+        audio.volume = 0.45;
+        let userControl = false, unavailable = false;
+        audio.addEventListener('error', function () { unavailable = true; btn.classList.add('off'); btn.title = '背景音乐（未放置音频文件）'; });
+        audio.addEventListener('play', function () { btn.classList.add('on'); });
+        audio.addEventListener('pause', function () { btn.classList.remove('on'); });
+        btn.addEventListener('click', function (e) {
+            e.stopPropagation();
+            if (unavailable) return;
+            userControl = true;
+            if (audio.paused) audio.play().catch(function () {}); else audio.pause();
+        });
+        /* 首次页面交互时尝试自动播放（浏览器策略：必须有用户手势） */
+        function auto() {
+            document.removeEventListener('click', auto);
+            document.removeEventListener('scroll', auto);
+            if (userControl || unavailable || !audio.paused) return;
+            audio.play().catch(function () {});
+        }
+        document.addEventListener('click', auto);
+        document.addEventListener('scroll', auto, { passive: true });
     })();
 </script>
 </body>
