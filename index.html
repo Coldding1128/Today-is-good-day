@@ -533,8 +533,13 @@
     body.night .row-name { color: #CFDCEC; }
     body.night .row-date { color: #8FA0B6; }
     body.night .row:hover { background: rgba(255,255,255,.05); }
+    body.night .row:hover .row-date { color: #AEBED2; }
+    body.night .row-link { color: #C7D4E4; }
+    body.night .row-link:hover { color: #7BE0A0; }
+    body.night .row-play { color: #93A3B8; }
     body.night .row-now { --now-tint: #1D2A3E; --now-ac: #7BE0A0; --now-rgb: 123,224,160; }
-    body.night .row-now .row-name { color: #EDF4FB; }
+    body.night .row-now .row-name, body.night .row-now .row-link { color: #EDF4FB; }
+    body.night .row-now .row-date, body.night .row-now .row-play { color: #7BE0A0; }
 
     /* 玩家区 */
     body.night .prow-name { color: #EDF4FB; }
@@ -545,8 +550,12 @@
     body.night .prow-owner .prow-name { color: #C2EBCF; }
     body.night .prow-owner .prow-idx { color: #63D98C; }
 
-    /* 群公告卡片 */
-    body.night #noticeList > div { background: #232B3C; border-color: #33405A; }
+    /* 夜晚：所有浅底卡片 / 输入框统一变深（公告栏、历史行、玩家行等） */
+    body.night [class*="bg-white"] { background-color: #232B3C !important; }
+    body.night [class*="border-ink"] { border-color: #35415A !important; }
+    body.night [class*="bg-ink-50"] { background-color: #1C2434 !important; }
+    body.night [class*="bg-ink-100"] { background-color: #202A3C !important; }
+    body.night [class*="bg-ink-200"] { background-color: #26324A !important; }
 
     /* ====== 首屏远山视差 ====== */
     .hero-parallax { position: absolute; left: 0; right: 0; bottom: 0; height: 140px; overflow: hidden; pointer-events: none; }
