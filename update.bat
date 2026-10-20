@@ -1,63 +1,71 @@
 @echo off
-chcp 65001 >nul
+chcp 936 >nul 2>&1
+title ²¿Êğ - ½ñÌìÊÇ¸öºÃÈÕ×Ó°¡
 cd /d "%~dp0"
-title éƒ¨ç½² Â· ä»Šå¤©æ˜¯ä¸ªå¥½æ—¥å­å•Š
 
 rem ============================================================
-rem  ä¸€é”®éƒ¨ç½²ï¼šæäº¤æœ¬åœ°æ”¹åŠ¨å¹¶æ¨é€åˆ° GitHubï¼Œ
-rem  Cloudflare Pages æ”¶åˆ°æ¨é€åä¼šè‡ªåŠ¨é‡æ–°æ„å»ºã€‚
-rem  è¯´æ˜ï¼š
-rem   - æœ¬æœºæ²¡è£… Git for Windows ä¹Ÿèƒ½è·‘ï¼Œä¼šè‡ªåŠ¨å»æ‰¾ WorkBuddy
-rem     è‡ªå¸¦çš„ä¾¿æºç‰ˆ gitï¼ˆåœ¨ %USERPROFILE%\.workbuddy\binaries ä¸‹ï¼‰ã€‚
-rem   - ä»“åº“åœ¨ H ç›˜æ—¶å±ä¸» SID å¯èƒ½å’Œå½“å‰è´¦æˆ·ä¸ä¸€è‡´ï¼Œgit ä¼šæ‹’ç»æ“ä½œï¼Œ
-rem     ä¸‹é¢ä¼šè‡ªåŠ¨æŠŠæœ¬ç›®å½•åŠ å…¥ safe.directoryï¼ˆå¯é‡å¤æ‰§è¡Œï¼‰ã€‚
+rem  Ò»¼ü²¿Êğ£ºÔİ´æ¸Ä¶¯ -> Ìá½» -> ÍÆËÍµ½ GitHub£¬
+rem  Cloudflare Pages ÊÕµ½ÍÆËÍºó×Ô¶¯ÖØĞÂ¹¹½¨ÉÏÏß¡£
+rem
+rem  Á½ÖÖ³£¼û»·¾³ÎÊÌâÕâÀï¶¼´¦ÀíÁË£º
+rem   1. ±¾»úÃ»×° Git for Windows Ò²ÄÜÅÜ£¬»á×Ô¶¯È¥ÕÒ WorkBuddy
+rem      ×Ô´øµÄ±ãĞ¯°æ git¡£
+rem   2. ²Ö¿â·ÅÔÚ H ÅÌÊ±£¬ÎÄ¼ş¼ĞÊôÖ÷ SID ¿ÉÄÜºÍµ±Ç°ÕË»§²»Ò»ÖÂ£¬
+rem      git »áÒÔ dubious ownership ÎªÓÉ¾Ü¾ø²Ù×÷£¬
+rem      ÕâÀï»á×Ô¶¯°Ñ±¾Ä¿Â¼Ğ´½ø safe.directory£¬¿ÉÖØ¸´Ö´ĞĞ¡£
 rem ============================================================
 
-rem ---------- 1. æ‰¾ git ----------
+rem ---------- 1. ÕÒ git ----------
 set "GIT="
 for /f "delims=" %%i in ('where git 2^>nul') do if not defined GIT set "GIT=%%i"
 if not defined GIT if exist "%ProgramFiles%\Git\cmd\git.exe" set "GIT=%ProgramFiles%\Git\cmd\git.exe"
 if not defined GIT if exist "%ProgramFiles(x86)%\Git\cmd\git.exe" set "GIT=%ProgramFiles(x86)%\Git\cmd\git.exe"
 if not defined GIT if exist "%LocalAppData%\Programs\Git\cmd\git.exe" set "GIT=%LocalAppData%\Programs\Git\cmd\git.exe"
 if not defined GIT for /d %%d in ("%USERPROFILE%\.workbuddy\binaries\PortableGit\versions\*") do if not defined GIT if exist "%%~d\cmd\git.exe" set "GIT=%%~d\cmd\git.exe"
-if not defined GIT goto :nogit
-echo ä½¿ç”¨ git: %GIT%
+if not defined GIT if exist "C:\WB\CN\resources\vendor\PortableGit\mingw64\bin\git.exe" set "GIT=C:\WB\CN\resources\vendor\PortableGit\mingw64\bin\git.exe"
+if not defined GIT if exist "D:\WB\CN\resources\vendor\PortableGit\mingw64\bin\git.exe" set "GIT=D:\WB\CN\resources\vendor\PortableGit\mingw64\bin\git.exe"
+if not defined GIT if exist "%ProgramFiles%\WorkBuddy\resources\vendor\PortableGit\mingw64\bin\git.exe" set "GIT=%ProgramFiles%\WorkBuddy\resources\vendor\PortableGit\mingw64\bin\git.exe"
+if not defined GIT if exist "%LocalAppData%\Programs\WorkBuddy\resources\vendor\PortableGit\mingw64\bin\git.exe" set "GIT=%LocalAppData%\Programs\WorkBuddy\resources\vendor\PortableGit\mingw64\bin\git.exe"
+if not defined GIT goto nogit
+echo Ê¹ÓÃ git: %GIT%
 echo.
 
-rem ---------- 2. ä»“åº“æˆæƒä¸æäº¤èº«ä»½ ----------
+rem ---------- 2. ²Ö¿âÊÚÈ¨ÓëÌá½»Éí·İ ----------
 "%GIT%" config --global --add safe.directory "%CD%" >nul 2>&1
 "%GIT%" config --get user.name  >nul 2>&1 || "%GIT%" config user.name  "Coldding1128"
 "%GIT%" config --get user.email >nul 2>&1 || "%GIT%" config user.email "fu18476092695@163.com"
 
-rem ---------- 3. æš‚å­˜ / æäº¤ / æ¨é€ ----------
-echo [1/3] æš‚å­˜æ”¹åŠ¨...
-"%GIT%" add -A || goto :fail
+rem ---------- 3. Ôİ´æ / Ìá½» / ÍÆËÍ ----------
+echo [1/3] Ôİ´æ¸Ä¶¯...
+"%GIT%" add -A || goto fail
 
 "%GIT%" diff --cached --quiet
-if errorlevel 1 (
-    echo [2/3] æäº¤...
-    "%GIT%" commit -m "update" || goto :fail
-) else (
-    echo [2/3] æ²¡æœ‰æ–°æ”¹åŠ¨ï¼Œè·³è¿‡æäº¤
-)
+if errorlevel 1 goto commit
+echo [2/3] Ã»ÓĞĞÂ¸Ä¶¯£¬Ìø¹ıÌá½»
+goto push
 
-echo [3/3] æ¨é€åˆ° GitHub...
-"%GIT%" push || goto :fail
+:commit
+echo [2/3] Ìá½»...
+"%GIT%" commit -m "update" || goto fail
+
+:push
+echo [3/3] ÍÆËÍµ½ GitHub...
+"%GIT%" push || goto fail
 
 echo.
-echo å®Œæˆã€‚Cloudflare Pages å¤§çº¦ 1 åˆ†é’Ÿåè‡ªåŠ¨ä¸Šçº¿ã€‚
+echo Íê³É¡£Cloudflare Pages ´óÔ¼ 1 ·ÖÖÓºó×Ô¶¯ÉÏÏß¡£
 pause
 exit /b 0
 
 :fail
 echo.
-echo [X] ä¸Šä¸€æ­¥å¤±è´¥ï¼ŒæŠŠä¸Šé¢çš„æŠ¥é”™åŸæ ·å‘å‡ºæ¥çœ‹çœ‹ã€‚
+echo [X] ÉÏÒ»²½Ê§°ÜÁË£¬°ÑÉÏÃæµÄ±¨´íÔ­Ñù·¢³öÀ´¿´¿´¡£
 pause
 exit /b 1
 
 :nogit
-echo [X] æ²¡æ‰¾åˆ° gitã€‚
-echo     è£…ä¸€ä¸ªï¼š https://git-scm.com/download/win
-echo     è£…å®Œå…³æ‰è¿™ä¸ªçª—å£ï¼Œé‡æ–°åŒå‡»æœ¬æ–‡ä»¶å³å¯ã€‚
+echo [X] Ã»ÕÒµ½ git¡£
+echo     ×°Ò»¸ö¾ÍĞĞ: https://git-scm.com/download/win
+echo     ×°Íê¹ØµôÕâ¸ö´°¿Ú£¬ÖØĞÂË«»÷±¾ÎÄ¼ş¡£
 pause
 exit /b 1
