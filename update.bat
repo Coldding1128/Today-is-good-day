@@ -33,7 +33,7 @@ echo.
 rem ---------- 2. 仓库授权与提交身份 ----------
 "%GIT%" config --global --add safe.directory "%CD%" >nul 2>&1
 "%GIT%" config --get user.name  >nul 2>&1 || "%GIT%" config user.name  "Coldding1128"
-"%GIT%" config --get user.email >nul 2>&1 || "%GIT%" config user.email "fu18476092695@163.com"
+"%GIT%" config --get user.email >nul 2>&1 || "%GIT%" config user.email "232179522+Coldding1128@users.noreply.github.com"
 
 rem ---------- 3. 暂存 / 提交 / 推送 ----------
 echo [1/3] 暂存改动...
