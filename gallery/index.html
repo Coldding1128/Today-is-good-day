@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>截图画廊 · 今天是个好日子啊</title>
-<meta name="description" content="今天是个好日子啊服务器截图合集，按整合包分类：奇妙商店物语、群峦重生2 冲向月球、香草纪元、重度机械症、1.21 原版生存等。玩家投稿，持续更新。">
+<meta name="description" content="今天是个好日子啊服务器截图合集，按整合包分类：化龙、奇妙商店物语、群峦重生2 冲向月球、香草纪元、1.21 原版生存等。玩家投稿，持续更新。">
 <meta name="theme-color" content="#F7F8F5">
 <link rel="canonical" href="https://today-is-good-day.pages.dev/gallery/">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 48'%3E%3Crect width='48' height='48' rx='10' fill='%230E1311'/%3E%3Cpath d='M24 9L38 17 24 25 10 17Z' fill='%2363D98C'/%3E%3Cpath d='M10 17L24 25v14L10 31Z' fill='%231E8E4E'/%3E%3Cpath d='M38 17L24 25v14l14-8Z' fill='%23114529'/%3E%3C/svg%3E">
@@ -15,7 +15,7 @@
 <meta property="og:locale" content="zh_CN">
 <meta property="og:url" content="https://today-is-good-day.pages.dev/gallery/">
 <meta property="og:title" content="截图画廊 · 今天是个好日子啊">
-<meta property="og:description" content="按整合包分类的服务器截图合集：奇妙商店物语、群峦重生2 冲向月球、香草纪元、重度机械症、1.21 原版生存……玩家投稿，持续更新。">
+<meta property="og:description" content="按整合包分类的服务器截图合集：化龙、奇妙商店物语、群峦重生2 冲向月球、香草纪元、1.21 原版生存……玩家投稿，持续更新。">
 <meta property="og:image" content="https://today-is-good-day.pages.dev/assets/og-cover.jpg">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
@@ -663,6 +663,7 @@
 const THEMES = {
     /* ac = 强调色, tint = 浅底。颜色取自各整合包实际核心模组的主视觉 */
     poke:     { tex: 'theme-poke',     ac: '#D9433F', tint: '#FAE8E7' },  // Cobblemon 精灵球 红白
+    dragon:   { tex: 'theme-souls',    ac: '#B23A2F', tint: '#FBEFEA' },  // 化龙 朱砂×赤金（材质沿用龙鳞暗红）
     shop:     { tex: 'theme-stardew',  ac: '#B4632F', tint: '#FBF0E4' },  // 奇妙商店物语 店铺暖木×奶油（材质沿用暖木）
     tfc:      { tex: 'stone',          ac: '#8A6B3F', tint: '#F7F2E8' },  // 群峦传说 岩褐×月白
     delight:  { tex: 'theme-delight',  ac: '#A5701F', tint: '#F9F0DF' },  // 农夫乐事 麦金
@@ -683,6 +684,7 @@ const THEMES = {
 
 const GLYPHS = {
     poke:     '<circle cx="12" cy="12" r="8.4"/><path d="M3.6 12h16.8"/><circle cx="12" cy="12" r="2.6"/>',
+    dragon:   '<path d="M12 8.4c3.9 0 6.6 2.8 6.6 6.2 0 4.2-3 6.2-6.6 6.2s-6.6-2-6.6-6.2c0-3.4 2.7-6.2 6.6-6.2z"/><path d="M6.5 9.6L4.2 4.6l4 1.7"/><path d="M17.5 9.6l2.3-5-4 1.7"/><path d="M9.8 13.8h.01M14.2 13.8h.01"/>',
     shop:     '<path d="M3.6 9.8V19a1.4 1.4 0 001.4 1.4h14a1.4 1.4 0 001.4-1.4V9.8"/><path d="M2.8 9.8l1.5-5.1a1.2 1.2 0 011.2-.9h13a1.2 1.2 0 011.2.9l1.5 5.1"/><path d="M8.6 20.4v-6.1h4.8v6.1"/>',
     tfc:      '<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>',
     delight:  '<path d="M3.4 13.4h12.2a6.1 6.1 0 01-6.1 6.1H9.5a6.1 6.1 0 01-6.1-6.1z"/><path d="M15.6 13.4h5"/><path d="M8 9.6V6.4M11.6 9.6V5.2"/>',
@@ -706,7 +708,8 @@ const MODPACKS = [
        Cobblemon / 农夫乐事 / 法术构筑 / 类幸存者卡牌 / 魂系动作 / 特警CQB /
        机械动力 / 模拟殖民地+百年战争 / 拔刀剑+TACZ / 星露谷 / 僵尸都市 / 风景 / 塔罗 / ATM
        blurb 是该周目核心玩法的一句话标签，会显示在分组标题旁 */
-    { id: 'shop',         name: '奇妙商店物语',            period: '10.20 至今',       now: true, theme: 'shop',    blurb: '城市餐厅经营 · 员工与菜品研发' },
+    { id: 'dragon',       name: '化龙',                    period: '10.22 至今',       now: true, theme: 'dragon',  blurb: '国风龙族 · 剧情冒险 · 泰拉联动' },
+    { id: 'shop',         name: '奇妙商店物语',            period: '10.20 — 10.22',    theme: 'shop',    blurb: '城市餐厅经营 · 员工与菜品研发' },
     { id: 'tfc',          name: '群峦重生2 冲向月球',      period: '9.26 — 10.20',     theme: 'tfc',     blurb: '群峦传说 · 地质冶金 · 硬核登月' },
     { id: 'cobblemon',    name: '去吧，方可梦大师',        period: '9.19 — 9.26',      theme: 'poke',     blurb: 'Cobblemon · 全世代宝可梦收集' },
     { id: 'vanilla-food', name: '香草纪元：食旅纪行',      period: '9.11 — 9.19',      theme: 'delight',  blurb: '农夫乐事 · 种田烹饪美食' },

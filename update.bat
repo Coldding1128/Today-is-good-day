@@ -33,7 +33,7 @@ echo.
 rem ---------- 2. 仓库授权与提交身份 ----------
 "%GIT%" config --global --add safe.directory "%CD%" >nul 2>&1
 "%GIT%" config --get user.name  >nul 2>&1 || "%GIT%" config user.name  "Coldding1128"
-"%GIT%" config --get user.email >nul 2>&1 || "%GIT%" config user.email "232179522+Coldding1128@users.noreply.github.com"
+"%GIT%" config --get user.email >nul 2>&1 || "%GIT%" config user.email "fu18476092695@163.com"
 
 rem ---------- 3. 暂存 / 提交 / 推送 ----------
 echo [1/3] 暂存改动...
@@ -50,8 +50,14 @@ echo [2/3] 提交...
 
 :push
 echo [3/3] 推送到 GitHub...
-"%GIT%" push || goto fail
+"%GIT%" push && goto done
 
+echo.
+echo [提示] 第一次推送没成功，可能是证书吊销列表访问不到，
+echo        换个校验收紧度再试一次，不影响提交内容。
+"%GIT%" -c http.schannelCheckRevoke=false push || goto fail
+
+:done
 echo.
 echo 完成。Cloudflare Pages 大约 1 分钟后自动上线。
 pause
