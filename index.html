@@ -15,7 +15,7 @@
 <meta property="og:locale" content="zh_CN">
 <meta property="og:url" content="https://today-is-good-day.pages.dev/">
 <meta property="og:title" content="今天是个好日子啊 · 私人 Minecraft 服务器">
-<meta property="og:description" content="私人 Minecraft 服务器，超多整合包随心切换，随时开服，随时组队。冒险 / 剧情 / 生存，单人与多人联机，全天 24 小时开放。">
+<meta property="og:description" content="私人 Minecraft 服务器，超多整合包随心切换，随时开服，随时组队。极寒 / 生存 / 冒险，单人与多人联机，全天 24 小时开放。">
 <meta property="og:image" content="https://today-is-good-day.pages.dev/assets/og-cover.jpg">
 <meta property="og:image:secure_url" content="https://today-is-good-day.pages.dev/assets/og-cover.jpg">
 <meta property="og:image:type" content="image/jpeg">
@@ -29,7 +29,7 @@
 <!-- 部分较早的抓取器只认下面这两种 -->
 <link rel="image_src" href="https://today-is-good-day.pages.dev/assets/og-cover.jpg">
 <meta itemprop="image" content="https://today-is-good-day.pages.dev/assets/og-cover.jpg">
-<meta name="keywords" content="Minecraft服务器,我的世界服务器,私人服务器,整合包,化龙,BeLoong,龙族冒险,剧情向,多人联机,今天是个好日子啊">
+<meta name="keywords" content="Minecraft服务器,我的世界服务器,私人服务器,整合包,雪盲症,极寒生存,冬季生存,暴风雪,多人联机,今天是个好日子啊">
 <meta name="author" content="今天是个好日子啊">
 <script>document.documentElement.classList.add('js');</script>
 <script src="https://cdn.tailwindcss.com"></script>
@@ -202,32 +202,32 @@
         border: 1px solid #D2EBDB; color: #1E8E4E;
     }
 
-    /* ---------- 当前周目的主题元素（化龙：朱砂 × 赤金） ---------- */
+    /* ---------- 当前周目的主题元素（雪盲症：冰蓝 × 雪白） ---------- */
     .tex {
         width: 26px; height: 26px; flex: none; border-radius: 3px;
         background-size: 26px 26px; background-repeat: repeat;
         image-rendering: pixelated;
         box-shadow: 0 0 0 2px #39433D, 0 2px 6px -2px rgba(14,19,17,.5);
     }
-    .tex-theme-now { background-image: url('assets/textures/theme-souls.svg'); }
-    /* 物品栏槽位里放着的龙蛋 */
+    .tex-theme-now { background-image: url('assets/textures/snow.svg'); }
+    /* 物品栏槽位里放着的雪花 */
     .mcp-tile {
         position: relative; display: grid; place-items: center;
         width: 64px; height: 64px; flex: none; overflow: hidden;
-        border-radius: 14px; background: #FBEFEA;
-        box-shadow: 0 0 0 2px #B23A2F, inset -2px -2px 0 rgba(0,0,0,.14), inset 2px 2px 0 rgba(255,255,255,.65);
+        border-radius: 14px; background: #EAF4F9;
+        box-shadow: 0 0 0 2px #2E7FA8, inset -2px -2px 0 rgba(0,0,0,.14), inset 2px 2px 0 rgba(255,255,255,.65);
     }
     /* 底部压一条主题材质，交代这个槽位属于哪个周目 */
     .mcp-tile::after {
         content: ''; position: absolute; inset: auto 0 0 0; height: 13px;
-        background-image: url('assets/textures/theme-souls.svg');
+        background-image: url('assets/textures/snow.svg');
         background-size: 13px 13px; image-rendering: pixelated;
     }
     .mcp-tile img { position: relative; z-index: 1; width: 40px; height: 40px; margin-bottom: 6px; image-rendering: pixelated; }
     .mcp-flag {
         display: inline-flex; align-items: center; gap: 6px;
         padding: 4px 11px; border-radius: 999px;
-        font-size: 11.5px; font-weight: 800; color: #fff; background: #B23A2F;
+        font-size: 11.5px; font-weight: 800; color: #fff; background: #2E7FA8;
     }
 
     /* ---------- 首屏方块插画 ---------- */
@@ -884,38 +884,38 @@
         </div>
 
         <div class="reveal panel overflow-hidden">
-            <div class="h-[3px] w-full bg-gradient-to-r from-[#B23A2F] via-[#CE8A72] to-[#F2DFD7]"></div>
+            <div class="h-[3px] w-full bg-gradient-to-r from-[#2E7FA8] via-[#8FBED4] to-[#E4F0F6]"></div>
             <div class="p-6 sm:p-8 md:p-10">
                 <div class="flex flex-wrap items-start gap-5">
                     <div class="mcp-tile">
-                        <img src="assets/textures/dragon.svg" alt="化龙 · 龙蛋">
+                        <img src="assets/textures/snowflake.svg" alt="雪盲症 · 雪花">
                     </div>
                     <div class="min-w-0 flex-1">
                         <div class="flex flex-wrap items-center gap-3">
                             <span class="tex tex-theme-now" aria-hidden="true"></span>
-                            <h3 class="text-[24px] font-black tracking-tight text-ink-900 sm:text-[28px]">化龙</h3>
+                            <h3 class="text-[24px] font-black tracking-tight text-ink-900 sm:text-[28px]">雪盲症</h3>
                             <span class="mcp-flag">
                                 <span class="blink h-1.5 w-1.5 rounded-full bg-white"></span>当前运行中
                             </span>
                         </div>
                         <div class="mt-2.5 flex flex-wrap items-center gap-x-3 gap-y-1 font-mono text-[12.5px] text-ink-400">
-                            <span>MC 1.21.1</span>
+                            <span>V1.4.0</span>
                             <span class="h-1 w-1 rounded-full bg-ink-200"></span>
-                            <span>NeoForge · 国风龙族冒险</span>
+                            <span>极寒冬季生存</span>
                         </div>
                     </div>
                 </div>
 
                 <p class="mt-7 max-w-3xl text-[14.5px] leading-[1.9] text-ink-600">
-                    以龙为主题的国风冒险包，开局不是史蒂夫，而是从洞穴、海洋、森林、苔原、以太五条血脉里挑一条，用龙的视角重新认识这个世界。龙生而会飞，每条血脉都有专属天赋，也都有弱点：火龙靠吞噬岩浆淬炼龙息，冰龙收集极地冰晶，以太龙走的是化形那条路。任务按血脉分成五条主线，配了手绘插图，连龙钢煅炉怎么搭都有结构示意，模组、群系、结构全部汉化。修炼到远古龙可以化为人形，GalGame 式对话能跟龙娘、龙哥聊出世界观和新手指引；再往下是泰拉联动的硬仗，史莱姆之王和世界吞噬怪被封印在深暗之园，摸到彩虹猫之刃和鸿蒙方舟才算真毕业。
+                    以「永不停歇的风雪」为核心的极寒生存包，睁眼就是白茫茫一片，能见度、体温和补给一起往下掉。风不是背景音——单独加进来的 AEOLUS 风场让风雪有方向、有推力，逆风跑不动路，暴雪天出门等于赌命。寒潮有倒计时，倒数结束前得把庇护所、热源和存粮备齐，之后才是真正的长冬：雪原上会开出花，也埋着别的东西。撑到 V1.3 你会在雪地里支起整条生产线，V1.4 之后热汤、温泉和酒成了过冬标配——在零下的世界里，一口热的比一把好剑更救命。
                 </p>
 
                 <div class="mt-7 flex flex-wrap gap-2">
-                    <span class="tag">国风龙族</span>
-                    <span class="tag">五系血脉</span>
-                    <span class="tag">剧情任务</span>
-                    <span class="tag">GalGame 对话</span>
-                    <span class="tag">泰拉联动</span>
+                    <span class="tag">极寒生存</span>
+                    <span class="tag">暴风雪</span>
+                    <span class="tag">风场物理</span>
+                    <span class="tag">寒潮倒计时</span>
+                    <span class="tag">冬季建造</span>
                     <span class="tag tag-green">当前周目</span>
                 </div>
 
@@ -924,7 +924,7 @@
                         <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4.5v11M7.2 10.8L12 15.6l4.8-4.8"/><path d="M4.5 19.5h15"/></svg>
                         直接下载整合包
                     </a>
-                    <a href="https://www.bilibili.com/video/BV1zZHB6YEJa/"
+                    <a href="https://www.bilibili.com/video/BV1VVaD6EEz9/"
                        target="_blank" rel="noopener noreferrer" class="btn btn-dark px-6 py-3 text-[13.5px]">
                         <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.5 9.4l4.6 2.9-4.6 2.9V9.4z" fill="currentColor" stroke="none"/><circle cx="12" cy="12" r="9"/></svg>
                         观看整合包介绍视频
@@ -1074,7 +1074,7 @@
             <div class="grid gap-5 md:grid-cols-[132px_1fr] md:gap-8">
                 <div>
                     <p class="font-mono text-[28px] font-black leading-none tracking-tight text-ink-900">2026</p>
-                    <p class="mt-2 font-mono text-[11.5px] tracking-[.1em] text-ink-400">17 个整合包</p>
+                    <p class="mt-2 font-mono text-[11.5px] tracking-[.1em] text-ink-400">18 个整合包</p>
                 </div>
                 <ul>
                     <li class="row">
@@ -1141,10 +1141,14 @@
                         <span class="row-date">10.20 — 10.22</span>
                         <a class="row-name row-link" href="https://www.bilibili.com/video/BV1D1a661E5J/" target="_blank" rel="noopener" title="在 B 站观看介绍视频：奇妙商店物语（新标签页打开）">奇妙商店物语<svg class="row-play" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8.5 5.6l10.2 6.4-10.2 6.4z"/></svg></a>
                     </li>
-                    <li class="row row-now">
-                        <span class="row-date">10.22 至今</span>
-                        <img class="row-ball" src="assets/textures/dragon.svg" alt="" width="21" height="21">
+                    <li class="row">
+                        <span class="row-date">10.22 — 10.29</span>
                         <a class="row-name row-link" href="https://www.bilibili.com/video/BV1zZHB6YEJa/" target="_blank" rel="noopener" title="在 B 站观看介绍视频：化龙（新标签页打开）">化龙<svg class="row-play" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8.5 5.6l10.2 6.4-10.2 6.4z"/></svg></a>
+                    </li>
+                    <li class="row row-now">
+                        <span class="row-date">10.29 至今</span>
+                        <img class="row-ball" src="assets/textures/snowflake.svg" alt="" width="21" height="21">
+                        <a class="row-name row-link" href="https://www.bilibili.com/video/BV1VVaD6EEz9/" target="_blank" rel="noopener" title="在 B 站观看介绍视频：雪盲症（新标签页打开）">雪盲症<svg class="row-play" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8.5 5.6l10.2 6.4-10.2 6.4z"/></svg></a>
                         <span class="row-badge"><span class="blink h-1.5 w-1.5 rounded-full bg-white"></span>当前运行</span>
                     </li>
                 </ul>
@@ -1174,9 +1178,9 @@
        换周目时只改这三个值（对应 gallery/index.html 里 THEMES 中该周目的 ac / tint）：
        --now-ac 主题色，--now-rgb 同一个色的 rgb 分量，--now-tint 浅底 */
     .row-now {
-        --now-ac: #B23A2F;          /* 化龙 · 朱砂 × 赤金 */
-        --now-rgb: 178, 58, 47;
-        --now-tint: #FBEFEA;
+        --now-ac: #2E7FA8;          /* 雪盲症 · 冰蓝 × 雪白 */
+        --now-rgb: 46, 127, 168;
+        --now-tint: #EAF4F9;
 
         position: relative; gap: 12px;
         background: var(--now-tint);
@@ -1280,7 +1284,7 @@
 
         <div id="galleryCta" class="reveal mt-6 flex flex-col items-center gap-6 rounded-2xl border border-dashed border-ink-200 bg-white/70 px-6 py-7 text-center sm:flex-row sm:justify-between sm:text-left">
             <div>
-                <p class="text-[15.5px] font-black tracking-tight text-ink-900">完整画廊：23 个周目，各归各位</p>
+                <p class="text-[15.5px] font-black tracking-tight text-ink-900">完整画廊：24 个周目，各归各位</p>
                 <p class="mt-1.5 text-[13.5px] leading-relaxed text-ink-500">按整合包分组、支持筛选与放大，你的截图也可以挂上去</p>
             </div>
             <div class="flex shrink-0 flex-wrap justify-center gap-3">
@@ -1816,6 +1820,7 @@
 
     /* 整合包 id → 名称。要和 gallery/index.html 里的 MODPACKS 保持一致 */
     const PACK_NAMES = {
+        'snow':           '雪盲症',
         'dragon':         '化龙',
         'shop':           '奇妙商店物语',
         'tfc':            '群峦重生2 冲向月球',
